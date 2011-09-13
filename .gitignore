@@ -1,0 +1,5 @@
+*/bin/*
+Game Engine/native/
+IronTactics/native/
+*.jar
+*jar/*
