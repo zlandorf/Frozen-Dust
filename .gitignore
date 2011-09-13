@@ -3,3 +3,4 @@ Game Engine/native/
 IronTactics/native/
 *.jar
 *jar/*
+IronTactics/dist/IronTactics.zip
