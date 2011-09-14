@@ -59,6 +59,7 @@ public class IronUtil {
 			}
 			br.close();
 		} catch (Exception e) {
+			System.out.println("error when trying to find "+option+"  : "+e.getLocalizedMessage());
 		}
 		
 		return option;
@@ -79,13 +80,14 @@ public class IronUtil {
 			if (!dir.exists()) {
 				dir.mkdir();
 			}
-			
+
 			File saveFile = new File(filePath);
 			if (!saveFile.exists()) {
 				saveFile.createNewFile();
 			}
-			
-			BufferedReader br = new BufferedReader(new FileReader(saveFile));
+
+			BufferedReader br;
+			br = new BufferedReader(new FileReader(saveFile));
 			String text ="";
 			String line = null;
 			while ((line = br.readLine()) != null) {
@@ -96,15 +98,14 @@ public class IronUtil {
 			} else {
 				text += option+value;
 			}
-			
-			BufferedWriter bw = new BufferedWriter(new FileWriter(saveFile));
+
+			BufferedWriter bw;
+			bw = new BufferedWriter(new FileWriter(saveFile));
 			bw.write(text);
 			bw.flush();
 			bw.close();
-			
-			System.out.println(option+value+" saved in file "+filePath);
-		} catch (IOException e) {
-			System.out.println("error when trying to save username.");
+		}catch (Exception e) {
+			System.out.println("error in saveOption when saving "+option+value+ " :"+e.getLocalizedMessage());
 		}
 	}
 	
