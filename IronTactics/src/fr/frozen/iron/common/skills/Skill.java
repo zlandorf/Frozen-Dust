@@ -72,11 +72,15 @@ public abstract class Skill {
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
 			if (target == null) continue;
+			if (target.isDead()) {
+				target.setCorpseSprite();
+			}
+			
 			damage = new DamageParticle(world, target.getX() * IronConst.TILE_WIDTH,
 											   target.getY() * IronConst.TILE_WIDTH,
 											   couple[1]);
 			
-			world.addGameObject(damage);
+			world.addGameObject(damage, "gfx");
 		}
 	}
 }

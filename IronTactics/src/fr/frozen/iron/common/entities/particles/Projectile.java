@@ -8,7 +8,7 @@ import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.util.IronUtil;
 
 public class Projectile extends GameObject {
-	protected static float SPEED = 45;
+	protected static float SPEED = 450;
 	
 	protected IronWorld world;
 	protected Vector2f distanceCovered = new Vector2f(0,0);

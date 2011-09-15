@@ -3,6 +3,7 @@ package fr.frozen.network.client;
 import java.io.IOException;
 import java.net.InetAddress;
 import java.net.InetSocketAddress;
+import java.net.UnknownHostException;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
 import java.nio.channels.SocketChannel;
@@ -76,9 +77,12 @@ public class BaseClient extends Thread implements IMessageProcessor {
     	try {
     		System.out.println("Trying to connect to "+host+":"+port);
     		serverAddress = InetAddress.getByName(host);
+    		System.out.println("serverAddress = "+serverAddress);
     		serverChannel = SocketChannel.open(new InetSocketAddress(serverAddress, port));
     		serverChannel.configureBlocking(false);
     		serverChannel.socket().setTcpNoDelay(true);
+    		
+    		while (!serverChannel.finishConnect());
     		
     		selector = Selector.open();
     		//socketChannel.register(selector,SelectionKey.OP_CONNECT);
@@ -87,8 +91,9 @@ public class BaseClient extends Thread implements IMessageProcessor {
     		connected = true;
     		dispatchEvent(new ConnectEvent(true));
     	} catch (Exception e) {
-    		System.err.println("problem when connecting");
+    		System.err.println("problem when connecting : "+e.getMessage());
     		connected = false;
+    		running = false;
     		dispatchEvent(new ConnectEvent(false));
     		//shutdown();
     		//System.exit(1);
@@ -151,8 +156,10 @@ public class BaseClient extends Thread implements IMessageProcessor {
     	
     	if (!isConnected()) {
     		System.out.println("connection failed, not entering loop");
+    		running = false;
+    	} else {
+    		System.out.println("entering loop");
     	}
-    	System.out.println("entering loop");
     	while (running) {
     		try {
 				// blocking select, will return when we get a new connection
@@ -196,7 +203,14 @@ public class BaseClient extends Thread implements IMessageProcessor {
     }
     
     public static void main(String []args) {
-    	BaseClient client = new BaseClient("127.0.1.1", 1234);
-    	client.start();
+    	BaseClient client;
+		try {
+			client = new BaseClient(InetAddress.getLocalHost().getHostName(), 1234);
+			
+			//client = new BaseClient("92.102.7.170", 1234);
+			client.start();
+		} catch (UnknownHostException e) {
+			e.printStackTrace();
+		}
     }
 }

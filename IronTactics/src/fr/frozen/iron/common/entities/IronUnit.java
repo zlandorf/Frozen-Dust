@@ -153,6 +153,19 @@ public class IronUnit extends GameObject implements Mover {
 	public void setHp(int val) {
 		hp = Math.max(0, Math.min(val, maxHp));
 		//System.out.println("hp = "+hp);
+		if (hp <= 0) {
+			onDeath();
+		}
+	}
+	
+	public void onDeath() {
+		world.getMap().getTile((int)getX(), (int)getY()).setUnitOnTile(null);
+		world.addGameObject(this, "corpse");
+	}
+	
+	public void setCorpseSprite() {
+		setSprite(_spriteManager.getSprite("corpse_"+getRaceStr()));
+		_sprite.setAlpha(.8f);
 	}
 	
 	public void onStartTurn() {
@@ -365,7 +378,7 @@ public class IronUnit extends GameObject implements Mover {
 		if (_sprite != null) {
 			_sprite.draw(_pos.x * IronConst.TILE_WIDTH, _pos.y * IronConst.TILE_HEIGHT);
 			
-			if (teamColorSprite != null) {
+			if (teamColorSprite != null && !isDead()) {
 				teamColorSprite.draw(_pos.x * IronConst.TILE_WIDTH, _pos.y * IronConst.TILE_HEIGHT);
 			}
 			

@@ -1,7 +1,6 @@
 package fr.frozen.network.server;
 
 import java.io.IOException;
-import java.net.InetAddress;
 import java.net.InetSocketAddress;
 import java.nio.channels.SelectionKey;
 import java.nio.channels.Selector;
@@ -99,7 +98,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		try {
 			socketChannel = ServerSocketChannel.open();
 			socketChannel.configureBlocking(false);
-		    InetSocketAddress addr = new InetSocketAddress(InetAddress.getLocalHost(), port);
+		    InetSocketAddress addr = new InetSocketAddress(port);
 		    socketChannel.socket().bind(addr);
 		    
 		    selector = Selector.open();
@@ -128,26 +127,28 @@ public class BaseServer extends Thread implements IMessageProcessor {
 				//TODO : maybe use a timeout here
 				selector.select(MAX_WAIT_TIME);
 				heartBeat();
-				
-				
-				for (SelectionKey key : selector.selectedKeys()) {
-					if (!key.isValid()) continue;
-					
-					if (key.isAcceptable()) {
-						ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
-						SocketChannel channel = serverSocketChannel.accept();
-						if (channel != null)
-							addNewClient(channel);
-					} else if (key.isReadable()) {
-						read(key);
-					}
-				}
-				
 				updateGameSessionsList();
 				for (IGameController session : gameSessions) {
 					session.update((float)deltaTime);
 				}
 				
+				for (SelectionKey key : selector.selectedKeys()) {
+					if (!key.isValid()) {
+						continue;
+					}
+					if (key.isConnectable()) { 
+						((SocketChannel)key.channel()).finishConnect();
+					} 
+					if (key.isAcceptable()) {
+						ServerSocketChannel serverSocketChannel = (ServerSocketChannel) key.channel();
+						SocketChannel channel = serverSocketChannel.accept();
+						if (channel != null) {
+							addNewClient(channel);
+						}
+					} else if (key.isReadable()) {
+						read(key);
+					}
+				}
 			}
 			catch (IOException ioe) {
 				System.err.println("error during serverSocket select(): " + ioe.getMessage());
@@ -163,6 +164,8 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	
 	protected Client addNewClient(SocketChannel channel) throws IOException {
 		channel.configureBlocking(false);
+		channel.socket().setTcpNoDelay(true);
+		
 		Client player = new Client(IdGiver.getId(),channel);
 		clientsByChannel.put(channel, player);
 		clientsById.put(player.getId(), player);

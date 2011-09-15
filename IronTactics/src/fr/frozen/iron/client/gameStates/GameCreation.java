@@ -142,10 +142,11 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		}
 		
 		if (ne instanceof RaceChoiceEvent) {
-			//TODO : put "orc" and "elf" as constants 
-			//TODO : do this better
 			RaceChoiceEvent rce = (RaceChoiceEvent) ne;
-			String race = (rce.getChosenRace() == Protocol.ORC_RACE.ordinal() ? "orc":"human");
+			String race = IronUtil.getRaceStr(Protocol.get(rce.getChosenRace()));
+			
+			if (host == null || other == null) return;//in case we receive a raceEvent before we know who the players are
+			//TODO: check if this works properly
 			
 			if (rce.getClientId() == netClient.getClientId()) {
 				if (rce.getClientId() == host.getId()) {

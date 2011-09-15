@@ -118,6 +118,14 @@ public class IronWorld extends GameState {
 		if (map != null) {
 			map.renderTiles(deltaTime);
 			
+			List<GameObject> corpses = getGameObjectCollection("corpse");
+			if (corpses != null) {
+				for (GameObject corpse : corpses){
+					corpse.render(deltaTime);
+				}
+			}
+			
+			
 			if (selectedUnit != null) {
 				
 				selectedUnit.renderMoveableTiles();
@@ -140,9 +148,15 @@ public class IronWorld extends GameState {
 			getMap().renderGrid();
 			map.renderUnitsAndObjects(deltaTime);
 			//map.renderUnits(deltaTime);
+			
+			
+			List<GameObject> gfxList = getGameObjectCollection("gfx");
+			if (gfxList != null) {
+				for (GameObject gfx : gfxList){
+					gfx.render(deltaTime);
+				}
+			}
 		}
-		
-		super.render(deltaTime);
 	}
 	
 	

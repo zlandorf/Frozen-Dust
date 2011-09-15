@@ -181,10 +181,10 @@ public class RangedAttack extends Skill {
 	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		IronUnit dst = world.getUnitAtXY(x, y);
+		IronUnit src = world.getUnitFromId(srcId);
 		
-		if (dst == null) return null;
+		if (dst == null || src == null || src.getRangedWeapon() == null) return null;
 		
-		System.out.println("x = "+x+"  y = "+y);
 		List<int[]> res = new ArrayList<int[]>();
 		/*for (int i = (int)dst.getX() - 3; i < dst.getX() + 3; i++) {
 			for (int j = (int)dst.getY() - 3; j < dst.getY() + 3; j++) {
@@ -199,7 +199,7 @@ public class RangedAttack extends Skill {
 			}
 		}
 		System.out.println("out");*/
-		res.add(new int[]{dst.getId(), -5});
+		res.add(new int[]{dst.getId(), - src.getRangedWeapon().getDamage()});
 		
 		executeCommon(world, srcId, x, y, res);
 		return res;
@@ -210,7 +210,6 @@ public class RangedAttack extends Skill {
 			List<int[]> values) {
 		
 		super.executeClientSide(world, srcId, x, y, values);
-		System.out.println("VALUES = "+values.size());
 		if (values.size() <= 0) return;
 		
 		
@@ -233,6 +232,6 @@ public class RangedAttack extends Skill {
 		Projectile arrow = new Projectile(world, x1 - IronConst.TILE_WIDTH / 2,
 									   y1 - IronConst.TILE_HEIGHT / 2,
 									   new Vector2f(x2 - x1, y2 - y1), weapon.getProjectileName());
-		world.addGameObject(arrow);
+		world.addGameObject(arrow, "gfx");
 	}
 }
