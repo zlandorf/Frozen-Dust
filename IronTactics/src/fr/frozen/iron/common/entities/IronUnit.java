@@ -419,7 +419,7 @@ public class IronUnit extends GameObject implements Mover {
 		int y = (int)(getY() * IronConst.TILE_HEIGHT - (_sprite.getHeight() - IronConst.TILE_HEIGHT));
 		int x = (int)(getX() * IronConst.TILE_WIDTH);
 		y -= 11;
-		
+		if (y < 0) y = 0;
 		drawHealthBar(x,y);
 	}
 	
