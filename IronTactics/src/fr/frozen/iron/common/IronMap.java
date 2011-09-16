@@ -14,7 +14,7 @@ import fr.frozen.util.pathfinding.TileBasedMap;
 public class IronMap implements TileBasedMap {
 
 	protected double PROB_EARTH = 0.4;
-	protected double PROB_WATER = 0.5;
+	protected double PROB_WATER = 0.23;
 	protected double PROB_TREE = 0.3;
 	protected double PROB_ROCK = 0.05;
 	
