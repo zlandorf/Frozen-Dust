@@ -164,6 +164,14 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
+	public boolean hasMoved() {
+		return movement < maxMovement;
+	}
+	
+	public int getMaxMovement() {
+		return maxMovement;
+	}
+	
 	public void onDeath() {
 		world.getMap().getTile((int)getX(), (int)getY()).setUnitOnTile(null);
 		world.addGameObject(this, "corpse");

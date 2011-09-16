@@ -25,7 +25,11 @@ public class BlindShot extends Skill {
 		super("Blind Shot", Skill.BLIND_SHOT);
 	}
 	
-	protected boolean canDoAux(IronUnit src, IronUnit dst) {
+	@Override
+	public boolean canDo(IronWorld world, int srcId, int x, int y) {
+		IronUnit src = world.getUnitFromId(srcId);
+		IronUnit dst = world.getUnitAtXY(x, y);
+		
 		if (src == null || dst == null) return false;
 		
 		Weapon rangedWeapon = src.getRangedWeapon();
@@ -34,7 +38,7 @@ public class BlindShot extends Skill {
 		if (src.getId() == dst.getId()) return false;
 		if (src.getOwnerId() == dst.getOwnerId()) return false;
 		if (dst.isDead()) return false;
-
+		if (src.hasMoved()) return false;
 		//range check
 		int minRange = rangedWeapon.getMinRange();
 		int maxRange = rangedWeapon.getMaxRange();
@@ -43,14 +47,6 @@ public class BlindShot extends Skill {
 		
 		if (distance < minRange || distance > maxRange) return false;
 		return true;
-	}
-	
-	@Override
-	public boolean canDo(IronWorld world, int srcId, int x, int y) {
-		IronUnit src = world.getUnitFromId(srcId);
-		IronUnit dst = world.getUnitAtXY(x, y);
-		
-		return canDoAux(src,dst);
 	}
 
 	@Override
