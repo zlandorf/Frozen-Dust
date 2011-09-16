@@ -83,7 +83,8 @@ public class RangedAttack extends Skill {
 		List<int[]> res = new ArrayList<int[]>();
 		int damage = IronUtil.getDamage(src, dst, false);
 		
-		res.add(new int[]{dst.getId(), - (int)damage});
+		if (!dst.isDead())
+			res.add(new int[]{dst.getId(), - (int)damage});
 		
 		executeCommon(world, srcId, x, y, res);
 		return res;

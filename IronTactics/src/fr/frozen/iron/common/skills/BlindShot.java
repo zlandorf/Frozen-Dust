@@ -77,7 +77,7 @@ public class BlindShot extends Skill {
 		
 		List<int[]> res = new ArrayList<int[]>();
 		IronUnit dst = world.getUnitAtXY(x, y);
-		if (dst != null) {
+		if (dst != null && !dst.isDead()) {
 			float damage = IronUtil.getDamage(src, dst, false);
 			res.add(new int[]{dst.getId(), - (int)damage});
 		} else {

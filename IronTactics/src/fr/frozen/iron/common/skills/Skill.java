@@ -79,7 +79,7 @@ public abstract class Skill {
 		
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
-			if (target == null || target.isDead()) {
+			if (target == null) {
 				continue;
 			}
 			if (target.isDead()) {

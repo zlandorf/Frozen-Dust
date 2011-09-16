@@ -53,7 +53,6 @@ public class IronUtil {
 		float damage = weapon.getDamage();
 		float armorValue = 0;
 		
-		System.out.print("base damage = "+damage);
 		
 		if (weapon.isMagical()) {
 			damage += damage * (float)(src.getStats().getIntelligence() / 10.0);
@@ -73,15 +72,12 @@ public class IronUtil {
 			armorValue += weapon.isMagical() ? dst.getArmor().getMagicalArmor() :
 											   dst.getArmor().getPhysicalArmor();
 		}
-		System.out.print(" addDamage="+damage+ "  armorvalue="+armorValue);
 		
 		damage -= damage * (float)(armorValue / 100.0);
 		float movePenalty = (float)src.getMovement() / src.getMaxMovement();
 		
 		damage *= movePenalty;
 		
-		System.out.print(" move penalty="+movePenalty);
-		System.out.println(" final damage = "+damage);
 		return (int)damage;
 	}
 	
