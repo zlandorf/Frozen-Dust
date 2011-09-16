@@ -216,8 +216,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			y = is.readInt();
 			int moveCost = is.readInt();
 			unitSrc.move(x, y, moveCost);
-			unitSrc.setSelected(false);
-			selectedUnit = null;
+			if (unitSrc.hasPlayed()) {
+				unitSrc.setSelected(false);
+				selectedUnit = null;
+			}
 			break;
 		case IronUnit.ACTION_SKILL :
 			Skill skill = Skill.getSkill(is.readInt());
