@@ -12,7 +12,7 @@ import fr.frozen.iron.util.IronUtil;
 
 public class Heal extends Skill {
 
-private static Heal instance = new Heal();
+	private static Heal instance = new Heal();
 	
 	public static Heal getInstance() {
 		return instance;

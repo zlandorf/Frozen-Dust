@@ -157,10 +157,12 @@ public class IronWorld extends GameState {
 			//map.renderUnits(deltaTime);
 			
 			
-			List<GameObject> gfxList = getGameObjectCollection("gfx");
-			if (gfxList != null) {
-				for (GameObject gfx : gfxList){
-					gfx.render(deltaTime);
+			synchronized (this) {
+				List<GameObject> gfxList = getGameObjectCollection("gfx");
+				if (gfxList != null) {
+					for (GameObject gfx : gfxList){
+						gfx.render(deltaTime);
+					}
 				}
 			}
 		}

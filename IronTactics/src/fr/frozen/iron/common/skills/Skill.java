@@ -12,6 +12,8 @@ public abstract class Skill {
 	public static final int MELEE_ATTACK = 0;
 	public static final int RANGED_ATTACK = 1;
 	public static final int HEAL = 2;
+	public static final int BLIND_SHOT = 3;
+	public static final int SHIELD_BLOCK = 4;
 	
 	public static Skill getSkill(int type) {
 		switch (type) {
@@ -21,7 +23,10 @@ public abstract class Skill {
 			return RangedAttack.getInstance();
 		case HEAL :
 			return Heal.getInstance();
+		case BLIND_SHOT :
+			return BlindShot.getInstance();
 		}
+		
 		return null;
 	}
 	
@@ -59,7 +64,7 @@ public abstract class Skill {
 
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
-			if (target == null) continue;
+			if (target == null || target.isDead()) continue;
 			target.setHp(target.getHp() + couple[1]);
 		}
 	}
@@ -74,8 +79,7 @@ public abstract class Skill {
 		
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
-			if (target == null) {
-				System.out.println("target is null");
+			if (target == null || target.isDead()) {
 				continue;
 			}
 			if (target.isDead()) {
