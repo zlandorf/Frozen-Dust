@@ -254,6 +254,11 @@ public class Tile {
 		
 		for (int i = 0; i < 8; i++) {
 			if (bools[i]) {
+				if (i % 2 == 0  && (bools[(8 + i - 1) % 8] || bools[i + 1 % 2])) {
+					continue;
+				}
+				
+				
 				String type = tile_names[type(i)];
 				
 				if (getType() == TYPE_WATER) {
