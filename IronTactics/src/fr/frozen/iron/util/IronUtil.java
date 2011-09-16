@@ -76,6 +76,11 @@ public class IronUtil {
 		System.out.print(" addDamage="+damage+ "  armorvalue="+armorValue);
 		
 		damage -= damage * (float)(armorValue / 100.0);
+		float movePenalty = (float)src.getMovement() / src.getMaxMovement();
+		
+		damage *= movePenalty;
+		
+		System.out.print(" move penalty="+movePenalty);
 		System.out.println(" final damage = "+damage);
 		return (int)damage;
 	}

@@ -80,6 +80,8 @@ public class Heal extends Skill {
 		float valToHeal = src.getRangedWeapon().getDamage();
 		
 		valToHeal += valToHeal * (float)(src.getStats().getIntelligence() / 10.0);
+		float movePenalty = (float)src.getMovement() / src.getMaxMovement();
+		valToHeal *= movePenalty;
 		
 		res.add(new int[]{dst.getId(), (int)valToHeal});
 		
