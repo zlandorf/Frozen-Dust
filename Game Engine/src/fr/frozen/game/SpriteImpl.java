@@ -20,6 +20,7 @@ public class SpriteImpl implements ISprite {
 	private float b = 1;
 	
 	private float angle = 0;
+	private float scale = 1;
 	
 	public SpriteImpl(Texture texture, Vector2f texturePos, Vector2f offSet) {
 		this.texture = texture;
@@ -156,16 +157,29 @@ public class SpriteImpl implements ISprite {
 	
 	@Override
 	public void draw(float x, float y, float w, float h, boolean mirX, boolean mirY) {
+		float oldw = w;
+		float oldh = h;
+		
+		w *= scale;
+		h *= scale;
+		
+		float offx = (oldw - w) / 2;
+		float offy = (oldh - h) / 2;
+		
+		
+		x += offx;
+		y += offy;
+		
 		// store the current model matrix
 		GL11.glPushMatrix();
 		// bind to the appropriate texture for this sprite
 		texture.bind();
     
 		// translate to the right location and prepare to draw
-		GL11.glTranslatef((int)x + (int)offSet.getX(), (int)y + (int)offSet.getY(), 0);
-		GL11.glTranslatef(width / 2, height / 2, 0);
+		GL11.glTranslatef(x + offSet.getX(), y + offSet.getY(), 0);
+		GL11.glTranslatef(w / 2, h / 2, 0);
 		GL11.glRotatef(angle, 0, 0, 1);
-		GL11.glTranslatef(- width / 2, - height / 2, 0);
+		GL11.glTranslatef(- w / 2, - h / 2, 0);
 		//GL11.glTranslatef((int)(x - w / 2), ((int)y - h), 0);
     	GL11.glColor4f(r,g,b,alpha);
 		// draw a quad textured to match the sprite
@@ -174,11 +188,11 @@ public class SpriteImpl implements ISprite {
 			GL11.glTexCoord2f(mirX ? texture.getWidth() + texPos.x : texPos.x, mirY ? texture.getHeight() + texPos.y: texPos.y);
 			GL11.glVertex2f(0, 0);
 			GL11.glTexCoord2f(mirX ? texture.getWidth() + texPos.x: texPos.x, mirY ?  texPos.y : texture.getHeight() + texPos.y);
-			GL11.glVertex2f(0, (int)h);
+			GL11.glVertex2f(0, h);
 			GL11.glTexCoord2f(mirX ? texPos.x : texture.getWidth() + texPos.x, mirY ?  texPos.y : texture.getHeight() + texPos.y);
-			GL11.glVertex2f((int)w,(int)h);
+			GL11.glVertex2f(w, h);
 			GL11.glTexCoord2f(mirX ? texPos.x : texture.getWidth() + texPos.x, mirY ? texture.getHeight() + texPos.y : texPos.y);
-			GL11.glVertex2f((int)w,0);
+			GL11.glVertex2f(w,0);
 			
 		}
 		GL11.glEnd();
@@ -218,5 +232,15 @@ public class SpriteImpl implements ISprite {
 		}
 		GL11.glEnd();
 		GL11.glPopMatrix();
+	}
+
+	@Override
+	public float getScale() {
+		return scale;
+	}
+
+	@Override
+	public void setScale(float val) {
+		scale = val;
 	}
 }

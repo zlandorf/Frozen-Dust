@@ -17,10 +17,7 @@ public class TestObject extends GameObject {
 		asRunning = spriteManager.getAnimationSequence("rebel_running");
 		
 		_sprite = spriteManager.getSprite("rebel");
-		//as.start();
-		_sprite.setWidth((int)(_sprite.getWidth() * scale));
-		_sprite.setHeight((int)(_sprite.getHeight() * scale));
-		
+		_sprite.setScale(scale);
 	}
 
 	@Override
@@ -47,6 +44,7 @@ public class TestObject extends GameObject {
 		}
 
 		_sprite.setAngle(_sprite.getAngle() + 1);
+		//_sprite.setScale(1 + deltaTime);
 		
 		/*if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT))
 			_pos.setLocation(_pos.x = (float)((_pos.x + 600* GameEngine._tick) % Display.getDisplayMode().getWidth()),

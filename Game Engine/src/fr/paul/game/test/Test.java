@@ -55,6 +55,7 @@ class Test extends GameEngine {
 			viewX -= 1;
 		}
 		
+		
 		//System.out.println("fps = "+(1.f/GameEngine._tick));
 	}
 	

@@ -15,6 +15,9 @@ public class TestShooter extends GameObject {
 	
 	private int ammo = 5;
 	
+	private float scale = 0;
+	private float scaletmp = 0;
+	
 	public TestShooter(GameState gs, int x, int y) {
 		super(gs,x,y,null);
 		fire = ISpriteManager.getInstance().getAnimationSequence("rebel_fire");
@@ -33,11 +36,23 @@ public class TestShooter extends GameObject {
 		} else {
 			_sprite = idle;
 		}
+		_sprite.setScale(1 + scale);
 		super.render(deltaTime);
 	}
 	
 	@Override
 	public void update(float deltaTime) {
+		
+		scaletmp += deltaTime;
+		scaletmp %= 2;
+		System.out.println("modulo float :"+scaletmp);
+		
+		if (scaletmp > 1) {
+			scale = 1 - (scaletmp % 1);
+		} else {
+			scale = scaletmp;
+		}
+		
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			if (!reload.animating() && !fire.animating() && ammo > 0) {
 				fire.start();

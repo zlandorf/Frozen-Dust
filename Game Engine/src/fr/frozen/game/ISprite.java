@@ -18,6 +18,9 @@ public interface ISprite extends Cloneable {
 	public void setAngle(float val);
 	public float getAngle();
 	
+	public float getScale();
+	public void setScale(float scale);
+	
 	public void draw(float x, float y);
 	public void draw(float x, float y, boolean mirrorX, boolean mirrorY);
 	public void draw(float x, float y, float w, float h);

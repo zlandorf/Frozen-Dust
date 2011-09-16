@@ -8,6 +8,7 @@ import org.lwjgl.util.vector.Vector2f;
 import fr.frozen.game.ISpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
+import fr.frozen.iron.common.entities.particles.BlindShotProjectile;
 import fr.frozen.iron.common.entities.particles.Projectile;
 import fr.frozen.iron.common.equipment.RangedWeapon;
 import fr.frozen.iron.common.equipment.Weapon;

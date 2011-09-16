@@ -43,13 +43,13 @@ public class GameState {
 	public void createGameObjects() {
 	}
 	
-	public List<GameObject> createGameObjectCollection(String collectionName) {
+	public synchronized List<GameObject> createGameObjectCollection(String collectionName) {
 		List<GameObject> collection = new Vector<GameObject>(); 
 		objectCollections.put(collectionName, collection);
 		return collection;
 	}
 	
-	public List<GameObject> getGameObjectCollection(String collectionName) {
+	public synchronized List<GameObject> getGameObjectCollection(String collectionName) {
 		return objectCollections.get(collectionName);
 	}
 	
@@ -68,7 +68,7 @@ public class GameState {
 		return go;
 	}
 	
-	public void removeGameObject(GameObject go) {
+	public synchronized void removeGameObject(GameObject go) {
 		objectsToRemove.add(go);
 		Set<Entry<String, List<GameObject>>> collections = objectCollections.entrySet();
 		for (Entry<String, List<GameObject>> entry : collections) {
@@ -105,14 +105,14 @@ public class GameState {
 		stateName = name;
 	}
 	
-	private void addGameObjects() {
+	private synchronized void addGameObjects() {
 		for (GameObject go : objectsToAdd) {
 			objects.add(go);
 		}
 		objectsToAdd.clear();
 	}
 	
-	private void removeGameObjects() {
+	private synchronized void removeGameObjects() {
 		for (GameObject go : objectsToRemove) {
 			objects.remove(go);
 		}
