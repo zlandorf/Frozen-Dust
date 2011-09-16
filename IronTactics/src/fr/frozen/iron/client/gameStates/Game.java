@@ -228,9 +228,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			while (true) {
 				int dstId = is.readInt();
 				if (dstId == -1) break;
-				
 				int value = is.readInt();
-				if (value == -1) break;
 				
 				values.add(new int[]{dstId, value});
 			}
@@ -252,8 +250,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		world.update(deltaTime);
 		
 		if (getGameObjectCollection("bird") == null || getGameObjectCollection("bird").size() == 0) {
-			Bird bird = new Bird(this);
-			addGameObject(bird, "bird");
+			if (Math.random() <= IronConst.BIRD_APPEARANCE_PROB) {
+				Bird bird = new Bird(this);
+				addGameObject(bird, "bird");
+			}
 		}
 		
 		timeLeftForTurn -= deltaTime;

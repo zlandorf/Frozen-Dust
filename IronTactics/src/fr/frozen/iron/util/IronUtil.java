@@ -7,9 +7,14 @@ import java.io.File;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.util.ArrayList;
+import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.entities.IronUnit;
+import fr.frozen.iron.common.equipment.Weapon;
 import fr.frozen.iron.protocol.Protocol;
 
 public class IronUtil {
@@ -40,6 +45,40 @@ public class IronUtil {
 		return name;
 	}
 	
+	
+
+	public static int getDamage(IronUnit src, IronUnit dst, boolean meleeAttack) {
+		Weapon weapon = meleeAttack ? src.getMeleeWeapon() : src.getRangedWeapon();
+		if (weapon == null) return 0;
+		float damage = weapon.getDamage();
+		float armorValue = 0;
+		
+		System.out.print("base damage = "+damage);
+		
+		if (weapon.isMagical()) {
+			damage += damage * (float)(src.getStats().getIntelligence() / 10.0);
+		} else { //physical
+			if (meleeAttack) {
+				damage += damage * (float)(src.getStats().getStrength() / 10.0);
+			} else {
+				damage += damage * (float)(src.getStats().getAgility() / 10.0);
+			}
+		}
+		
+		if (dst.getShield() != null) {
+			armorValue += weapon.isMagical() ? dst.getShield().getMagicalArmor() :
+											   dst.getShield().getPhysicalArmor();
+		}
+		if (dst.getArmor() != null) {
+			armorValue += weapon.isMagical() ? dst.getArmor().getMagicalArmor() :
+											   dst.getArmor().getPhysicalArmor();
+		}
+		System.out.print(" addDamage="+damage+ "  armorvalue="+armorValue);
+		
+		damage -= damage * (float)(armorValue / 100.0);
+		System.out.println(" final damage = "+damage);
+		return (int)damage;
+	}
 	
 	public static String findOptionValue(String optionName) {
 		String option = null;
@@ -124,6 +163,129 @@ public class IronUtil {
 		}
 		return null;
 	}
+	
+	public static List<Vector2f> getHorizontalIntersections(IronWorld world, int x1, int y1, int x2, int y2, double angle) {
+		List<Vector2f> points = new ArrayList<Vector2f>();
+		
+		int Py = (int)(y1 / IronConst.TILE_HEIGHT);
+		if (y2 - y1 >= 0) Py ++;
+		Py *= IronConst.TILE_HEIGHT;
+
+		int nbIntersections = (int)(y2/ IronConst.TILE_HEIGHT) - (int)(y1 / IronConst.TILE_HEIGHT);
+		nbIntersections = Math.abs(nbIntersections);
+		
+		int side = 1;
+		if (y2 - y1 < 0) {
+			side = - side;
+		}
+		
+		points.add(new Vector2f(x1, y1));
+		
+		for (int i = 0; i <  nbIntersections; i++) {
+			Vector2f ref1 = new Vector2f(0, Py);
+			Vector2f ref2 =  new Vector2f(IronConst.MAP_WIDTH * IronConst.TILE_WIDTH - 1, Py);
+			
+			Vector2f P = IronUtil.getIntersectionPoint(new Vector2f(x1, y1), new Vector2f(x2, y2), ref1,ref2);
+			//P.setY(Py);//theres a bug where i get 255.99998 and it screws up the checkGrid part
+			Py += IronConst.TILE_HEIGHT * side;
+			
+			if (P == null) break;
+			points.add(P);
+		}
+		
+		points.add(new Vector2f(x2, y2));
+		
+		return points;
+	}
+	
+	
+	public static boolean checkGrid(IronWorld world, int x1, int y1, int x2, int y2) {
+		Vector2f A,B;
+		int Px, nbIntersections, squareX, squareY;
+		float tmpX, tmpY;
+		Vector2f vec = new Vector2f(x2 - x1, y2 - y1);
+		double angle = IronUtil.getAngle(vec, new Vector2f(1,0));
+		List<Vector2f> points = getHorizontalIntersections(world, x1, y1, x2, y2, angle);
+			
+		main : for (int i = 1; i < points.size(); i++) {
+			A = points.get(i - 1);
+			B = points.get(i);
+			
+			Px = (int)(A.getX() / IronConst.TILE_WIDTH);
+			if (B.getX() - A.getX() >= 0) Px ++;
+			Px *= IronConst.TILE_HEIGHT;
+			
+			nbIntersections = (int)(B.getX() / IronConst.TILE_WIDTH) - (int)(A.getX() / IronConst.TILE_WIDTH);
+			nbIntersections = Math.abs(nbIntersections);
+			
+			int side = 1;
+			if (B.getX() - A.getX() < 0) {
+				side = - side;
+			}
+			
+			tmpX = A.getX();
+			tmpY = A.getY();
+			
+			for (int j = 0; j < nbIntersections; j++) {
+				Vector2f P = null, ref1, ref2;
+				
+				while (P == null &&  Px >= 0 && Px < IronConst.MAP_WIDTH * IronConst.TILE_WIDTH) {
+					ref1 = new Vector2f(Px, 0);
+					ref2 =  new Vector2f(Px, IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT - 1);
+					P = IronUtil.getIntersectionPoint(A, B, ref1,ref2);
+					
+					//if (P != null)
+						//P.setX(Px);//theres a bug where i get 255.99998 and it screws up the checkGrid part
+					Px += IronConst.TILE_WIDTH * side;
+				}
+				
+				if (P == null) break;
+				
+				squareX =(int) Math.min(P.getX() / IronConst.TILE_WIDTH, tmpX / IronConst.TILE_WIDTH);
+				squareY =(int) Math.min(P.getY() / IronConst.TILE_HEIGHT, tmpY / IronConst.TILE_HEIGHT);
+				
+
+				if (P.getX() == tmpX && P.getY() == tmpY) {
+					tmpX = P.getX();
+					tmpY = P.getY();
+					continue;
+				}
+
+				tmpX = P.getX();
+				tmpY = P.getY();
+				
+				
+				if (squareX < 0 || squareX >= IronConst.MAP_WIDTH || squareY < 0 || squareY >= IronConst.MAP_HEIGHT)
+					break main;
+				
+				if (squareX == x1 / IronConst.TILE_WIDTH && squareY == y1 / IronConst.TILE_HEIGHT) continue;
+				if (squareX == x2 / IronConst.TILE_WIDTH && squareY == y2 / IronConst.TILE_HEIGHT) break main;
+				
+				if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
+					return false;
+				}
+				
+			}
+			
+			squareX =(int) Math.min(B.getX() / IronConst.TILE_WIDTH, tmpX / IronConst.TILE_WIDTH);
+			squareY =(int) Math.min(B.getY() / IronConst.TILE_HEIGHT, tmpY / IronConst.TILE_HEIGHT);
+			
+			if (squareX < 0 || squareX >= IronConst.MAP_WIDTH || squareY < 0 || squareY >= IronConst.MAP_HEIGHT)
+				break main;
+			
+			if (squareX == x1 / IronConst.TILE_WIDTH && squareY == y1 / IronConst.TILE_HEIGHT) continue;
+			if (squareX == x2 / IronConst.TILE_WIDTH && squareY == y2 / IronConst.TILE_HEIGHT) break main;
+			
+			if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
+				return false;
+			}
+		}//end for main
+		
+		return true;
+	}
+	
+	
+	
 	
 	public static double getAngle(Vector2f vec) { //returns angle between vec and (0,-1)
 		double angle = Math.atan2(vec.getY(), vec.getX()) * 57.2957795f;

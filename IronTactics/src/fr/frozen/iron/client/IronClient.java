@@ -23,7 +23,7 @@ import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
 import fr.frozen.iron.common.IronMap;
 import fr.frozen.iron.common.PlayerGameInfo;
 import fr.frozen.iron.common.entities.IronUnit;
-import fr.frozen.iron.common.weapon.WeaponManager;
+import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.client.BaseClient;
@@ -197,7 +197,7 @@ public class IronClient extends BaseClient {
 		List<IronUnit> list = new ArrayList<IronUnit>();
 		
 		int entityId = is.readInt();
-		int type, ownerId, meleeWeaponId, rangedWeaponId;
+		int type, ownerId, meleeWeaponId, rangedWeaponId, shieldId, armorId;
 		int x, y;
 		
 		while (entityId != -1) { //-1 is end of list
@@ -210,10 +210,14 @@ public class IronClient extends BaseClient {
 			IronUnit unit = IronUnit.getUnit(type, null, entityId, ownerId, x, y);
 			meleeWeaponId = is.readInt();
 			rangedWeaponId = is.readInt();
+			shieldId = is.readInt();
+			armorId = is.readInt();
 			
 			if (unit != null) {
-				unit.setMeleeWeapon(WeaponManager.getInstance().getWeapon(meleeWeaponId));
-				unit.setRangedWeapon(WeaponManager.getInstance().getWeapon(rangedWeaponId));
+				unit.setMeleeWeapon(EquipmentManager.getInstance().getWeapon(meleeWeaponId));
+				unit.setRangedWeapon(EquipmentManager.getInstance().getWeapon(rangedWeaponId));
+				unit.setShield(EquipmentManager.getInstance().getShield(shieldId));
+				unit.setArmor(EquipmentManager.getInstance().getArmor(armorId));
 				list.add(unit);
 			}
 

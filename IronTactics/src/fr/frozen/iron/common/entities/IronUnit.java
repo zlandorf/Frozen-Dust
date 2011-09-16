@@ -7,15 +7,18 @@ import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
 import fr.frozen.game.ISpriteManager;
 import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.equipment.Armor;
+import fr.frozen.iron.common.equipment.EquipmentManager;
+import fr.frozen.iron.common.equipment.RangedWeapon;
+import fr.frozen.iron.common.equipment.Weapon;
 import fr.frozen.iron.common.skills.MeleeAttack;
 import fr.frozen.iron.common.skills.RangedAttack;
 import fr.frozen.iron.common.skills.Skill;
-import fr.frozen.iron.common.weapon.Weapon;
-import fr.frozen.iron.common.weapon.WeaponManager;
 import fr.frozen.iron.util.IronConfig;
 import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronGL;
@@ -48,11 +51,13 @@ public class IronUnit extends GameObject implements Mover {
 	protected int type;
 	protected int ownerId;
 	
-	protected int hp;
-	protected int maxHp;
+	protected Weapon meleeWeapon = null;
+	protected Weapon rangedWeapon = null;
+	protected Armor shield = null;
+	protected Armor armor = null;
 	
-	protected Weapon meleeWeapon;
-	protected Weapon rangedWeapon;
+	
+	protected UnitStats stats;
 	
 	protected int movement;
 	protected int maxMovement;
@@ -64,6 +69,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	protected List<Skill> skills;
 
+	protected AnimationSequence animation = null;
 	protected ISprite teamColorSprite = null;
 	protected ISprite weaponSprite = null;
 	
@@ -73,6 +79,9 @@ public class IronUnit extends GameObject implements Mover {
 		this.type = type;
 		this.ownerId = ownerId;
 		this.world = world;
+		
+		stats = new UnitStats();
+		
 		skills = new ArrayList<Skill>();
 		addInitialSkills();
 		
@@ -80,7 +89,7 @@ public class IronUnit extends GameObject implements Mover {
 		movementCachePos[0] = movementCachePos[1] = -1;
 		movementCache = new ArrayList<int[]>();
 		
-		if (world != null) getStats();
+		if (world != null) findStatsFromXml();
 	}
 	
 	public static IronUnit getUnit(char letter, IronWorld world, int entId, int clientId, int x, int y) {
@@ -126,34 +135,31 @@ public class IronUnit extends GameObject implements Mover {
 
 	//TODO : implement in subclasses
 	protected void addInitialSkills() {
-		synchronized (skills) {
-			
-			
-		}
-		/*skills.add(MeleeAttack.getInstance());
-		skills.add(RangedAttack.getInstance());*/
 	}
 	
 	public void onEndTurn() {
 		played = true;
 	}
 	
+	public UnitStats getStats() {
+		return stats;
+	}
+	
 	public int getHp() {
-		return hp;
+		return stats.getHp();
 	}
 	
 	public int getMaxHp() {
-		return maxHp;
+		return stats.getMaxHp();
 	}
 
 	public void setMaxHp(int val) {
-		maxHp = val;
+		stats.setMaxHp(val);
 	}
 	
 	public void setHp(int val) {
-		hp = Math.max(0, Math.min(val, maxHp));
-		//System.out.println("hp = "+hp);
-		if (hp <= 0) {
+		stats.setHp(val);
+		if (stats.getHp() <= 0) {
 			onDeath();
 		}
 	}
@@ -203,15 +209,31 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
+	@Override
+	public void update(float deltaTime) {
+		if (animation != null && !isDead()) {
+			animation.update(deltaTime);
+			_sprite = animation.getCurrentSprite();
+		}
+	}
+	
 	public void findSprite() {
+		
 		String spriteName = typeNames[type]+"_"+getRaceStr();
-		setSprite(ISpriteManager.getInstance().getSprite(spriteName));
+		if (_spriteManager.isSpriteLoaded(spriteName)) {
+			setSprite(ISpriteManager.getInstance().getSprite(spriteName));
+		} else {
+			animation = _spriteManager.getAnimationSequence(spriteName);
+			if (animation != null) {
+				animation.start();
+			}
+		}
 		
 		String teamColorSpriteName = typeNames[type]+"_"+getRaceStr()+"_color";
-		if (ISpriteManager.getInstance().isSpriteLoaded(teamColorSpriteName)) {
-			teamColorSprite = ISpriteManager.getInstance().getSprite(teamColorSpriteName);
+		if (_spriteManager.isSpriteLoaded(teamColorSpriteName)) {
+			teamColorSprite = _spriteManager.getSprite(teamColorSpriteName);
 		} else {
-			teamColorSprite = ISpriteManager.getInstance().getSprite(typeNames[type]+"_color");
+			teamColorSprite = _spriteManager.getSprite(typeNames[type]+"_color");
 		}
 		
 		if (teamColorSprite != null) {
@@ -233,7 +255,7 @@ public class IronUnit extends GameObject implements Mover {
 		return IronUtil.getRaceStr(world.getContext().getPlayerInfo(ownerId).getRace());
 	}
 	
-	public void getStats() {
+	public void findStatsFromXml() {
 		//TODO throw exception if problem ?!
 		XMLParser ic = IronConfig.getIronXMLParser();
 		String racestr = getRaceStr();
@@ -244,19 +266,42 @@ public class IronUnit extends GameObject implements Mover {
 			return;
 		}
 		
-		hp = maxHp = Integer.parseInt(ic.getAttributeValue(base, "maxhp"));
+		int maxHp = Integer.parseInt(ic.getAttributeValue(base, "maxhp"));
+		int strength = Integer.parseInt(ic.getAttributeValue(base, "strength"));
+		int agility = Integer.parseInt(ic.getAttributeValue(base, "agility"));
+		int intelligence = Integer.parseInt(ic.getAttributeValue(base, "intelligence"));
+		int maxMana = Integer.parseInt(ic.getAttributeValue(base, "maxmana"));
+		stats = new UnitStats(maxHp, maxMana, strength, agility, intelligence);
+		
 		movement = maxMovement = IronConst.MOVE_COST_DEFAULT * Integer.parseInt(ic.getAttributeValue(base, "movement"));
 		
 		if (meleeWeapon == null) {
 			String weaponName = ic.getAttributeValue(base, "meleeweapon");
 			if (weaponName != null && !weaponName.equals(""))
-				meleeWeapon = WeaponManager.getInstance().getWeapon(weaponName);
+				setMeleeWeapon(EquipmentManager.getInstance().getWeapon(weaponName));
 		}
 		
 		if (rangedWeapon == null) {
 			String weaponName = ic.getAttributeValue(base, "rangedweapon");
 			if (weaponName != null && !weaponName.equals("")) {
-				rangedWeapon = WeaponManager.getInstance().getWeapon(weaponName);
+				setRangedWeapon(EquipmentManager.getInstance().getWeapon(weaponName));
+			}
+		}
+		
+		if (shield == null) {
+			String shieldName = ic.getAttributeValue(base, "shield");
+			if (shieldName != null && !shieldName.equals("")) {
+				setShield(EquipmentManager.getInstance().getShield(shieldName));
+			}
+		}
+		
+		if (armor == null) {
+			String armorName = ic.getAttributeValue(base, "armor");
+			if (armorName != null && !armorName.equals("")) {
+				setArmor(EquipmentManager.getInstance().getArmor(armorName));
+			}
+			if (armor == null) {
+				System.out.println("armor not found "+armorName);
 			}
 		}
 	}
@@ -266,7 +311,7 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public boolean isDead() {
-		return hp <= 0;
+		return stats.getHp() <= 0;
 	}
 	
 	public void setPlayed(boolean val) {
@@ -296,11 +341,27 @@ public class IronUnit extends GameObject implements Mover {
 	
 	public void setWorld(IronWorld world) {
 		this.world = world;
-		if (world != null) getStats();
+		if (world != null) findStatsFromXml();
 	}
 
 	public int getId() {
 		return id;
+	}
+	
+	public Armor getShield() {
+		return shield;
+	}
+	
+	public Armor getArmor() {
+		return armor;
+	}
+	
+	public void setShield(Armor shield) {
+		this.shield = shield;
+	}
+	
+	public void setArmor(Armor armor) {
+		this.armor = armor;
 	}
 	
 	public Weapon getMeleeWeapon() {
@@ -332,7 +393,9 @@ public class IronUnit extends GameObject implements Mover {
 	
 	public void setRangedWeapon(Weapon w) {
 		rangedWeapon = w;
-		setWeaponAux(w, RangedAttack.getInstance());
+		if (rangedWeapon instanceof RangedWeapon) {
+			setWeaponAux(w, RangedAttack.getInstance());
+		}
 	}
 
 	public void setId(int id) {
@@ -370,6 +433,18 @@ public class IronUnit extends GameObject implements Mover {
 		}
 		byteArray.write(IronUtil.intToByteArray(rangedWeaponId));
 		
+		int shieldId = -1;
+		if (shield != null) {
+			shieldId = shield.getId();
+		}
+		byteArray.write(IronUtil.intToByteArray(shieldId));
+		
+		int armorId = -1;
+		if (armor != null) {
+			armorId = armor.getId();
+		}
+		byteArray.write(IronUtil.intToByteArray(armorId));
+		
 		return byteArray.toByteArray();
 	}
 	
@@ -392,27 +467,6 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
-	protected void drawHealthBar(int x, int y) {
-		IronGL.drawRect(x, y,IronConst.TILE_WIDTH, 9,
-				0.1f, 0.1f, 0.1f, 1f);
-		
-		IronGL.drawRect(x+1, y+1,IronConst.TILE_WIDTH - 2, 7,
-				0.5f, 0.5f, 0.5f, 1f);
-		
-		IronGL.drawRect(x+2, y+2,IronConst.TILE_WIDTH - 4, 5,
-				0.1f, 0.1f, 0.1f, 1f);
-		
-		
-		IronGL.drawRect(x+3, y+3, IronConst.TILE_WIDTH - 6, 3,
-				0f, 0f, 0f, 1f);
-		
-		float percentHealthLeft = (float)hp / maxHp;
-		
-		float healthWidth = percentHealthLeft * (IronConst.TILE_WIDTH - 6);
-		IronGL.drawRect(x+3, y+3, healthWidth, 3,
-				1 - percentHealthLeft, percentHealthLeft, 0f, 1f);
-	}
-	
 	public void renderStatusBars(float deltaTime) {
 		if (isDead() || _sprite == null) return;
 		
@@ -420,7 +474,34 @@ public class IronUnit extends GameObject implements Mover {
 		int x = (int)(getX() * IronConst.TILE_WIDTH);
 		y -= 11;
 		if (y < 0) y = 0;
-		drawHealthBar(x,y);
+		
+		int height = 8 + (getStats().getMaxMana() > 0 ? 3 : 0);
+		
+		IronGL.drawRect(x, y,IronConst.TILE_WIDTH, height,
+				0.1f, 0.1f, 0.1f, 1f);
+		
+		IronGL.drawRect(x+1, y+1,IronConst.TILE_WIDTH - 2, height - 2,
+				0.5f, 0.5f, 0.5f, 1f);
+		
+		IronGL.drawRect(x+2, y+2,IronConst.TILE_WIDTH - 4, height - 4,
+				0.1f, 0.1f, 0.1f, 1f);
+		
+		
+		IronGL.drawRect(x+3, y+3, IronConst.TILE_WIDTH - 6, height - 6,
+				0f, 0f, 0f, 1f);
+		
+		float percentHealthLeft = (float)stats.getHp() / stats.getMaxHp();
+		
+		float healthWidth = percentHealthLeft * (IronConst.TILE_WIDTH - 6);
+		IronGL.drawRect(x+3, y+3, healthWidth, 2,
+				1 - percentHealthLeft, percentHealthLeft, 0f, 1f);
+		
+		if (getStats().getMaxMana() > 0) {
+			float percentManaLeft = (float)stats.getMana() / stats.getMaxMana();
+			float manaWidth = percentManaLeft * (IronConst.TILE_WIDTH - 6);
+			IronGL.drawRect(x+3, y+6, manaWidth, 2,	0x2ea4ff);
+		}
+		
 	}
 	
 	public void renderTileGfx(float deltaTime) {

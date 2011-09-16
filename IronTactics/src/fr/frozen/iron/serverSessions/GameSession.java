@@ -233,7 +233,10 @@ public class GameSession extends BaseGameController implements GameContext {
 			x = is.readInt();
 			y = is.readInt();
 			Skill skill = Skill.getSkill(skillType);
-			handleSkill(unitSrcId, skill, x, y);
+			IronUnit unitSrc = world.getUnitFromId(unitSrcId);
+			if (unitSrc.getSkills().contains(skill)) {
+				handleSkill(unitSrcId, skill, x, y);
+			}
 			break;
 		default :
 			System.out.println("ACTION NOT SUPPORTED :"+ actionType);

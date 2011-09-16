@@ -5,7 +5,7 @@ import java.util.List;
 
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
-import fr.frozen.iron.common.weapon.Weapon;
+import fr.frozen.iron.common.equipment.Weapon;
 import fr.frozen.iron.util.IronUtil;
 
 public class MeleeAttack extends Skill {
@@ -45,6 +45,14 @@ public class MeleeAttack extends Skill {
 	}
 
 	@Override
+	public void executeCommon(IronWorld world, int srcId, int x, int y,
+			List<int[]> values) {
+		super.executeCommon(world, srcId, x, y, values);
+		IronUnit src = world.getUnitFromId(srcId);
+		src.getStats().setMana(src.getStats().getMana() - src.getMeleeWeapon().getManaCost());
+	}
+	
+	@Override
 	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		List <int[]> res = new ArrayList<int[]>();
@@ -53,8 +61,7 @@ public class MeleeAttack extends Skill {
 		
 		if (dst == null || src == null) return null;
 		
-		int damage = src.getMeleeWeapon().getDamage();
-
+		int damage = IronUtil.getDamage(src, dst, true);
 		res.add(new int[]{dst.getId(), - damage});
 		
 		executeCommon(world, srcId, x, y, res);

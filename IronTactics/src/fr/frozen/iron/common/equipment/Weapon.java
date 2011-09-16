@@ -1,4 +1,4 @@
-package fr.frozen.iron.common.weapon;
+package fr.frozen.iron.common.equipment;
 
 public class Weapon {
 
@@ -8,21 +8,23 @@ public class Weapon {
 	protected int maxRange;
 	protected int minRange;
 	protected boolean cutWood;
-	protected boolean displayIdle;
+	protected boolean magical;
+	protected int manaCost;
 	
-	public Weapon(String name, int id, int damage, int maxRange, int minRange, boolean cutWood, boolean displayIdle) {
+	public Weapon(String name, int id, int damage, int maxRange, int minRange, boolean cutWood, boolean magical, int manaCost) {
 		this.name = name;
 		this.damage = damage;
 		this.id = id;
 		this.cutWood = cutWood;
-		this.displayIdle = displayIdle;
 		this.maxRange = maxRange;
 		this.minRange = minRange;
+		this.magical = magical;
+		this.manaCost = manaCost;
 	}
 	
 	
 	public String toString() {
-		return "["+id+"] "+name+"  damage ="+damage+"  range=["+minRange+ ","+maxRange+"] displayIde ? "+displayIdle;
+		return "["+id+"] "+name+"  damage ="+damage+"  range=["+minRange+ ","+maxRange+"]";
 	}
 	
 	public int getId() {
@@ -82,13 +84,27 @@ public class Weapon {
 		return name;
 	}
 
-
-	public boolean isDisplayIdle() {
-		return displayIdle;
+	public boolean isPhysical() {
+		return !isMagical();
+	}
+	
+	
+	public boolean isMagical() {
+		return magical;
 	}
 
 
-	public void setDisplayIdle(boolean displayIdle) {
-		this.displayIdle = displayIdle;
+	public void setMagical(boolean magical) {
+		this.magical = magical;
+	}
+
+
+	public int getManaCost() {
+		return manaCost;
+	}
+
+
+	public void setManaCost(int manaCost) {
+		this.manaCost = manaCost;
 	}
 }

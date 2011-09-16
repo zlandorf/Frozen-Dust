@@ -11,6 +11,7 @@ public abstract class Skill {
 	
 	public static final int MELEE_ATTACK = 0;
 	public static final int RANGED_ATTACK = 1;
+	public static final int HEAL = 2;
 	
 	public static Skill getSkill(int type) {
 		switch (type) {
@@ -18,6 +19,8 @@ public abstract class Skill {
 			return MeleeAttack.getInstance();
 		case RANGED_ATTACK :
 			return RangedAttack.getInstance();
+		case HEAL :
+			return Heal.getInstance();
 		}
 		return null;
 	}
@@ -71,11 +74,13 @@ public abstract class Skill {
 		
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
-			if (target == null) continue;
+			if (target == null) {
+				System.out.println("target is null");
+				continue;
+			}
 			if (target.isDead()) {
 				target.setCorpseSprite();
 			}
-			
 			damage = new DamageParticle(world, target.getX() * IronConst.TILE_WIDTH,
 											   target.getY() * IronConst.TILE_WIDTH,
 											   couple[1]);

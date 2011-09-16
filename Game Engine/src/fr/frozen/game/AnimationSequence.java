@@ -12,6 +12,7 @@ public class AnimationSequence {
 	private boolean _loop;
 	private boolean _animating;
 	private long _lastTime;
+	private boolean _animationEnded;
 	
 	public AnimationSequence(AnimationSequence sequence) {
 		this._name = sequence._name;
@@ -23,6 +24,7 @@ public class AnimationSequence {
 		this._loop = sequence._loop;
 		this._animating = sequence._animating;
 		this._lastTime = sequence._lastTime;
+		this._animationEnded = sequence._animationEnded;
 	}
 	
 	public AnimationSequence(String name, boolean loop) {
@@ -31,6 +33,7 @@ public class AnimationSequence {
 		_currentFrame = 0;
 		_loop = loop;
 		_animating = false;
+		_animationEnded = false;
 	}
 	
 	public List<AnimationFrame> getFrames() {
@@ -64,6 +67,7 @@ public class AnimationSequence {
 		_lastTime = System.currentTimeMillis();
 		_currentFrame = 0;
 		_animating = true;
+		_animationEnded = false;
 	}
 	
 	public boolean animating() {
@@ -72,6 +76,11 @@ public class AnimationSequence {
 	
 	public void stop() {
 		_animating = false;
+		_animationEnded = true;
+	}
+	
+	public boolean isAnimationEnded() {
+		return _animationEnded;
 	}
 	
 	public void update(float deltaTime) {

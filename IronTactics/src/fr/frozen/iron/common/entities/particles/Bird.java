@@ -54,8 +54,7 @@ public class Bird extends AnimatedObject {
 		
 		if (getX() <=  -32 || getX() > 32 + IronConst.MAP_WIDTH * IronConst.TILE_WIDTH 
 			|| getY() <=  -32 || getY() > 32 + IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT) {
-			//_gameState.removeGameObject(this);
-			init();
+			_gameState.removeGameObject(this);
 		}
 	}
 	

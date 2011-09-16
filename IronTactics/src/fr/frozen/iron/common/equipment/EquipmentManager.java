@@ -1,0 +1,181 @@
+package fr.frozen.iron.common.equipment;
+
+import java.util.Hashtable;
+
+import org.w3c.dom.NamedNodeMap;
+import org.w3c.dom.Node;
+
+import fr.frozen.iron.util.IronConfig;
+import fr.frozen.util.XMLParser;
+
+public class EquipmentManager {
+	private static EquipmentManager instance = new EquipmentManager();
+
+	public static EquipmentManager getInstance() {
+		return instance;
+	}
+	
+	private Hashtable<String, Weapon> weaponsByName;
+	private Hashtable<Integer, Weapon> weaponsById;
+
+	private Hashtable<String, Armor> shieldsByName;
+	private Hashtable<Integer, Armor> shieldsById;
+
+	private Hashtable<String, Armor> armorsByName;
+	private Hashtable<Integer, Armor> armorsById;
+
+	
+	private EquipmentManager() {
+		weaponsById = new Hashtable<Integer, Weapon>();
+		weaponsByName = new Hashtable<String, Weapon>();
+		
+		shieldsById = new Hashtable<Integer, Armor>();
+		shieldsByName = new Hashtable<String, Armor>();
+
+		armorsById = new Hashtable<Integer, Armor>();
+		armorsByName = new Hashtable<String, Armor>();
+		
+		findWeaponsInXml(IronConfig.getIronXMLParser());
+		findShieldsAndArmorsInXml(IronConfig.getIronXMLParser());
+	}
+	
+	public Weapon getWeapon(int id) {
+		if (id == -1) return null;
+		return weaponsById.get(id);
+	}
+	
+	public Weapon getWeapon(String name) {
+		if (name.equals("none")) return null;
+		return weaponsByName.get(name);
+	}
+	
+	public Armor getShield(int id) {
+		if (id == -1) return null;
+		return shieldsById.get(id);
+	}
+	
+	public Armor getShield(String name) {
+		if (name.equals("none")) return null;
+		return shieldsByName.get(name);
+	}
+	
+	public Armor getArmor(int id) {
+		if (id == -1) return null;
+		return armorsById.get(id);
+	}
+	
+	public Armor getArmor(String name) {
+		if (name.equals("none")) return null;
+		return armorsByName.get(name);
+	}
+	
+	private void findShieldsAndArmorsInXml(XMLParser parser) {
+		Node weaponsNode = parser.getElement("armors");
+		NamedNodeMap attr;
+		Node tmp;
+		
+		String []attrNames = {"name","id","magicres","physres"};
+		String []values = new String[attrNames.length];
+		
+		if (weaponsNode.hasChildNodes()) {
+			main : for (int i = 0 ; i < weaponsNode.getChildNodes().getLength(); i++) {
+				Node node = weaponsNode.getChildNodes().item(i);
+				if (node.getNodeType() == Node.TEXT_NODE || !node.hasAttributes()) continue;
+				
+				attr = node.getAttributes();
+				for (int j = 0; j < attrNames.length; j++) {
+					tmp = attr.getNamedItem(attrNames[j]);
+					if (tmp == null) continue main;
+					values[j] = tmp.getNodeValue();
+				}
+				
+				String name = values[0];
+				int id = Integer.parseInt(values[1]);
+				float magicres = Float.parseFloat(values[2]);
+				float physres = Float.parseFloat(values[3]);
+
+				Armor armor = new Armor(id, name, physres, magicres);
+				
+				if (node.getNodeName().equals("shield")) {
+					shieldsById.put(id, armor);
+					shieldsByName.put(name,armor);
+					System.out.println("adding shield "+name);
+				} else {
+					armorsById.put(id, armor);
+					armorsByName.put(name,armor);
+					System.out.println("adding armor "+name);
+				}
+			}
+		}
+	}
+	
+	
+	private void findWeaponsInXml(XMLParser parser) {
+		Node weaponsNode = parser.getElement("weapons");
+		NamedNodeMap attr;
+		
+		String []attrNames = {"name","id","damage","maxrange","minrange","cutwood"};
+		String []values = new String[attrNames.length];
+		
+		if (weaponsNode.hasChildNodes()) {
+			main : for (int i = 0 ; i < weaponsNode.getChildNodes().getLength(); i++) {
+				Node node = weaponsNode.getChildNodes().item(i);
+				if (node.getNodeType() == Node.TEXT_NODE || !node.hasAttributes()) continue;
+				
+				attr = node.getAttributes();
+				for (int j = 0; j < attrNames.length; j++) {
+					node = attr.getNamedItem(attrNames[j]);
+					if (node == null) continue main;
+					values[j] = node.getNodeValue();
+				}
+				
+				String name = values[0];
+				int id = Integer.parseInt(values[1]);
+				int damage = Integer.parseInt(values[2]);
+				int maxrange = Integer.parseInt(values[3]);
+				int minrange = Integer.parseInt(values[4]);
+				boolean cutTrees = Integer.parseInt(values[5]) == 1;
+				
+				node = attr.getNamedItem("ranged");
+				boolean ranged = false;
+				if (node != null) {
+					ranged = Integer.parseInt(node.getNodeValue()) == 1;
+				}
+
+				String projectileName = null;
+				if (ranged) {
+					node = attr.getNamedItem("projectile");
+					if (node != null) {
+						projectileName = node.getNodeValue();
+					}
+				}
+				
+				node = attr.getNamedItem("magical");
+				boolean magical = false;
+				if (node != null) {
+					magical = Integer.parseInt(node.getNodeValue()) == 1;
+				}
+
+				int manaCost = 0;
+				if (magical) {
+					node = attr.getNamedItem("manacost");
+					if (node != null) {
+						manaCost = Integer.parseInt(node.getNodeValue());
+					}
+				}
+				
+				Weapon weapon;
+				if (ranged) {
+					weapon = new RangedWeapon(name, id, damage, maxrange, minrange, cutTrees, projectileName, magical, manaCost);
+				} else {
+					weapon = new Weapon(name, id, damage, maxrange, minrange, cutTrees, magical, manaCost);
+				}
+				
+				weaponsById.put(id, weapon);
+				weaponsByName.put(name, weapon);
+				
+				System.out.println("adding weapon "+name);
+			}
+		}
+	}
+}

@@ -114,6 +114,13 @@ public class IronWorld extends GameState {
 		}
 	}
 	
+	public void update(float deltaTime) {
+		super.update(deltaTime);
+		for (IronUnit unit : getUnits()) {
+			unit.update(deltaTime);
+		}
+	}
+	
 	public void render(float deltaTime, IronUnit selectedUnit) {
 		if (map != null) {
 			map.renderTiles(deltaTime);

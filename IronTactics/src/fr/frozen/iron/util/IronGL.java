@@ -4,8 +4,8 @@ import org.lwjgl.opengl.GL11;
 
 public class IronGL {
 
-	public int[] getRgb(int color) {
-		int [] rgb = new int[3];
+	public static float[] getRgb(int color) {
+		float [] rgb = new float[3];
 		
 		rgb[2] = color & 0xff;//blue
 		rgb[2] /= 0xff;
@@ -17,8 +17,12 @@ public class IronGL {
 		color >>= 8;
 		rgb[0] = color & 0xff;//red
 		rgb[0] /= 0xff;
-		
 		return rgb;
+	}
+	
+	public static void drawRect(float x, float y, float w, float h, int icolor) {
+		float []rgb = getRgb(icolor);
+		drawRect(x, y, w, h, rgb[0], rgb[1],  rgb[2], 1);
 	}
 	
 	public static void drawRect(float x, float y, float w, float h, float r, float g, float b, float a) {

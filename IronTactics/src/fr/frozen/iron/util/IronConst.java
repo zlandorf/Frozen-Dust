@@ -19,4 +19,5 @@ public class IronConst {
 	
 	public static final int INTRO_DURATION = 1;//s
 
+	public static final double BIRD_APPEARANCE_PROB = 0.0001;
 }
