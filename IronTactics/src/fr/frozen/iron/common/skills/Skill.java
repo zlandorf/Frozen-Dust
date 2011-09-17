@@ -27,6 +27,10 @@ public abstract class Skill {
 			return Heal.getInstance();
 		case BLIND_SHOT :
 			return BlindShot.getInstance();
+		case SHIELD_BLOCK :
+			return ShieldBlock.getInstance();
+		default :
+			System.out.println("Skill not found");
 		}
 		
 		return null;

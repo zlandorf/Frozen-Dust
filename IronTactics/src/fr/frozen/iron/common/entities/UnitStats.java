@@ -11,15 +11,31 @@ public class UnitStats {
 	protected int agility = 0;
 	protected int intelligence = 0;
 	
+	protected int baseStrength = 0;
+	protected int baseAgility = 0;
+	protected int baseIntelligence = 0;
+	
+	protected int maxMovement;
+	protected int movement;
+	
 	public UnitStats() {
 	}
 	
-	public UnitStats(int maxHp, int maxMana, int strength, int agility, int intelligence) {
+	public UnitStats(int maxHp, int maxMana, int strength, int agility, int intelligence, int movement) {
 		this.maxHp = this.hp = maxHp;
-		this.strength = strength;
-		this.agility = agility;
-		this.intelligence = intelligence;
+		this.baseStrength = this.strength = strength;
+		this.baseAgility = this.agility = agility;
+		this.baseIntelligence = this.intelligence = intelligence;
 		this.maxMana = this.mana = maxMana;
+		
+		this.maxMovement = this.movement = movement;
+	}
+	
+	public void reInit() {
+		movement = maxMovement;
+		strength = baseStrength;
+		agility = baseAgility;
+		intelligence = baseIntelligence;
 	}
 
 	public int getMaxHp() {
@@ -73,7 +89,23 @@ public class UnitStats {
 	public int getMana() {
 		return mana;
 	}
+	
+	public int getMaxMovement() {
+		return maxMovement;
+	}
 
+	public int getMovement() {
+		return movement;
+	}
+	
+	public void setMovement(int val) {
+		movement = Math.max(0, Math.min(val, maxMovement));
+	}
+	
+	public void setMaxMovement(int val) {
+		maxMovement = val;
+	}
+	
 	public void setMana(int val) {
 		if (maxMana >= 0)
 			this.mana = Math.max(0, Math.min(val, this.maxMana));

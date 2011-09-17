@@ -1,6 +1,6 @@
 package fr.frozen.iron.common.equipment;
 
-public class Weapon {
+public class Weapon implements Cloneable {
 
 	protected String name;
 	protected int id;
@@ -11,17 +11,24 @@ public class Weapon {
 	protected boolean magical;
 	protected int manaCost;
 	
+	protected int baseDamage;
+	protected int baseMaxRange;
+	protected int baseMinRange;
+	protected boolean baseCutWood;
+	protected boolean baseMagical;
+	protected int baseManaCost;
+	
 	public Weapon(String name, int id, int damage, int maxRange, int minRange, boolean cutWood, boolean magical, int manaCost) {
 		this.name = name;
-		this.damage = damage;
 		this.id = id;
-		this.cutWood = cutWood;
-		this.maxRange = maxRange;
-		this.minRange = minRange;
-		this.magical = magical;
-		this.manaCost = manaCost;
+
+		this.baseDamage = this.damage = damage;
+		this.baseCutWood = this.cutWood = cutWood;
+		this.baseMaxRange = this.maxRange = maxRange;
+		this.baseMinRange = this.minRange = minRange;
+		this.baseMagical = this.magical = magical;
+		this.baseManaCost = this.manaCost = manaCost;
 	}
-	
 	
 	public String toString() {
 		return "["+id+"] "+name+"  damage ="+damage+"  range=["+minRange+ ","+maxRange+"]";
@@ -31,6 +38,24 @@ public class Weapon {
 		return id;
 	}
 
+	public void reInit() {
+		damage = baseDamage; 
+		cutWood = baseCutWood;
+		maxRange = baseMaxRange;
+		minRange = baseMinRange;
+		magical = baseMagical;
+		manaCost = baseManaCost;
+	}
+	
+	@Override
+	public Object clone() {
+		try {
+			Object o = super.clone();
+			return o;
+		} catch (CloneNotSupportedException e) {
+			return null;
+		}
+	}
 
 	public void setId(int id) {
 		this.id = id;

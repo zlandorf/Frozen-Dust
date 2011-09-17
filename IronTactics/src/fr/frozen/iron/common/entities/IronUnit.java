@@ -5,8 +5,6 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
-import org.lwjgl.util.vector.Vector2f;
-
 import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
@@ -16,6 +14,7 @@ import fr.frozen.iron.common.entities.particles.ManaParticle;
 import fr.frozen.iron.common.equipment.Armor;
 import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.common.equipment.RangedWeapon;
+import fr.frozen.iron.common.equipment.UnitEquipment;
 import fr.frozen.iron.common.equipment.Weapon;
 import fr.frozen.iron.common.skills.MeleeAttack;
 import fr.frozen.iron.common.skills.RangedAttack;
@@ -55,18 +54,9 @@ public class IronUnit extends GameObject implements Mover {
 	protected int type;
 	protected int ownerId;
 	
-	protected Weapon meleeWeapon = null;
-	protected Weapon rangedWeapon = null;
-	protected Armor shield = null;
-	protected Armor armor = null;
-	
 	
 	protected UnitStats stats;
-	
-	protected int movement;
-	protected int maxMovement;
-	
-	protected Vector2f wantedPos = null;
+	protected UnitEquipment equipment;
 	
 	protected boolean selected = false;
 	protected boolean played = true;
@@ -86,6 +76,7 @@ public class IronUnit extends GameObject implements Mover {
 		this.world = world;
 		
 		stats = new UnitStats();
+		equipment = new UnitEquipment();
 		
 		skills = new ArrayList<Skill>();
 		addInitialSkills();
@@ -143,13 +134,17 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public void onEndTurn() {
-		if (played)
+		if (played || hasMoved())
 			playedLastTurn = true;
 		played = true;
 	}
 	
 	public UnitStats getStats() {
 		return stats;
+	}
+	
+	public UnitEquipment getEquipment() {
+		return equipment;
 	}
 	
 	public int getHp() {
@@ -172,11 +167,11 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public boolean hasMoved() {
-		return movement < maxMovement;
+		return getStats().getMovement() < getStats().getMaxMovement();
 	}
 	
 	public int getMaxMovement() {
-		return maxMovement;
+		return getStats().getMaxMovement();
 	}
 	
 	public void onDeath() {
@@ -207,8 +202,9 @@ public class IronUnit extends GameObject implements Mover {
 			}
 		}
 		played = isDead();
-		movement = maxMovement;
 		playedLastTurn = false;
+		getStats().reInit();
+		getEquipment().reInit();
 	}
 	
 	public List<Skill> getSkills() {
@@ -219,7 +215,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	public void addSkill(Skill s) {
 		synchronized (skills) {
-			skills.add(s);
+			skills.add(0, s);
 		}
 	}
 	
@@ -233,9 +229,10 @@ public class IronUnit extends GameObject implements Mover {
 		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(null);
 		_pos.set(x, y);
 		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(this);
-		movement = Math.max(0, movement - cost);
 		
-		if (movement == 0) {
+		getStats().setMovement(getStats().getMovement() - cost);
+		
+		if (getStats().getMovement() == 0) {
 			setPlayed(true);
 		}
 	}
@@ -279,7 +276,7 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public int getMovement() {
-		return movement;
+		return getStats().getMovement();
 	}
 	
 	protected String getRaceStr() {
@@ -302,37 +299,33 @@ public class IronUnit extends GameObject implements Mover {
 		int agility = Integer.parseInt(ic.getAttributeValue(base, "agility"));
 		int intelligence = Integer.parseInt(ic.getAttributeValue(base, "intelligence"));
 		int maxMana = Integer.parseInt(ic.getAttributeValue(base, "maxmana"));
-		stats = new UnitStats(maxHp, maxMana, strength, agility, intelligence);
-		
-		movement = maxMovement = IronConst.MOVE_COST_DEFAULT * Integer.parseInt(ic.getAttributeValue(base, "movement"));
-		
-		if (meleeWeapon == null) {
+		int maxMovement = IronConst.MOVE_COST_DEFAULT * Integer.parseInt(ic.getAttributeValue(base, "movement"));
+		stats = new UnitStats(maxHp, maxMana, strength, agility, intelligence, maxMovement);
+
+		if (equipment.getMeleeWeapon() == null) {
 			String weaponName = ic.getAttributeValue(base, "meleeweapon");
 			if (weaponName != null && !weaponName.equals(""))
 				setMeleeWeapon(EquipmentManager.getInstance().getWeapon(weaponName));
 		}
 		
-		if (rangedWeapon == null) {
+		if (equipment.getRangedWeapon() == null) {
 			String weaponName = ic.getAttributeValue(base, "rangedweapon");
 			if (weaponName != null && !weaponName.equals("")) {
 				setRangedWeapon(EquipmentManager.getInstance().getWeapon(weaponName));
 			}
 		}
 		
-		if (shield == null) {
+		if (equipment.getShield() == null) {
 			String shieldName = ic.getAttributeValue(base, "shield");
 			if (shieldName != null && !shieldName.equals("")) {
 				setShield(EquipmentManager.getInstance().getShield(shieldName));
 			}
 		}
 		
-		if (armor == null) {
+		if (equipment.getArmor() == null) {
 			String armorName = ic.getAttributeValue(base, "armor");
 			if (armorName != null && !armorName.equals("")) {
 				setArmor(EquipmentManager.getInstance().getArmor(armorName));
-			}
-			if (armor == null) {
-				System.out.println("armor not found "+armorName);
 			}
 		}
 	}
@@ -380,31 +373,31 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public Armor getShield() {
-		return shield;
+		return getEquipment().getShield();
 	}
 	
 	public Armor getArmor() {
-		return armor;
+		return getEquipment().getArmor();
 	}
 	
 	public void setShield(Armor shield) {
-		this.shield = shield;
+		getEquipment().setShield(shield);
 	}
 	
 	public void setArmor(Armor armor) {
-		this.armor = armor;
+		getEquipment().setArmor(armor);
 	}
 	
 	public Weapon getMeleeWeapon() {
-		return meleeWeapon;
+		return getEquipment().getMeleeWeapon();
 	}
 	
 	public Weapon getRangedWeapon() {
-		return rangedWeapon;
+		return getEquipment().getRangedWeapon();
 	}
 
 	public void setMeleeWeapon(Weapon w) {
-		meleeWeapon = w;
+		getEquipment().setMeleeWeapon(w);
 		setWeaponAux(w, MeleeAttack.getInstance());
 	}
 	
@@ -423,8 +416,8 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public void setRangedWeapon(Weapon w) {
-		rangedWeapon = w;
-		if (rangedWeapon instanceof RangedWeapon) {
+		getEquipment().setRangedWeapon(w);
+		if (w instanceof RangedWeapon) {
 			setWeaponAux(w, RangedAttack.getInstance());
 		}
 	}
@@ -453,26 +446,26 @@ public class IronUnit extends GameObject implements Mover {
 		byteArray.write(IronUtil.intToByteArray((int)_pos.y));
 		
 		int meleeWeaponId = -1;
-		if (meleeWeapon != null) {
-			meleeWeaponId = meleeWeapon.getId();
+		if (getMeleeWeapon() != null) {
+			meleeWeaponId = getMeleeWeapon().getId();
 		}
 		byteArray.write(IronUtil.intToByteArray(meleeWeaponId));
 		
 		int rangedWeaponId = -1;
-		if (rangedWeapon != null) {
-			rangedWeaponId = rangedWeapon.getId();
+		if (getRangedWeapon() != null) {
+			rangedWeaponId = getRangedWeapon().getId();
 		}
 		byteArray.write(IronUtil.intToByteArray(rangedWeaponId));
 		
 		int shieldId = -1;
-		if (shield != null) {
-			shieldId = shield.getId();
+		if (getShield() != null) {
+			shieldId = getShield().getId();
 		}
 		byteArray.write(IronUtil.intToByteArray(shieldId));
 		
 		int armorId = -1;
-		if (armor != null) {
-			armorId = armor.getId();
+		if (getArmor() != null) {
+			armorId = getArmor().getId();
 		}
 		byteArray.write(IronUtil.intToByteArray(armorId));
 		

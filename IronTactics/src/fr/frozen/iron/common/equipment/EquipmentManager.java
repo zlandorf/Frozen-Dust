@@ -41,32 +41,57 @@ public class EquipmentManager {
 	
 	public Weapon getWeapon(int id) {
 		if (id == -1) return null;
-		return weaponsById.get(id);
+		Weapon w = weaponsById.get(id);
+		if (w != null) {
+			return (Weapon)w.clone();
+		}
+		return null;
 	}
 	
 	public Weapon getWeapon(String name) {
 		if (name.equals("none")) return null;
-		return weaponsByName.get(name);
+		Weapon w = weaponsByName.get(name);
+		if (w != null) {
+			return (Weapon)w.clone();
+		}
+		return null;
 	}
 	
 	public Armor getShield(int id) {
 		if (id == -1) return null;
-		return shieldsById.get(id);
+		Armor shield = shieldsById.get(id);
+		if (shield != null) {
+			return (Armor)shield.clone();
+		}
+		return null;
 	}
 	
 	public Armor getShield(String name) {
 		if (name.equals("none")) return null;
-		return shieldsByName.get(name);
+		
+		Armor shield = shieldsByName.get(name);
+		if (shield != null) {
+			return (Armor)shield.clone();
+		}
+		return null;
 	}
 	
 	public Armor getArmor(int id) {
 		if (id == -1) return null;
-		return armorsById.get(id);
+		Armor armor = armorsById.get(id);
+		if (armor != null) {
+			return (Armor)armor.clone();
+		}
+		return null;
 	}
 	
 	public Armor getArmor(String name) {
 		if (name.equals("none")) return null;
-		return armorsByName.get(name);
+		Armor armor = armorsByName.get(name);
+		if (armor != null) {
+			return (Armor)armor.clone();
+		}
+		return null;
 	}
 	
 	private void findShieldsAndArmorsInXml(XMLParser parser) {
