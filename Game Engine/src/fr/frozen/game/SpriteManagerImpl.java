@@ -27,6 +27,10 @@ public class SpriteManagerImpl extends ISpriteManager {
 		return sprites.get(spritename) != null;
 	}
 	
+	public boolean isAnimationLoaded(String animationName) {
+		return animations.get(animationName) != null;
+	}
+	
 	public boolean loadSprite(String filename, String spritename) {
 		try {
 			Texture tex = TextureLoader.getInstance().getTexture(IMAGES_DIRECTORY+filename);

@@ -14,6 +14,7 @@ public abstract class ISpriteManager {
 	}
 	
 	public abstract boolean isSpriteLoaded(String name);
+	public abstract boolean isAnimationLoaded(String name);
 	
 	public abstract boolean loadSprite(String filename);
 	public abstract boolean loadSprite(String filename, String spritename);

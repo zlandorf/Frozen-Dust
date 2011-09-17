@@ -41,7 +41,7 @@ public class UnitStats {
 	public int getMaxHp() {
 		return maxHp;
 	}
-
+	
 	public void setMaxHp(int maxHp) {
 		this.maxHp = maxHp;
 	}

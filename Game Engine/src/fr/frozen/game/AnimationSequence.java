@@ -40,6 +40,11 @@ public class AnimationSequence {
 		return _frames;
 	}
 	
+	public ISprite getSprite(int index) {
+		if (index < 0 || _frames == null || index > _frames.size()) return null;
+		return _frames.get(index).getSprite();
+	}
+	
 	public void setLoop(boolean val) {
 		_loop = val;
 	}

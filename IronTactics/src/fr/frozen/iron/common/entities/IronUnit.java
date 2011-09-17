@@ -32,7 +32,6 @@ public class IronUnit extends GameObject implements Mover {
 	 */
 	public static final int MANA_COLOR = 0x2ea4ff;
 	
-	
 	public static final int ACTION_MOVE = 0;
 	public static final int ACTION_SKILL = 1;
 	
@@ -67,6 +66,7 @@ public class IronUnit extends GameObject implements Mover {
 	protected AnimationSequence animation = null;
 	protected ISprite teamColorSprite = null;
 	protected ISprite weaponSprite = null;
+	protected AnimationSequence bloodFx;
 	
 	public IronUnit(IronWorld world, int id, int type, int ownerId, float x, float y) {
 		super(null, x, y);
@@ -267,6 +267,13 @@ public class IronUnit extends GameObject implements Mover {
 		if (teamColorSprite != null) {
 			teamColorSprite.setColor(world.getContext().getPlayerInfo(ownerId).getColor());
 		} 
+		
+		String bloodFxName = "bloodfx_"+getRaceStr();
+		if (_spriteManager.isAnimationLoaded(bloodFxName)) {
+			bloodFx = _spriteManager.getAnimationSequence(bloodFxName);
+		} else {
+			bloodFx = null;
+		}
 		
 		/*if (weapon != null) {
 			//weaponSprite = ISpriteManager.getInstance().getSprite("weapon_"+weapon.getName());
@@ -472,13 +479,48 @@ public class IronUnit extends GameObject implements Mover {
 		return byteArray.toByteArray();
 	}
 	
+	public int getBloodState() {
+		if (isDead() || bloodFx == null) return 0;
+		
+		float hp = getHp();
+		float maxHp = getMaxHp();
+		
+		float perc = hp / maxHp;
+		int nbStates = bloodFx.getFrames().size() + 1;// i consider 0 is the state where there is no blood
+		float factor = 1.0f / nbStates;
+		
+		
+		for (float i = 1 - factor, j = 0; i >= 0; i -= factor, j++) {
+			if (perc >= i) {
+				return (int)j;
+			}
+		}
+		return nbStates - 1;
+	}
+
+	
+	
 	@Override
 	public void render(float deltaTime) {
 		if (_sprite != null) {
-			_sprite.draw(_pos.x * IronConst.TILE_WIDTH, _pos.y * IronConst.TILE_HEIGHT);
+			float x = _pos.x * IronConst.TILE_WIDTH;
+			float y = _pos.y * IronConst.TILE_HEIGHT;
+			
+			_sprite.draw(x, y);
 			
 			if (teamColorSprite != null && !isDead()) {
-				teamColorSprite.draw(_pos.x * IronConst.TILE_WIDTH, _pos.y * IronConst.TILE_HEIGHT);
+				teamColorSprite.draw(x, y);
+			}
+			
+			if (!isDead() && bloodFx != null) {
+				int bloodState = getBloodState();
+				if (bloodState > 0) {
+					bloodState--;
+					ISprite fx = bloodFx.getSprite(bloodState);
+					if (fx != null) {
+						fx.draw(x, y);
+					}
+				}
 			}
 			
 			/*if (weapon != null && weaponSprite != null) {
