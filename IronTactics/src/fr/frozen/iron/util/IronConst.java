@@ -21,7 +21,7 @@ public class IronConst {
 
 	public static final double BIRD_APPEARANCE_PROB = 0.0001;
 	public static float PROJECTILE_SPEED = 450;
-	public static float BLIND_PROJECTILE_SPEED = 100;
+	public static float BLIND_PROJECTILE_SPEED = 120;
 	public static float BLIND_SHOT_MISS_PROB = 0.2f;
 	
 	public static final int TIME_PROJECTILE_GROUNDED = 3;

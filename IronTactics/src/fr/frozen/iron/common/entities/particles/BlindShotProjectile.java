@@ -80,12 +80,12 @@ public class BlindShotProjectile extends Projectile {
 			
 			if (percentDone <= 0.33) {
 				_sprite  = spriteUp;
-				scale += scale * deltaTime * 1.5;
+				scale += scale * deltaTime * 1.65;
 			} else if (percentDone <= 0.66){
 				_sprite = spriteNormal;
 			} else {
 				_sprite = spriteDown;
-				scale -= scale * deltaTime * 1.5;
+				scale -= scale * deltaTime * 1.65;
 			}
 			_sprite.setScale(scale);
 		} else { //we have covered the distance
