@@ -53,7 +53,6 @@ public class IronUnit extends GameObject implements Mover {
 	protected int type;
 	protected int ownerId;
 	
-	
 	protected UnitStats stats;
 	protected UnitEquipment equipment;
 	

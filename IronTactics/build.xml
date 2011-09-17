@@ -37,7 +37,7 @@
 	                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 	                <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.net.IronServer"/>
 	                <attribute name="Class-Path" value="."/>
-	                <attribute name="Rsrc-Class-Path" value="./ netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+	                <attribute name="Rsrc-Class-Path" value="./ netframework.jar lwjgl_util.jar engine.jar"/>
 	            </manifest>
 		
 	            <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
@@ -46,11 +46,11 @@
 				</fileset>
 	            <zipfileset file="${engine-jar}"/>
 				<zipfileset file="${netengine-jar}"/>
-	            <zipfileset dir="${jar.dir}" includes="**/*.jar"/>
+	            <zipfileset file="${jar.dir}/lwjgl_util.jar"/>
 	        </jar>
 	</target>
 	
-	<target name="Main" depends="clean, serverBuild, clientBuild">
+	<target name="Main" depends="clean, serverBuild, clientBuild, LightBuild">
 		<description>Main target</description>
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<zip destfile="${dist.dir}/IronTactics.zip">
@@ -60,5 +60,14 @@
 			<zipfileset dir="${dist.dir}" includes="**/*.bat"/>
 			<zipfileset dir="${dist.dir}/jvm" prefix="jvm"/>
 		</zip>
+	</target>
+	
+	<target name="LightBuild" depends="clean, serverBuild, clientBuild">
+			<description>Zips only the jars</description>
+			<delete file="${dist.dir}/IronTacticsLight.zip"/>
+			<zip destfile="${dist.dir}/IronTacticsLight.zip">
+				<zipfileset file="${dist.dir}/Server.jar"/>
+				<zipfileset file="${dist.dir}/IronTactics.jar"/>
+			</zip>
 	</target>
 </project>
