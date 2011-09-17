@@ -40,9 +40,9 @@ public class IronWorld extends GameState {
 		}
 	}
 	
-	public void initTurn(int playerId) {
+	public void initTurn(int playerId, boolean addParticles) {
 		for (IronUnit unit : getPlayerUnits(playerId)) {
-			unit.onStartTurn();
+			unit.onStartTurn(addParticles);
 		}
 	}
 	

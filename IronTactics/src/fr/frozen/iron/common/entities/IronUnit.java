@@ -12,6 +12,7 @@ import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
 import fr.frozen.game.ISpriteManager;
 import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.entities.particles.ManaParticle;
 import fr.frozen.iron.common.equipment.Armor;
 import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.common.equipment.RangedWeapon;
@@ -30,6 +31,9 @@ public class IronUnit extends GameObject implements Mover {
 	/*serializes as :
 	 * id - type - ownerId - float x - float y
 	 */
+	public static final int MANA_COLOR = 0x2ea4ff;
+	
+	
 	public static final int ACTION_MOVE = 0;
 	public static final int ACTION_SKILL = 1;
 	
@@ -66,6 +70,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	protected boolean selected = false;
 	protected boolean played = true;
+	protected boolean playedLastTurn = false;
 	
 	protected List<Skill> skills;
 
@@ -138,6 +143,8 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public void onEndTurn() {
+		if (played)
+			playedLastTurn = true;
 		played = true;
 	}
 	
@@ -182,9 +189,26 @@ public class IronUnit extends GameObject implements Mover {
 		_sprite.setAlpha(.8f);
 	}
 	
-	public void onStartTurn() {
+	public void onStartTurn(boolean addParticle) {
+
+		int manaBefore = getStats().getMana();
+		if (getStats().getMaxMana() >= 0 && !isDead()) {
+			getStats().setMana((int)(manaBefore + getStats().intelligence * IronConst.INTELLIGENCE_REGEN_FACTOR));
+			
+			if (!playedLastTurn)
+				getStats().setMana((int)(getStats().getMana() + getStats().intelligence * IronConst.INTELLIGENCE_IDLE_REGEN_FACTOR));
+			
+			int manaAfter = getStats().getMana();
+			if (manaAfter - manaBefore != 0 && addParticle) {
+				GameObject manaParticle = new ManaParticle(getWorld(), 
+														   getX() * IronConst.TILE_WIDTH, 
+														   getY() * IronConst.TILE_HEIGHT, manaAfter - manaBefore);
+				world.addGameObject(manaParticle, "gfx");
+			}
+		}
 		played = isDead();
 		movement = maxMovement;
+		playedLastTurn = false;
 	}
 	
 	public List<Skill> getSkills() {
@@ -212,8 +236,7 @@ public class IronUnit extends GameObject implements Mover {
 		movement = Math.max(0, movement - cost);
 		
 		if (movement == 0) {
-			//TODO check if a unit cant do something after it moved
-			played = true;
+			setPlayed(true);
 		}
 	}
 	
@@ -507,7 +530,7 @@ public class IronUnit extends GameObject implements Mover {
 		if (getStats().getMaxMana() > 0) {
 			float percentManaLeft = (float)stats.getMana() / stats.getMaxMana();
 			float manaWidth = percentManaLeft * (IronConst.TILE_WIDTH - 6);
-			IronGL.drawRect(x+3, y+6, manaWidth, 2,	0x2ea4ff);
+			IronGL.drawRect(x+3, y+6, manaWidth, 2,	MANA_COLOR);
 		}
 		
 	}

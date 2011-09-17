@@ -191,7 +191,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 		
 		playerInfo.get(playerId).setTurnToPlay(true);
-		world.initTurn(playerId);
+		world.initTurn(playerId, true);
 		
 		turnPlayerId = playerId;
 

@@ -25,4 +25,7 @@ public class IronConst {
 	public static float BLIND_SHOT_MISS_PROB = 0.2f;
 	
 	public static final int TIME_PROJECTILE_GROUNDED = 3;
+	
+	public static final float INTELLIGENCE_REGEN_FACTOR = 6.5f;
+	public static final float INTELLIGENCE_IDLE_REGEN_FACTOR = 4.5f;
 }

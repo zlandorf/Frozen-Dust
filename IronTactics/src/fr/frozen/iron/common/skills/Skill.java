@@ -5,6 +5,8 @@ import java.util.List;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.DamageParticle;
+import fr.frozen.iron.common.entities.particles.IntParticle;
+import fr.frozen.iron.common.entities.particles.ManaParticle;
 import fr.frozen.iron.util.IronConst;
 
 public abstract class Skill {
@@ -72,10 +74,14 @@ public abstract class Skill {
 	public void executeClientSide(IronWorld world, int srcId, int x, int y,
 			List<int[]> values) {
 		if (values == null) return;
+		IronUnit src = world.getUnitFromId(srcId);
+		if (src == null) return;
+		int manaBefore = src.getStats().getMana();
+		
 		executeCommon(world, srcId, x, y, values);
 		
 		IronUnit target;
-		DamageParticle damage;
+		IntParticle damage;
 		
 		for (int [] couple : values) {
 			target = world.getUnitFromId(couple[0]);
@@ -90,6 +96,19 @@ public abstract class Skill {
 											   couple[1]);
 			
 			world.addGameObject(damage, "gfx");
+		}
+		
+		
+		int manaAfter = src.getStats().getMana();
+		if (src.getStats().getMaxMana() > 0) {
+			int manaCost = manaAfter - manaBefore;
+			
+			if (manaCost != 0) {
+				ManaParticle mp = new ManaParticle(world, src.getX() * IronConst.TILE_WIDTH,
+						src.getY() * IronConst.TILE_WIDTH,
+						manaCost);
+				world.addGameObject(mp, "gfx");
+			}
 		}
 	}
 }

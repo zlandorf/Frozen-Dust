@@ -20,6 +20,18 @@ public class IronGL {
 		return rgb;
 	}
 	
+	public static int getIntColor(float r, float g, float b) {
+		int color = 0x0;
+		
+		color |= (0x000000ff & (byte)(r * 0xff));
+		color <<= 8;
+		color |= (0x000000ff & (byte)(g * 0xff));
+		color <<= 8;
+		color |= (0x000000ff & (byte)(b * 0xff));
+		
+		return color;
+	}
+	
 	public static void drawRect(float x, float y, float w, float h, int icolor) {
 		float []rgb = getRgb(icolor);
 		drawRect(x, y, w, h, rgb[0], rgb[1],  rgb[2], 1);
@@ -66,40 +78,6 @@ public class IronGL {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPushMatrix();
 		GL11.glColor4f(.2f,.2f,.2f,1);
-		
-		GL11.glBegin(GL11.GL_LINES);
-		{
-			GL11.glVertex2f(x1, y1);
-			GL11.glVertex2f(x2, y2);
-		}
-
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-	
-	public static void drawLineBLUE(float x1, float y1, float x2, float y2) {
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glPushMatrix();
-		GL11.glColor4f(.2f,.2f,1f,1);
-		
-		GL11.glBegin(GL11.GL_LINES);
-		{
-			GL11.glVertex2f(x1, y1);
-			GL11.glVertex2f(x2, y2);
-		}
-
-		GL11.glEnd();
-		GL11.glPopMatrix();
-		
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-	}
-	
-	public static void drawLineRED(float x1, float y1, float x2, float y2) {
-		GL11.glDisable(GL11.GL_TEXTURE_2D);
-		GL11.glPushMatrix();
-		GL11.glColor4f(1f,.2f,.2f,1);
 		
 		GL11.glBegin(GL11.GL_LINES);
 		{

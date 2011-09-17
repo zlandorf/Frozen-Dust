@@ -74,7 +74,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		}
 		getPlayerInfo(playerId).setTurnToPlay(true);
 		turnPlayerId = playerId;
-		world.initTurn(playerId);
+		world.initTurn(playerId, false);
 		
 		timeLeftForTurn = IronConst.TURN_DURATION;
 		

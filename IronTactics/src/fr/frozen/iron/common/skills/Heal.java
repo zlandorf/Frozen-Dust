@@ -96,7 +96,9 @@ public class Heal extends Skill {
 		super.executeClientSide(world, srcId, x, y, values);
 		if (values.size() <= 0) return;
 		
+		IronUnit src = world.getUnitFromId(srcId);
 		IronUnit dst = world.getUnitFromId(values.get(0)[0]);
+		if (dst == null || src == null) return;
 		
 		int x2 = (int)dst.getX() * IronConst.TILE_WIDTH;
 		int y2 = (int)dst.getY() * IronConst.TILE_HEIGHT;

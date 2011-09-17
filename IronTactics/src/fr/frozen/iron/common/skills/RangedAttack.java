@@ -104,7 +104,7 @@ public class RangedAttack extends Skill {
 			return;
 		}
 		RangedWeapon weapon = (RangedWeapon)src.getRangedWeapon();
-		if (!weapon.sendsProjectile()) return;
+		if (weapon == null || !weapon.sendsProjectile()) return;
 		if (!ISpriteManager.getInstance().isSpriteLoaded(weapon.getProjectileName())) return;
 		
 
