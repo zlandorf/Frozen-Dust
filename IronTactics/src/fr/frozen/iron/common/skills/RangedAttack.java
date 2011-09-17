@@ -67,7 +67,7 @@ public class RangedAttack extends Skill {
 		int x2 = (int)dst.getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2;
 		int y2 = (int)dst.getY() * IronConst.TILE_HEIGHT + IronConst.TILE_HEIGHT / 2;
 		
-		return IronUtil.checkGrid(world, x1, y1, x2, y2);
+		return IronUtil.checkGrid(world, x1, y1, x2, y2, true);
 	}
 
 	

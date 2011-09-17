@@ -16,6 +16,7 @@ public abstract class Skill {
 	public static final int HEAL = 2;
 	public static final int BLIND_SHOT = 3;
 	public static final int SHIELD_BLOCK = 4;
+	public static final int CHARGE = 5;
 	
 	public static Skill getSkill(int type) {
 		switch (type) {
@@ -29,6 +30,8 @@ public abstract class Skill {
 			return BlindShot.getInstance();
 		case SHIELD_BLOCK :
 			return ShieldBlock.getInstance();
+		case CHARGE :
+			return Charge.getInstance();
 		default :
 			System.out.println("Skill not found");
 		}

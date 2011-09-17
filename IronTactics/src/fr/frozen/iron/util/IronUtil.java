@@ -200,7 +200,7 @@ public class IronUtil {
 	}
 	
 	
-	public static boolean checkGrid(IronWorld world, int x1, int y1, int x2, int y2) {
+	public static boolean checkGrid(IronWorld world, int x1, int y1, int x2, int y2, boolean shootOver) {
 		Vector2f A,B;
 		int Px, nbIntersections, squareX, squareY;
 		float tmpX, tmpY;
@@ -262,8 +262,14 @@ public class IronUtil {
 				if (squareX == x1 / IronConst.TILE_WIDTH && squareY == y1 / IronConst.TILE_HEIGHT) continue;
 				if (squareX == x2 / IronConst.TILE_WIDTH && squareY == y2 / IronConst.TILE_HEIGHT) break main;
 				
-				if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
-					return false;
+				if (shootOver) {
+					if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
+						return false;
+					}
+				} else {
+					if (world.getMap().getTile(squareX, squareY).isOccupied()) {
+						return false;
+					}
 				}
 				
 			}
@@ -277,8 +283,14 @@ public class IronUtil {
 			if (squareX == x1 / IronConst.TILE_WIDTH && squareY == y1 / IronConst.TILE_HEIGHT) continue;
 			if (squareX == x2 / IronConst.TILE_WIDTH && squareY == y2 / IronConst.TILE_HEIGHT) break main;
 			
-			if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
-				return false;
+			if (shootOver) {
+				if (!world.getMap().getTile(squareX, squareY).canShootOver()) {
+					return false;
+				}
+			} else {
+				if (world.getMap().getTile(squareX, squareY).isOccupied()) {
+					return false;
+				}
 			}
 		}//end for main
 		
