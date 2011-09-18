@@ -172,6 +172,12 @@ public class SpriteManagerImpl extends ISpriteManager {
 				if (attrnode != null) {
 					frameDims[index].setY(Integer.parseInt(attrnode.getNodeValue()));
 				}
+				
+				//TODO : handle different frame durations
+				/*attrnode = attributes.getNamedItem("frameduration");
+				if (attrnode != null) {
+					int duration = Integer.parseInt(attrnode.getNodeValue());
+				}*/
 			}
 		}
 		

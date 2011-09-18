@@ -41,19 +41,43 @@ public class IronGL {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 
 		GL11.glPushMatrix();
-		GL11.glTranslatef((int)x, (int)y, 0);
+		GL11.glTranslatef(x, y, 0);
 		
 		GL11.glColor4f(r,g,b,a);
 		
 		GL11.glBegin(GL11.GL_QUADS);
 		{
 			GL11.glVertex2f(0, 0);
-			GL11.glVertex2f(0, h);
-			GL11.glVertex2f(w, h);
 			GL11.glVertex2f(w, 0);
+			GL11.glVertex2f(w, h);
+			GL11.glVertex2f(0, h);
 		}
 
 		GL11.glEnd();
+		GL11.glPopMatrix();
+		
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+	
+	public static void drawHollowRect(float x, float y, float w, float h, int icolor) {
+		float []rgb = getRgb(icolor);
+		drawHollowRect(x, y, w, h, rgb[0], rgb[1],  rgb[2], 1);
+	}
+	
+	public static void drawHollowRect(float x, float y, float w, float h, float r, float g, float b, float a) {
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
+
+		GL11.glPushMatrix();
+		GL11.glColor4f(r,g,b,a);
+		
+		GL11.glBegin(GL11.GL_LINE_LOOP);
+		GL11.glVertex2f(x, y);
+		GL11.glVertex2f(x + w, y);
+		GL11.glVertex2f(x + w, y +h);
+		//TODO: lame fix here because of bug not display one pixel to the left ?!
+		GL11.glVertex2f(x - 1, y + h);
+		GL11.glEnd();
+	
 		GL11.glPopMatrix();
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
@@ -74,10 +98,10 @@ public class IronGL {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
-	public static void drawLine(float x1, float y1, float x2, float y2) {
+	public static void drawLine(float x1, float y1, float x2, float y2, float r, float g, float b, float a) {
 		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		GL11.glPushMatrix();
-		GL11.glColor4f(.2f,.2f,.2f,1);
+		GL11.glColor4f(r,g,b,a);
 		
 		GL11.glBegin(GL11.GL_LINES);
 		{
@@ -89,5 +113,14 @@ public class IronGL {
 		GL11.glPopMatrix();
 		
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
+	}
+	
+	public static void drawLine(float x1, float y1, float x2, float y2, int color) {
+		float []rgb = getRgb(color);
+		drawLine(x1, y1, x2, y2, rgb[0], rgb[1], rgb[2], 1);
+	}
+	
+	public static void drawLine(float x1, float y1, float x2, float y2) {
+		drawLine(x1,y1,x2,y2,.2f,.2f, .2f, 1);
 	}
 }

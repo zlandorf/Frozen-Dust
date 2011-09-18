@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.lwjgl.opengl.Display;
+
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
@@ -41,6 +43,7 @@ import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.common.skills.SkillInfo;
 import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.util.IronConst;
+import fr.frozen.iron.util.IronGL;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
@@ -68,6 +71,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	
 	protected PopupList popup;
 	
+	protected ISprite backTex;
+	protected ISprite backTex2;
+	
 	public Game(IGameEngine ge) {
 		super(ge, "game", false, false);
 		netClient = ((IronTactics)gameEngine).getNetClient();
@@ -82,8 +88,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		popup.addActionListener(this);
 		gui.addComponent(popup);
 		
-		textField = new TextField(5, 580, 500, 20);
-		chatWindow = new ChatWindow(5,505, 500,70);
+		textField = new TextField(5, 575, 500, 20);
+		chatWindow = new ChatWindow(5,500, 500,70);
 		textField.addActionListener(new TextFieldListener());
 		gui.addComponent(textField);
 		gui.addComponent(chatWindow);
@@ -105,6 +111,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		});
 		
 		gui.addComponent(button);
+		
+		backTex = ISpriteManager.getInstance().getSprite("backTex");
+		backTex2 = ISpriteManager.getInstance().getSprite("popupTex");
 	}
 	
 	protected void requestEndTurn() {
@@ -289,28 +298,79 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 		
 		if (worldReady) {
-			renderWorldReady(deltaTime);
-		}
-		gui.render(deltaTime);
-		if (hoveredUnit != null) {
-			hoveredUnit.renderStatsInGui(deltaTime);
+			renderGuiBackground(deltaTime);
+
+			renderCountDown(deltaTime);
+
+			gui.render(deltaTime);
+			if (hoveredUnit != null) {
+				renderStatsInGui(deltaTime, hoveredUnit);
+			} else if (selectedUnit != null) {
+				renderStatsInGui(deltaTime, selectedUnit);
+			}
 		}
 	}
 	
-	protected void renderWorldReady(float deltaTime) {
+	public void renderStatsInGui( float deltaTime, IronUnit unit) {
+		float x,y,w,h;
+		x = IronConst.MAP_WIDTH * IronConst.TILE_WIDTH;
+		x += 10;
+		y = 105;
+		
+		w = Display.getDisplayMode().getWidth() - x - 8;
+		h = 250;
+		
+		drawGuiBox(x, y, w, h);
+		unit.renderStatsInGui(deltaTime, x, y, w, h);
+	}
+	
+	public void drawGuiBox(float x, float y, float w, float h) {
+		backTex2.setColor(0x4e4d4d);
+		backTex2.fillIn(x, y, x + w, y + h);
+
+		IronGL.drawHollowRect(x, y, w, h, 0x0);
+		IronGL.drawHollowRect(x+1, y+1, w-2, h-2, 0x830000);
+		IronGL.drawHollowRect(x+2, y+2, w-4, h-4, 0x0);
+	}
+	
+	protected void renderGuiBackground(float deltaTime) {
+		int screenWidth = Display.getDisplayMode().getWidth();
+		int screenHeight = Display.getDisplayMode().getHeight();
+		
+		int x1 = 0; 
+		int y1 = IronConst.TILE_HEIGHT * IronConst.MAP_HEIGHT;
+		int x2 = IronConst.TILE_WIDTH * IronConst.MAP_WIDTH;
+		int y2 = 0;
+		backTex.fillIn(x1, y1, screenWidth, screenHeight);
+		backTex.fillIn(x2, y2, screenWidth, screenHeight);
+		
+		IronGL.drawLine(x1, y1, x2, y1, 0x0);
+		IronGL.drawLine(x1, y1+1, x2+1, y1+1, 0x830000);
+		IronGL.drawLine(x1, y1+2, x2+2, y1+2, 0x0);
+		
+		IronGL.drawLine(x2, y2, x2, y1, 0x0);
+		IronGL.drawLine(x2+1, y2, x2+1, y1 + 1, 0x830000);
+		IronGL.drawLine(x2+2, y2, x2+2, y1 + 2, 0x0);
+		
+	}
+	
+	protected void renderCountDown(float deltaTime) {
 		float x = 660;
 		float y = 20;
-		FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y, 0, 1.3f);
 		
-		x += 44;//4 * 11
+		drawGuiBox(x - 5, y - 5, 117, 48);
+		
+		FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
+		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y, 0, 1f);
+
+		x += 40;//4 * 11
 		y += 20;
 		
 		String timeStr = "";
 		if (timeLeftForTurn < 10) {
 			timeStr = "0";
 		}
-		FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y, 0, 1.3f);
+		FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y, 0, 1f);
 	}
 	
 	@Override

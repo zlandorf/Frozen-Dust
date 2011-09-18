@@ -33,7 +33,7 @@ public class ChatWindow extends Component {
 			int x = (int)pos.getX() + PADDING;
 			
 			if (messages.get(i).getPrefix() != null && !messages.get(i).getPrefix().equals("")) {
-				FontManager.getFont("Font").setColor(0f, 0.2f, 1f);
+				FontManager.getFont("Font").setColor(.3f, 0.8f, .3f);
 				FontManager.getFont("Font").glPrint(messages.get(i).getPrefix(), x, y, 0);
 				x += 11 * messages.get(i).getPrefix().length();
 			}

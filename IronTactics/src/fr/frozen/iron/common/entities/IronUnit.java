@@ -54,6 +54,7 @@ public class IronUnit extends GameObject implements Mover {
 	protected int id;
 	protected int type;
 	protected int ownerId;
+	protected String name;
 	
 	protected UnitStats stats;
 	protected UnitEquipment equipment;
@@ -247,7 +248,6 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public void findSprite() {
-		
 		String spriteName = typeNames[type]+"_"+getRaceStr();
 		if (_spriteManager.isSpriteLoaded(spriteName)) {
 			setSprite(ISpriteManager.getInstance().getSprite(spriteName));
@@ -301,6 +301,8 @@ public class IronUnit extends GameObject implements Mover {
 			System.err.println("PROBLEM WHILE GETTING UNIT STATS");
 			return;
 		}
+		
+		name = ic.getAttributeValue(base, "name");
 		
 		int maxHp = Integer.parseInt(ic.getAttributeValue(base, "maxhp"));
 		int strength = Integer.parseInt(ic.getAttributeValue(base, "strength"));
@@ -640,11 +642,11 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
-	public void renderStatsInGui(float deltaTime) {
+	public void renderStatsInGui(float deltaTime, float x1, float y1, float w, float h) {
 
 		if (_sprite == null) return;
 		
-		float x = 708;
+		float x = 707;
 		float y = 120;
 		
 		_sprite.draw(x, y);
@@ -667,16 +669,26 @@ public class IronUnit extends GameObject implements Mover {
 		y += 32;
 		renderStatusBars(deltaTime, x, y);
 		
-		x = 650;
+		x = 655;
 		y = 170;
 		Font font = FontManager.getFont("StatsFont");
 		font.setColor(1,1,1);
 		List<String> stats = new ArrayList<String>();
 		
+		if (name != null && !name.equals("")) {
+			Font font2 = FontManager.getFont("Font");
+			font2.setColor(1,1,1);
+			float offx = (w - 4) / 2 - name.length() * font2.getCharWidth() / 2;
+			font2.glPrint(name, x1 + offx, y);
+			
+			y += 25;
+		}
 		stats.add("HP   : "+getStats().getHp()+"/"+getStats().getMaxHp());
-		//if (getStats().getMaxMana() > 0) {
-		stats.add("MP   : "+getStats().getMana()+"/"+getStats().getMaxMana());
-		//}
+		if (getStats().getMaxMana() > 0) {
+			stats.add("MP   : "+getStats().getMana()+"/"+getStats().getMaxMana());
+		} else {
+			stats.add("MP   : -/-");
+		}
 		stats.add("");
 		stats.add("Strength : "+getStats().getStrength());
 		stats.add("Agility  : "+getStats().getAgility());
@@ -724,7 +736,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	public String toString() {
 		String str = super.toString();
-		str += " id = "+id+" type = "+type+" ownerId = "+ownerId+"\n";
+		str += " id = "+id+" name="+name+" type = "+type+" ownerId = "+ownerId+"\n";
 		str += "can perform skills : ";
 		for (Skill skill : skills) {
 			str += skill.getSkillName()+" ";

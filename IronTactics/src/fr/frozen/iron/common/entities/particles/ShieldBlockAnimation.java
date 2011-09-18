@@ -5,7 +5,7 @@ import fr.frozen.game.ISpriteManager;
 
 public class ShieldBlockAnimation extends AnimatedParticle {
 	public ShieldBlockAnimation(GameState gs, float x, float y) {
-		super(gs, x, y, ISpriteManager.getInstance().getAnimationSequence("healanimation"));
+		super(gs, x, y, ISpriteManager.getInstance().getAnimationSequence("shieldblockanimation"));
 		//TODO : add graphic animation for shield block on spritesheet
 	}
 }
