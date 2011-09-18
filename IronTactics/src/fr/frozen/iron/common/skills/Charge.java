@@ -91,7 +91,11 @@ public class Charge extends Skill {
 		double distance = IronUtil.distance((int)src.getX(), (int)src.getY(), (int)dst.getX(), (int)dst.getY());
 		
 		float damage = IronUtil.getDamage(src, dst, true);
-		damage += damage * (0.025 + distance / 15.0);
+		float bonusFactor = (float)(distance / 15.0);
+		if (!src.hasMoved()) {
+			bonusFactor += 0.075;
+		}
+		damage += damage * bonusFactor;
 		res.add(new int[]{dst.getId(), - (int)damage});
 		
 		executeCommon(world, srcId, x, y, res);

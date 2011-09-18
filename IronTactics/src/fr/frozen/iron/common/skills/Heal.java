@@ -34,8 +34,8 @@ public class Heal extends Skill {
 		if (!rangedWeapon.isMagical()) return false;
 		if (rangedWeapon.getManaCost() > 0 && src.getStats().getMana() < rangedWeapon.getManaCost()) return false;
 		//range check
-		int minRange = rangedWeapon.getMinRange();
-		int maxRange = rangedWeapon.getMaxRange();
+		float minRange = rangedWeapon.getMinRange();
+		float maxRange = rangedWeapon.getMaxRange();
 		double distance = IronUtil.distance((int)src.getX(), (int)src.getY(), (int)dst.getX(), (int)dst.getY());
 		
 		

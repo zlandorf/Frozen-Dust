@@ -26,8 +26,8 @@ public class MeleeAttack extends Skill {
 		Weapon meleeWeapon = src.getMeleeWeapon();
 		if (meleeWeapon == null) return false;//cant perform melee attack because, doesn't have a melee weapon
 		
-		int maxRange = meleeWeapon.getMaxRange();
-		int minRange = meleeWeapon.getMinRange();
+		float maxRange = meleeWeapon.getMaxRange();
+		float minRange = meleeWeapon.getMinRange();
 		
 		IronUnit dst = world.getUnitAtXY(x, y);
 		if (dst == null || dst.getId() == src.getId()) return false;

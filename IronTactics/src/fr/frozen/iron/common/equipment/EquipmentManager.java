@@ -157,8 +157,8 @@ public class EquipmentManager {
 				String name = values[0];
 				int id = Integer.parseInt(values[1]);
 				int damage = Integer.parseInt(values[2]);
-				int maxrange = Integer.parseInt(values[3]);
-				int minrange = Integer.parseInt(values[4]);
+				float maxrange = Float.parseFloat(values[3]);
+				float minrange = Float.parseFloat(values[4]);
 				boolean cutTrees = Integer.parseInt(values[5]) == 1;
 				
 				node = attr.getNamedItem("ranged");

@@ -5,20 +5,20 @@ public class Weapon implements Cloneable {
 	protected String name;
 	protected int id;
 	protected int damage;
-	protected int maxRange;
-	protected int minRange;
+	protected float maxRange;
+	protected float minRange;
 	protected boolean cutWood;
 	protected boolean magical;
 	protected int manaCost;
 	
 	protected int baseDamage;
-	protected int baseMaxRange;
-	protected int baseMinRange;
+	protected float baseMaxRange;
+	protected float baseMinRange;
 	protected boolean baseCutWood;
 	protected boolean baseMagical;
 	protected int baseManaCost;
 	
-	public Weapon(String name, int id, int damage, int maxRange, int minRange, boolean cutWood, boolean magical, int manaCost) {
+	public Weapon(String name, int id, int damage, float maxRange, float minRange, boolean cutWood, boolean magical, int manaCost) {
 		this.name = name;
 		this.id = id;
 
@@ -62,21 +62,21 @@ public class Weapon implements Cloneable {
 	}
 
 	
-	public int getMaxRange() {
+	public float getMaxRange() {
 		return maxRange;
 	}
 
 
-	public void setMaxRange(int range) {
+	public void setMaxRange(float range) {
 		this.maxRange = range;
 	}
 	
-	public int getMinRange() {
+	public float getMinRange() {
 		return minRange;
 	}
 
 
-	public void setMinRange(int range) {
+	public void setMinRange(float range) {
 		this.minRange = range;
 	}
 

@@ -40,8 +40,8 @@ public class BlindShot extends Skill {
 		if (dst.isDead()) return false;
 		if (src.hasMoved()) return false;
 		//range check
-		int minRange = rangedWeapon.getMinRange();
-		int maxRange = rangedWeapon.getMaxRange();
+		float minRange = rangedWeapon.getMinRange();
+		float maxRange = rangedWeapon.getMaxRange();
 		double distance = IronUtil.distance((int)src.getX(), (int)src.getY(), (int)dst.getX(), (int)dst.getY());
 		
 		

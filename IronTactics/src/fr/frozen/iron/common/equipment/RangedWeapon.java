@@ -4,8 +4,8 @@ public class RangedWeapon extends Weapon {
 
 	protected String projectileName="";
 	
-	public RangedWeapon(String name, int id, int damage, int maxRange,
-			int minRange, boolean cutWood, String projectileName, boolean magical, int manaCost) {
+	public RangedWeapon(String name, int id, int damage, float maxRange,
+			float minRange, boolean cutWood, String projectileName, boolean magical, int manaCost) {
 		super(name, id, damage, maxRange, minRange, cutWood, magical, manaCost);
 		this.projectileName=projectileName;
 	}
