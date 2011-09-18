@@ -116,6 +116,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		ISpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
 		FontManager.loadFont("Data/Font.png");
 		FontManager.loadFont("Data/DamageFont.png");
+		FontManager.loadFont("Data/StatsFont.png",7);
 	}
 	
 	protected void buildInitialGameStates() {

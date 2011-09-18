@@ -28,13 +28,18 @@ public class FontManager {
 	
 	public static Font loadFont(String filename) {
 		
-		return FontManager.getInstance().loadFontAux(filename);
+		return loadFont(filename, 10);
 	}
 	
-	private Font loadFontAux(String filename) {
+	public static Font loadFont(String filename, int fontSize) {
+		
+		return FontManager.getInstance().loadFontAux(filename, fontSize);
+	}
+	
+	private Font loadFontAux(String filename, int size) {
 		Font font = null;
 		try {
-			font = new Font(filename);
+			font = new Font(filename, size);
 			String []tmp = filename.split("/");
 			String fontName = tmp[tmp.length - 1].replaceAll("\\.png", "");
 			System.out.println("adding font : "+fontName);

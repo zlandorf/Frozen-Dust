@@ -14,7 +14,7 @@ public class IronConst {
 	public static final int MAP_WIDTH = 20;
 	public static final int MAP_HEIGHT = 15;
 	
-	public static final int TURN_DURATION = 60;// * 1000;
+	public static final int TURN_DURATION = 90;// * 1000;
 	
 	
 	public static final int INTRO_DURATION = 1;//s

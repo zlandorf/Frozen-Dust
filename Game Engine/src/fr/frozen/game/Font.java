@@ -7,9 +7,15 @@ import org.lwjgl.opengl.GL11;
 public class Font {
 	private int texture;
 	private int base;
+	private int gap;
 	private float r = 1, g = 1, b = 1, a = 1;
 	
 	public Font(String filename) throws IOException {
+		this(filename, 10);
+	}
+	
+	public Font(String filename, int gap) throws IOException {
+		this.gap = gap;
 		loadTexture(filename);
 		buildFont();
 	}
@@ -42,7 +48,7 @@ public class Font {
 	}
 	
 	public int getCharWidth() {
-		return 11;
+		return gap+1;
 	}
 	
 	public int getCharHeight() {
@@ -122,7 +128,8 @@ public class Font {
             GL11.glVertex2i(0, 16);                             // Vertex Coord (Top Left)
             
             GL11.glEnd();                                       // Done Building Our Quad (Character)
-            GL11.glTranslatef(10.0f, 0.0f, 0.0f);               // Move To The Right Of The Character
+            //GL11.glTranslatef(10.0f, 0.0f, 0.0f);               // Move To The Right Of The Character
+            GL11.glTranslatef(gap, 0, 0);
             GL11.glEndList();                                   // Done Building The Display List
         }                                                       // Loop Until All 256 Are Built
         

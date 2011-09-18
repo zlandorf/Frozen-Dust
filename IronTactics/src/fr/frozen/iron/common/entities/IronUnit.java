@@ -6,6 +6,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.frozen.game.AnimationSequence;
+import fr.frozen.game.Font;
+import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
 import fr.frozen.game.ISpriteManager;
@@ -532,12 +534,7 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
-	public void renderStatusBars(float deltaTime) {
-		if (isDead() || _sprite == null) return;
-		
-		int y = (int)(getY() * IronConst.TILE_HEIGHT - (_sprite.getHeight() - IronConst.TILE_HEIGHT));
-		int x = (int)(getX() * IronConst.TILE_WIDTH);
-		y -= 11;
+	public void renderStatusBars(float deltaTime, float x, float y) {
 		if (y < 0) y = 0;
 		
 		int height = 8 + (getStats().getMaxMana() > 0 ? 3 : 0);
@@ -566,7 +563,16 @@ public class IronUnit extends GameObject implements Mover {
 			float manaWidth = percentManaLeft * (IronConst.TILE_WIDTH - 6);
 			IronGL.drawRect(x+3, y+6, manaWidth, 2,	MANA_COLOR);
 		}
+	}
+	
+	public void renderStatusBars(float deltaTime) {
+		if (isDead() || _sprite == null) return;
 		
+		int y = (int)(getY() * IronConst.TILE_HEIGHT - (_sprite.getHeight() - IronConst.TILE_HEIGHT));
+		int x = (int)(getX() * IronConst.TILE_WIDTH);
+		y -= 11;
+		
+		renderStatusBars(deltaTime, x, y);
 	}
 	
 	public void renderTileGfx(float deltaTime) {
@@ -633,6 +639,88 @@ public class IronUnit extends GameObject implements Mover {
 			}
 		}
 	}
+	
+	public void renderStatsInGui(float deltaTime) {
+
+		if (_sprite == null) return;
+		
+		float x = 708;
+		float y = 120;
+		
+		_sprite.draw(x, y);
+
+		if (teamColorSprite != null && !isDead()) {
+			teamColorSprite.draw(x, y);
+		}
+
+		if (!isDead() && bloodFx != null) {
+			int bloodState = getBloodState();
+			if (bloodState > 0) {
+				bloodState--;
+				ISprite fx = bloodFx.getSprite(bloodState);
+				if (fx != null) {
+					fx.draw(x, y);
+				}
+			}
+		}
+		
+		y += 32;
+		renderStatusBars(deltaTime, x, y);
+		
+		x = 650;
+		y = 170;
+		Font font = FontManager.getFont("StatsFont");
+		font.setColor(1,1,1);
+		List<String> stats = new ArrayList<String>();
+		
+		stats.add("HP   : "+getStats().getHp()+"/"+getStats().getMaxHp());
+		//if (getStats().getMaxMana() > 0) {
+		stats.add("MP   : "+getStats().getMana()+"/"+getStats().getMaxMana());
+		//}
+		stats.add("");
+		stats.add("Strength : "+getStats().getStrength());
+		stats.add("Agility  : "+getStats().getAgility());
+		stats.add("Intell   : "+getStats().getIntelligence());
+		stats.add("");
+		
+		int meleeDamage = 0;
+		if (getMeleeWeapon() != null) {
+			meleeDamage = getMeleeWeapon().getDamage();
+		}
+		
+		int rangedDamage = 0;
+		if (getRangedWeapon() != null) {
+			rangedDamage = getRangedWeapon().getDamage();
+		}
+		
+		int physArmorValue = 0;
+		int magicalArmorValue = 0;
+		
+		if (getShield() != null) {
+			physArmorValue += getShield().getPhysicalArmor();
+			magicalArmorValue += getShield().getMagicalArmor();
+		}
+		
+		if (getArmor() != null) {
+			physArmorValue += getArmor().getPhysicalArmor();
+			magicalArmorValue += getArmor().getMagicalArmor();
+		}
+		
+		stats.add("Melee  dmg : "+meleeDamage);
+		stats.add("Range  dmg : "+rangedDamage);
+		stats.add("Phys armor : "+physArmorValue);
+		stats.add("Magi armor : "+magicalArmorValue);
+		
+		for (String str : stats) {
+			if (str.equals("")) {
+				y += 5;
+				continue;
+			}
+			font.glPrint(str, x, y);
+			y += 16;
+		}
+	}
+	
 	
 	public String toString() {
 		String str = super.toString();

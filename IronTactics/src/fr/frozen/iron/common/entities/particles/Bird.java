@@ -24,17 +24,17 @@ public class Bird extends AnimatedObject {
 		int xstart,ystart,xend, yend;
 		
 		if (vertical) {
-			ystart = System.nanoTime() % 2 == 1 ? 32 + IronConst.MAP_HEIGHT* IronConst.TILE_HEIGHT : -32;
-			yend = ystart == -32 ? 32 + IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT : -32;
+			ystart = System.nanoTime() % 2 == 1 ? IronConst.MAP_HEIGHT* IronConst.TILE_HEIGHT : -32;
+			yend = ystart == -32 ? IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT : -32;
 			
-			xstart = (int)(Math.random() * IronConst.MAP_WIDTH * IronConst.TILE_WIDTH);
-			xend = (int)(Math.random() * IronConst.MAP_WIDTH * IronConst.TILE_HEIGHT);
+			xstart = (int)((Math.random() * IronConst.MAP_WIDTH) * IronConst.TILE_WIDTH);
+			xend = (int)((Math.random() * IronConst.MAP_WIDTH) * IronConst.TILE_HEIGHT);
 		} else {
-			xstart = System.nanoTime() % 2 == 1 ? 32 + IronConst.MAP_WIDTH * IronConst.TILE_WIDTH : -32;
-			xend = xstart == -32 ? 32 + IronConst.MAP_WIDTH * IronConst.TILE_WIDTH : -32;
+			xstart = System.nanoTime() % 2 == 1 ? IronConst.MAP_WIDTH * IronConst.TILE_WIDTH : -32;
+			xend = xstart == -32 ? IronConst.MAP_WIDTH * IronConst.TILE_WIDTH : -32;
 			
-			ystart = (int)(Math.random() * IronConst.MAP_HEIGHT * IronConst.TILE_WIDTH);
-			yend = (int)(Math.random() * IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT);
+			ystart = (int)((Math.random() * IronConst.MAP_HEIGHT) * IronConst.TILE_WIDTH);
+			yend = (int)((Math.random() * IronConst.MAP_HEIGHT) * IronConst.TILE_HEIGHT);
 		}
 		
 		Vector2f vec = new Vector2f(xend - xstart, yend - ystart); 

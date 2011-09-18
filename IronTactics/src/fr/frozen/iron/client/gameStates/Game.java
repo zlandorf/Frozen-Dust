@@ -292,11 +292,25 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			renderWorldReady(deltaTime);
 		}
 		gui.render(deltaTime);
+		if (hoveredUnit != null) {
+			hoveredUnit.renderStatsInGui(deltaTime);
+		}
 	}
 	
 	protected void renderWorldReady(float deltaTime) {
+		float x = 660;
+		float y = 20;
 		FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-		FontManager.getFont("DamageFont").glPrint("TimeLeft : "+((int)timeLeftForTurn), 20, 20, 0, 1);
+		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y, 0, 1.3f);
+		
+		x += 44;//4 * 11
+		y += 20;
+		
+		String timeStr = "";
+		if (timeLeftForTurn < 10) {
+			timeStr = "0";
+		}
+		FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y, 0, 1.3f);
 	}
 	
 	@Override
