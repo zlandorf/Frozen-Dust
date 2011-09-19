@@ -54,6 +54,8 @@ public enum Protocol {
 	GAME_READY,
 	GAME_TURN,//tells whos turn it is
 	GAME_END_TURN_REQUEST,//indicates that the player has ended his turn
+	GAME_UNDO,//undo last move, unitId to undo
+	GAME_UNDO_REQUEST,
 	
 	GAME_ACTION_REQUEST,// unit id - action type - further data
 	GAME_ACTION;// unit id - action type - further data

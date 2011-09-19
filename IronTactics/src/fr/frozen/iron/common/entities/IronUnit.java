@@ -5,6 +5,8 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.lwjgl.util.vector.Vector2f;
+
 import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.Font;
 import fr.frozen.game.FontManager;
@@ -69,6 +71,9 @@ public class IronUnit extends GameObject implements Mover {
 	protected ISprite teamColorSprite = null;
 	protected ISprite weaponSprite = null;
 	protected AnimationSequence bloodFx;
+	
+	protected boolean canUndo = false;
+	protected Vector2f oldPos;
 	
 	public IronUnit(IronWorld world, int id, int type, int ownerId, float x, float y) {
 		super(null, x, y);
@@ -139,6 +144,11 @@ public class IronUnit extends GameObject implements Mover {
 		if (played || hasMoved())
 			playedLastTurn = true;
 		played = true;
+		canUndo = false;
+	}
+	
+	public boolean canUndo() {
+		return canUndo;
 	}
 	
 	public UnitStats getStats() {
@@ -205,6 +215,7 @@ public class IronUnit extends GameObject implements Mover {
 		}
 		played = isDead();
 		playedLastTurn = false;
+		canUndo = false;
 		getStats().reInit();
 		getEquipment().reInit();
 	}
@@ -228,6 +239,7 @@ public class IronUnit extends GameObject implements Mover {
 	}
 	
 	public void move(int x, int y, int cost) {
+		oldPos = new Vector2f(_pos.getX(), _pos.getY());
 		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(null);
 		_pos.set(x, y);
 		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(this);
@@ -237,6 +249,16 @@ public class IronUnit extends GameObject implements Mover {
 		if (getStats().getMovement() == 0) {
 			setPlayed(true);
 		}
+		canUndo = true;
+	}
+	
+	public void undoMove() {
+		setPlayed(false);
+		getStats().setMovement(getStats().getOldMovement());
+		canUndo = false;
+		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(null);
+		_pos.set(oldPos.getX(), oldPos.getY());
+		world.getMap().getTile((int)_pos.getX(), (int)_pos.getY()).setUnitOnTile(this);
 	}
 	
 	@Override
@@ -351,6 +373,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	public void setPlayed(boolean val) {
 		played = val;
+		canUndo = false;
 	}
 	
 	

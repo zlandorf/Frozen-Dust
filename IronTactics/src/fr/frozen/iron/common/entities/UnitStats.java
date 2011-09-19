@@ -17,6 +17,7 @@ public class UnitStats {
 	
 	protected int maxMovement;
 	protected int movement;
+	protected int oldMovement;
 	
 	public UnitStats() {
 	}
@@ -28,11 +29,11 @@ public class UnitStats {
 		this.baseIntelligence = this.intelligence = intelligence;
 		this.maxMana = this.mana = maxMana;
 		
-		this.maxMovement = this.movement = movement;
+		this.oldMovement = this.maxMovement = this.movement = movement;
 	}
 	
 	public void reInit() {
-		movement = maxMovement;
+		oldMovement = movement = maxMovement;
 		strength = baseStrength;
 		agility = baseAgility;
 		intelligence = baseIntelligence;
@@ -98,7 +99,12 @@ public class UnitStats {
 		return movement;
 	}
 	
+	public int getOldMovement() {
+		return oldMovement;
+	}
+	
 	public void setMovement(int val) {
+		oldMovement = movement;
 		movement = Math.max(0, Math.min(val, maxMovement));
 	}
 	

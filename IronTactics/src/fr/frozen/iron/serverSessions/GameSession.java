@@ -170,12 +170,31 @@ public class GameSession extends BaseGameController implements GameContext {
 	
 	@Override
 	public void handle(Message msg) {
+		//TODO : add security everywhere in case there is false data sending
 		switch (Protocol.get(msg.getType())) {
 		case GAME_END_TURN_REQUEST :
 			synchronized (this) {
 				if (turnPlayerId == msg.getClientId()) {
 					switchTurns();
 				}
+			}
+			break;
+		
+		case GAME_UNDO_REQUEST :
+			IronUnit unit = world.getUnitFromId(IronUtil.byteArrayToInt(msg.getData()));
+			if (unit != null && msg.getClientId() == turnPlayerId && !unit.isDead() 
+					&& unit.getOwnerId() == turnPlayerId && unit.canUndo()) {
+				
+				unit.undoMove();
+				
+				List<SocketChannel> channels = getAllChannels();
+				if (channels == null){
+					return;//TODO handle this type of error ?
+				}
+				MessageToSend msgToSend = new MessageToSend(channels,
+						Protocol.GAME_UNDO.ordinal(),
+						msg.getData());
+				server.getWriter().addMsg(msgToSend);
 			}
 			break;
 		

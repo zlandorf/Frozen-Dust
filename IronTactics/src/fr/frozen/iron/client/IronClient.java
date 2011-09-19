@@ -19,6 +19,7 @@ import fr.frozen.iron.client.messageEvents.NewSessionEvent;
 import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
 import fr.frozen.iron.client.messageEvents.PlayerLogoutEvent;
 import fr.frozen.iron.client.messageEvents.RaceChoiceEvent;
+import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
 import fr.frozen.iron.common.IronMap;
 import fr.frozen.iron.common.PlayerGameInfo;
@@ -65,7 +66,9 @@ public class IronClient extends BaseClient {
 		case GAME_TURN :
 			dispatchEvent(new GameTurnEvent(IronUtil.byteArrayToInt(msg.getData())));
 			break;
-		
+		case GAME_UNDO:
+			dispatchEvent(new UndoMoveEvent(IronUtil.byteArrayToInt(msg.getData())));
+			break;
 		case GAME_ACTION : 
 			try {
 				is = new DataInputStream(new ByteArrayInputStream(msg.getData()));

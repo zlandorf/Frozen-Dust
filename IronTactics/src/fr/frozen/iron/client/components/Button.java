@@ -11,6 +11,7 @@ public class Button extends Component {
 	
 	protected ISprite normalSprite = null;
 	protected ISprite hoverSprite = null;
+	protected boolean enabled;
 	//protected ISprite selectedSprite = null;
 	
 	boolean hover;
@@ -21,6 +22,15 @@ public class Button extends Component {
 	public Button(String label, int x, int y, int w, int h) {
 		super (x,y, w, h);
 		this.label = label;
+		enabled = true;
+	}
+	
+	public void enable() {
+		enabled = true;
+	}
+	
+	public void disable() {
+		enabled = false;
 	}
 	
 	public void setNormalSprite(ISprite sprite) {
@@ -67,20 +77,35 @@ public class Button extends Component {
 		}
 		ISprite sprite = normalSprite;
 
-		if (hover) {
+		if (hover && enabled) {
 			sprite = hoverSprite;
 		}
 		/*if (selectedSprite) = selectedSprite;*/
+		if (enabled) {
+			sprite.setColor(0xffffff);
+		} else {
+			sprite.setColor(0xbbbbbb);
+		}
 		sprite.draw(pos.getX(), pos.getY());
 		
 		
-		float red = hover ? (float)0x29 / (float) 0xff : (float)0x5e / (float)0xff; 
-		float green = hover ? (float)0x16 / (float) 0xff : (float)0x32 / (float)0xff;
-		float blue = hover ? (float)0x2 / (float) 0xff : (float)0x03 / (float)0xff;
+		float red = (float)0x5e / (float)0xff; 
+		float green = (float)0x32 / (float)0xff;
+		float blue = (float)0x03 / (float)0xff;
+		
+		if (hover && enabled) {
+			red = (float)0x29 / (float) 0xff; 
+			green = (float)0x16 / (float) 0xff;
+			blue = (float)0x2 / (float) 0xff;
+		}
 		
 		//TODO : dans textrenderer mettre method qui retourne la distance entre deux lettres
 		float textWidth = label.length() * 10;
 		
+		
+		/*if (!enabled) {
+			red = green = blue = 0.5f;
+		}*/
 		
 		float x = (float) (pos.getX() + getWidth() / 2 - textWidth / 2);
 		float y = (float)(pos.getY() + getHeight() / 2 - 8);
@@ -101,12 +126,16 @@ public class Button extends Component {
 
 	@Override
 	public void onLeftClick(int x, int y) {
-		notifyActionListeners();
+		if (enabled) {
+			notifyActionListeners();
+		}
 	}
 
 	@Override
 	public void onRightClick(int x, int y) {
-		notifyActionListeners();
+		if (enabled) {
+			notifyActionListeners();
+		}
 	}
 
 	@Override

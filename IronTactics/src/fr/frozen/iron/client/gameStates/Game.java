@@ -33,6 +33,7 @@ import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
 import fr.frozen.iron.client.messageEvents.GameTurnEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
 import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
+import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
 import fr.frozen.iron.common.GameContext;
 import fr.frozen.iron.common.IronWorld;
@@ -54,6 +55,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	protected IronClient netClient;
 	protected TextField textField;
 	protected ChatWindow chatWindow;
+	protected Button undoButton;
 	
 	protected IronWorld world;
 	protected boolean worldReady = false; 
@@ -68,6 +70,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	
 	protected IronUnit selectedUnit = null;
 	protected IronUnit hoveredUnit = null;
+	protected IronUnit lastUnitMoved = null;
 	
 	protected PopupList popup;
 	
@@ -110,7 +113,20 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			}
 		});
 		
+		undoButton = new Button("Undo move", 590, 550, 0, 0);
+		undoButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
+		undoButton.setHoverSprite(spriteHover);
+		undoButton.setNormalSprite(spriteNormal);
+		
+		undoButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				requestUndo();
+			}
+		});
+		
 		gui.addComponent(button);
+		gui.addComponent(undoButton);
 		
 		backTex = ISpriteManager.getInstance().getSprite("backTex");
 		backTex2 = ISpriteManager.getInstance().getSprite("popupTex");
@@ -188,12 +204,18 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 				e.printStackTrace();
 			}
 		}
+		
+		if (ne instanceof UndoMoveEvent) {
+			IronUnit unit = world.getUnitFromId(((UndoMoveEvent)ne).getUnitId());
+			if (unit != null) {
+				unit.undoMove();
+			}
+		}
 	}
 	
 	
 	public void setTurn(int playerId) {
 		popup.setVisible(false);
-		
 		if (turnPlayerId != -1) {
 			playerInfo.get(turnPlayerId).setTurnToPlay(false);
 			world.endTurn(turnPlayerId);
@@ -210,6 +232,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			selectedUnit.setSelected(false);
 		}
 		selectedUnit = null;
+		lastUnitMoved = null;
 	}
 	
 	
@@ -228,6 +251,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			if (unitSrc.hasPlayed()) {
 				unitSrc.setSelected(false);
 				selectedUnit = null;
+			}
+			if (unitSrc.getOwnerId() == netClient.getClientId()) {
+				lastUnitMoved = unitSrc;
 			}
 			break;
 		case IronUnit.ACTION_SKILL :
@@ -256,7 +282,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	public void update(float deltaTime) {
 		super.update(deltaTime);
 		gui.update(deltaTime);
-
+		
 		if (!worldReady) return;
 		world.update(deltaTime);
 		
@@ -265,6 +291,11 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 				Bird bird = new Bird(this);
 				addGameObject(bird, "bird");
 			}
+		}
+		if (lastUnitMoved != null && lastUnitMoved.canUndo()) {
+			undoButton.enable();
+		} else {
+			undoButton.disable();
 		}
 		
 		timeLeftForTurn -= deltaTime;
@@ -406,6 +437,17 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		System.arraycopy(IronUtil.intToByteArray(y), 0, data, 12, 4);
 		
 		netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
+	}
+	
+	protected void requestUndo() {
+		if (lastUnitMoved == null) {
+			return;
+		}
+		
+		byte []data = new byte[4];
+		System.arraycopy(IronUtil.intToByteArray(lastUnitMoved.getId()), 0, data, 0, 4);
+		
+		netClient.sendMessage(Protocol.GAME_UNDO_REQUEST, data);
 	}
 
 	@Override
