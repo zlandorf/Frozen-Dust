@@ -16,9 +16,12 @@ public class Tile {
 	public static final int TYPE_EARTH = 1;
 	public static final int TYPE_WATER = 2;
 	
-	public static final int NB_DISPLAY_LEVELS = 3;
-	public static final int DISPLAY_TOP = 2;
-	public static final int DISPLAY_MIDDLE = 1;
+	public static final int NB_DISPLAY_LEVELS = 6;
+	public static final int DISPLAY_TOP_TOP = 5;
+	public static final int DISPLAY_TOP = 4;
+	public static final int DISPLAY_MIDDLE_TOP = 3;
+	public static final int DISPLAY_MIDDLE = 2;
+	public static final int DISPLAY_MIDDLE_BOTTOM = 1;
 	public static final int DISPLAY_BOTTOM = 0;
 	
 	public static final int OBJECT_NOTHING = 0;
@@ -254,8 +257,13 @@ public class Tile {
 		
 		for (int i = 0; i < 8; i++) {
 			if (bools[i]) {
-				if (i % 2 == 0  && (bools[(8 + i - 1) % 8] || bools[i + 1 % 2])) {
-					continue;
+				
+				if (i % 2 == 0  && bools[(8 + i - 1) % 8] ) {
+					if (type(i) == type((8 + i - 1) % 8))
+						continue;
+				} else if (i % 2 == 0  && bools[i + 1 % 8]) {
+					if (type(i) == type(i + 1 % 8))
+						continue;
 				}
 				
 				
@@ -276,13 +284,12 @@ public class Tile {
 					overlaySprites[DISPLAY_TOP].add(spriteToAdd);
 				} else if (type(i) == TYPE_EARTH) {
 					overlaySprites[DISPLAY_MIDDLE].add(spriteToAdd);	
-				} else {
-					System.out.println("FUUUUUUU");
 				}
 				
-				if (i % 2 == 1 && bools[(8 + i - 2) % 8] && type(i) == type((8 + i - 2) % 8)) {
+				if (i % 2 == 1 && bools[(8 + i - 2) % 8]){// && type(i) == type((8 + i - 2) % 8)) {
 					boolean mirX = false;
 					boolean mirY = false;
+					int typeTmp = Math.max(type(i), type((8 + i - 2) % 8));
 					if (i == 3 || i == 5) {
 						mirX = true;
 					}
@@ -294,17 +301,17 @@ public class Tile {
 						spriteToAdd = ISpriteManager.getInstance().getSprite("water_rincle_corner");
 						spriteToAdd.setMirrorX(mirX);
 						spriteToAdd.setMirrorY(mirY);
-						overlaySprites[DISPLAY_BOTTOM].add(spriteToAdd);
+						overlaySprites[DISPLAY_MIDDLE_BOTTOM].add(spriteToAdd);
 					}
 					
-					spriteToAdd = ISpriteManager.getInstance().getSprite(type+"_overlay_corner");
+					spriteToAdd = ISpriteManager.getInstance().getSprite(tile_names[typeTmp]+"_overlay_corner");
 					spriteToAdd.setMirrorX(mirX);
 					spriteToAdd.setMirrorY(mirY);
 					
-					if (type(i) == TYPE_GRASS) {
-						overlaySprites[DISPLAY_TOP].add(spriteToAdd);
-					} else if (type(i) == TYPE_EARTH) {
-						overlaySprites[DISPLAY_MIDDLE].add(spriteToAdd);	
+					if (typeTmp == TYPE_GRASS) {
+						overlaySprites[DISPLAY_TOP_TOP].add(spriteToAdd);
+					} else if (typeTmp == TYPE_EARTH) {
+						overlaySprites[DISPLAY_MIDDLE_TOP].add(spriteToAdd);	
 					}
 				}
 			}

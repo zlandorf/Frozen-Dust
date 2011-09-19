@@ -255,6 +255,7 @@ public class IronUnit extends GameObject implements Mover {
 			animation = _spriteManager.getAnimationSequence(spriteName);
 			if (animation != null) {
 				animation.start();
+				setSprite(animation.getCurrentSprite());
 			}
 		}
 		

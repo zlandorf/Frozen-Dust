@@ -86,7 +86,7 @@ public class GameSession extends BaseGameController implements GameContext {
 	}
 	
 	public void startGame() {
-		turnIndex = (int)System.currentTimeMillis() % 2;
+		turnIndex = (int)(System.currentTimeMillis() % 2);
 		Client player = clients.get(turnIndex);
 		
 		setTurn(player.getId());
