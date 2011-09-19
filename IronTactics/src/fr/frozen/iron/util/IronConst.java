@@ -20,6 +20,7 @@ public class IronConst {
 	public static final int INTRO_DURATION = 1;//s
 
 	public static final double BIRD_APPEARANCE_PROB = 0.0001;
+	public static final double WIND_PROB = 0.001;
 	public static float PROJECTILE_SPEED = 450;
 	public static float BLIND_PROJECTILE_SPEED = 120;
 	public static float BLIND_SHOT_MISS_PROB = 0.15f;

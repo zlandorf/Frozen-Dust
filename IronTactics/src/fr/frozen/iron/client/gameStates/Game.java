@@ -285,6 +285,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		if (!worldReady) return;
 		world.update(deltaTime);
+		world.getMap().update(deltaTime);
 		
 		if (getGameObjectCollection("bird") == null || getGameObjectCollection("bird").size() == 0) {
 			if (Math.random() <= IronConst.BIRD_APPEARANCE_PROB) {

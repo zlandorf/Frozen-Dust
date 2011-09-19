@@ -4,6 +4,7 @@ import java.awt.geom.Point2D;
 import java.util.ArrayList;
 import java.util.List;
 
+import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.ISprite;
 import fr.frozen.game.ISpriteManager;
 import fr.frozen.game.SpriteManagerImpl;
@@ -45,6 +46,9 @@ public class Tile {
 	
 	protected IronMap map;
 	protected ISprite sprite;
+	protected AnimationSequence idle_animation;
+	protected AnimationSequence wind_animation;
+	
 	protected ISprite overlapSprite;
 	protected List<ISprite> []overlaySprites;
 	
@@ -185,20 +189,32 @@ public class Tile {
 		return "["+type+ ", "+subType+"]["+objectOverlap+", "+objectSubType+", "+occupied+"]["+terrainOverlap+"] ";
 	}
 
-	public void render() {
-		if (sprite != null) {
-			sprite.draw((float)pos.getX() * IronConst.TILE_WIDTH, (float)pos.getY() * IronConst.TILE_HEIGHT);
+	public void render(float deltaTime) {
+		float x = (float)pos.getX() * IronConst.TILE_WIDTH;
+		float y = (float)pos.getY() * IronConst.TILE_HEIGHT;
+		
+		if (wind_animation != null && wind_animation.animating()) {
+			wind_animation.update(deltaTime);
+		} else if (idle_animation != null) {
+			idle_animation.update(deltaTime);
+		}
+		
+		if (wind_animation != null && wind_animation.animating()) {
+			wind_animation.getCurrentSprite().draw(x, y);
+		} else if(idle_animation != null) {
+			idle_animation.getCurrentSprite().draw(x, y);
+		} else if (sprite != null) {
+			sprite.draw(x, y);
 		}
 		
 		if (overlaySprites != null) {
 			for (int i = 0; i < NB_DISPLAY_LEVELS; i++) {
 				for (ISprite s : overlaySprites[i]) {
-					s.draw((float)pos.getX() * IronConst.TILE_WIDTH, (float)pos.getY() * IronConst.TILE_HEIGHT);
+					s.draw(x, y);
 				}
 			}
 		}
 	}
-	
 	
 	public void renderObject(float deltaTime) {
 		if (overlapSprite != null) {
@@ -206,14 +222,27 @@ public class Tile {
 		}
 	}
 	
+	public void animateWind() {
+		if (type == TYPE_GRASS && wind_animation != null) {
+			wind_animation.start();
+		}
+	}
+	
 	@SuppressWarnings("unchecked")
 	public void findSprites() {
 		ISpriteManager spriteManager = SpriteManagerImpl.getInstance();
-
+		String spriteName = tile_names[type];
 		if (subType > 0) {
-			sprite = spriteManager.getSprite(tile_names[type]+"_"+subType);
-		} else {
-			sprite = spriteManager.getSprite(tile_names[type]);
+			spriteName += "_"+subType;
+		} 
+		sprite = spriteManager.getSprite(spriteName);
+		
+		if (spriteManager.isAnimationLoaded(spriteName+"_wind")) {
+			wind_animation = spriteManager.getAnimationSequence(spriteName+"_wind");
+		}
+		if (spriteManager.isAnimationLoaded(spriteName+"_idle")) {
+			idle_animation = spriteManager.getAnimationSequence(spriteName+"_idle");
+			idle_animation.start();
 		}
 		
 		//sprite = spriteManager.getSprite(tile_names[type]);

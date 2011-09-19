@@ -20,6 +20,9 @@ public class IronMap implements TileBasedMap {
 	
 	
 	protected Tile[][] tiles;
+	protected int currentWindIndex = -1;
+	protected float currentDuration;
+	protected float timeBetweenTwo = 0.15f;//s
 	
 	public IronMap() {
 		tiles = new Tile[IronConst.MAP_WIDTH][IronConst.MAP_HEIGHT];
@@ -32,6 +35,32 @@ public class IronMap implements TileBasedMap {
 		}
 	}
 	
+	public void update(float deltaTime) {
+		if (currentWindIndex == -1 && Math.random() <= IronConst.WIND_PROB) {
+			currentWindIndex = 0;
+			currentDuration = 0;
+			for (int j = 0; j < tiles[j].length; j++) {
+				tiles[currentWindIndex][j].animateWind();
+			}
+		} else if (currentWindIndex >= 0) {
+			currentDuration += deltaTime;
+			while (currentDuration > timeBetweenTwo) {
+				currentDuration -= timeBetweenTwo;
+				currentWindIndex++;
+
+				if (currentWindIndex >= IronConst.MAP_WIDTH) {
+					currentWindIndex = -1;
+					return;
+				}
+				
+				for (int j = 0; j < tiles[j].length; j++) {
+					tiles[currentWindIndex][j].animateWind();
+				}
+			}
+		} else {
+			return;
+		}
+	}
 	
 	private boolean isDeployementZone(int x, int y) {
 		int xstart = (IronConst.MAP_WIDTH - 10) / 2 /*+ (IronConfig.MAP_WIDTH & 1)*/;
@@ -199,7 +228,7 @@ public class IronMap implements TileBasedMap {
 	public void render(float deltaTime) {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
-				tiles[i][j].render();
+				tiles[i][j].render(deltaTime);
 				tiles[i][j].renderObject(deltaTime);
 				IronUnit unit = tiles[i][j].getUnitOnTile();
 				if (unit != null) {
@@ -213,7 +242,7 @@ public class IronMap implements TileBasedMap {
 	public void renderTiles(float deltaTime) {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
-				tiles[i][j].render();
+				tiles[i][j].render(deltaTime);
 			}
 		}
 	}
