@@ -332,17 +332,17 @@ public class IronUtil {
 	}
 	
 	public static Vector2f getIntersectionPoint(Vector2f A, Vector2f B, Vector2f C, Vector2f D) {
+		double [] I = new double[]{B.getX() - A.getX(), B.getY() - A.getY()}; 
+		double [] J = new double[]{D.getX() - C.getX(), D.getY() - C.getY()};
 		
-		Vector2f I = new Vector2f(B.getX() - A.getX(), B.getY() - A.getY()); 
-		Vector2f J = new Vector2f(D.getX() - C.getX(), D.getY() - C.getY());
-		
-		double denom = I.getX() * J.getY() - I.getY() * J.getX();
+		double denom = I[0] * J[1] - I[1] * J[0];
 		if (denom == 0) {
 			return null; //parallel
 		}
 		
-		double m = - (-I.getX() * A.getY() + I.getX() * C.getY() + I.getY() * A.getX() - I.getY() * C.getX()) / denom;
-		double k = - (A.getX() * J.getY() - C.getX() * J.getY() - J.getX() * A.getY() + J.getX() * C.getY()) / denom; 
+		
+		double m = - (-I[0] * A.getY() + I[0] * C.getY() + I[1] * A.getX() - I[1] * C.getX()) / denom;
+		double k = - (A.getX() * J[1] - C.getX() * J[1] - J[0] * A.getY() + J[0] * C.getY()) / denom; 
 
 		//m = -(-Ix*Ay+Ix*Cy+Iy*Ax-Iy*Cx)/(Ix*Jy-Iy*Jx)
 		//k = -(Ax*Jy-Cx*Jy-Jx*Ay+Jx*Cy)/(Ix*Jy-Iy*Jx)
@@ -352,9 +352,8 @@ public class IronUtil {
 			return null;//not intersection on segment portion
 		}
 		
-		Vector2f P = new Vector2f((float)(A.getX() + k * I.getX()),
-								  (float)(A.getY() + k * I.getY()));
-		
+		Vector2f P = new Vector2f((float)(A.getX() + k * I[0]),
+								  (float)(A.getY() + k * I[1]));
 		return P;
 	}
 	
