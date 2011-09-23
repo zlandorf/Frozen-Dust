@@ -6,6 +6,8 @@ import java.nio.channels.SocketChannel;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
+
 public class MessageWriter extends Thread {
 	
 	private List<MessageToSend> msgsToSend;
@@ -53,13 +55,13 @@ public class MessageWriter extends Thread {
 						try {
 							if (!msg.isBroadCast()) {
 								if (msg.getChannel() == null) {
-									System.err.println("channel for writing null");
+									Logger.getLogger(getClass()).error("channel for writing null");
 									return;
 								}
 								msg.getChannel().write(writeBuff);
 							} else {
 								if (msg.getChannels() == null) {
-									System.err.println("list of channels null");
+									Logger.getLogger(getClass()).error("list of channels null");
 									return;
 								}
 								for (SocketChannel channel : msg.getChannels()) {
@@ -70,7 +72,7 @@ public class MessageWriter extends Thread {
 							
 							//System.out.println("message wrote !");
 						} catch (IOException e) {
-							System.out.println("problem when writing");
+							Logger.getLogger(getClass()).error("problem when writing");
 							e.printStackTrace();
 						}
 					}

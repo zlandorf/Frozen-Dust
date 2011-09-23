@@ -10,6 +10,8 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.network.common.Attachment;
 import fr.frozen.network.common.IMessageProcessor;
 import fr.frozen.network.common.Message;
@@ -75,7 +77,7 @@ public class BaseClient extends Thread implements IMessageProcessor {
     
     public void connect() {
     	try {
-    		System.out.println("Trying to connect to "+host+":"+port);
+    		Logger.getLogger(getClass()).info("Trying to connect to "+host+":"+port);
     		serverAddress = InetAddress.getByName(host);
     		System.out.println("serverAddress = "+serverAddress);
     		serverChannel = SocketChannel.open(new InetSocketAddress(serverAddress, port));
@@ -87,11 +89,11 @@ public class BaseClient extends Thread implements IMessageProcessor {
     		selector = Selector.open();
     		//socketChannel.register(selector,SelectionKey.OP_CONNECT);
     		serverChannel.register(selector, SelectionKey.OP_READ, new Attachment(SERVER_ID,this));
-    		System.out.println("connected");
+    		Logger.getLogger(getClass()).info("connected");
     		connected = true;
     		dispatchEvent(new ConnectEvent(true));
     	} catch (Exception e) {
-    		System.err.println("problem when connecting : "+e.getMessage());
+    		Logger.getLogger(getClass()).error("problem when connecting : "+e.getMessage());
     		connected = false;
     		running = false;
     		dispatchEvent(new ConnectEvent(false));
@@ -139,7 +141,7 @@ public class BaseClient extends Thread implements IMessageProcessor {
     
     
     protected void shutdown() {
-    	System.out.println("shutdown");
+    	Logger.getLogger(getClass()).info("shutdown");
     	running = false;
     	if (msgWriter != null) msgWriter.end();
     	if (selector != null) selector.wakeup();
@@ -155,10 +157,10 @@ public class BaseClient extends Thread implements IMessageProcessor {
     	init();
     	
     	if (!isConnected()) {
-    		System.out.println("connection failed, not entering loop");
+    		Logger.getLogger(getClass()).error("connection failed, not entering loop");
     		running = false;
     	} else {
-    		System.out.println("entering loop");
+    		Logger.getLogger(getClass()).debug("entering loop");
     	}
     	while (running) {
     		try {
@@ -176,11 +178,11 @@ public class BaseClient extends Thread implements IMessageProcessor {
 				update();
 			}
 			catch (IOException ioe) {
-				System.err.println("error during serverSocket select(): " + ioe.getMessage());
+				Logger.getLogger(getClass()).error("error during serverSocket select(): " + ioe.getMessage());
 				ioe.printStackTrace();
 			}
 			catch (Exception e) {
-				System.err.println("exception in run()");
+				Logger.getLogger(getClass()).error("exception in run()");
 				e.printStackTrace();
 			}
     	}

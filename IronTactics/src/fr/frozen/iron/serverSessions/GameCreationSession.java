@@ -74,7 +74,7 @@ public class GameCreationSession extends BaseGameController {
 	protected void handleRaceRequest(Message msg) {
 		Client c = server.getClient(msg.getClientId());
 		int raceChosen = IronUtil.byteArrayToInt(msg.getData());
-		System.out.println(c+" chose "+Protocol.get(raceChosen));
+		logger.info(c+" chose "+Protocol.get(raceChosen));
 		//TODO: check here that race is legit
 		if (host.getId() == msg.getClientId()) {
 			hostRace = raceChosen;
@@ -173,10 +173,10 @@ public class GameCreationSession extends BaseGameController {
 		Client dest = server.getClient(destId);
 
 		if (dest == null) {
-			System.err.println("problem, client is null (in send playerlist");
+			logger.error("problem, client is null (in send playerlist");
 			return;
 		}
-		System.out.println(dest+" requesting player list in gameCreation");
+		logger.debug(dest+" requesting player list in gameCreation");
 			
 		try {
 			byteArray.reset();

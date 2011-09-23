@@ -20,6 +20,7 @@ import java.util.Hashtable;
 
 import javax.imageio.ImageIO;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 
 /**
@@ -133,9 +134,9 @@ public class TextureLoader {
         try {
         	textureID = createTextureID(); 
         } catch (Exception e) {
-        	System.err.println("failed to load : "+resourceName);
+        	Logger.getLogger(getClass()).error("failed to load : "+resourceName);
         	e.printStackTrace();
-        	System.exit(1);
+        	return null;
 		}
         Texture texture = new Texture(target,textureID); 
         

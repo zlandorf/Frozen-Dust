@@ -1,5 +1,7 @@
 package fr.frozen.iron.client.gameStates;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
 import fr.frozen.game.ISprite;
@@ -151,11 +153,11 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 			if (rce.getClientId() == netClient.getClientId()) {
 				if (rce.getClientId() == host.getId()) {
 					if (rce.getChosenRace() != hostList.getSelectedItem().getValue()) {
-						System.err.println("chosen race not the one requested");
+						Logger.getLogger(getClass()).error("chosen race not the one requested");
 					}	
 				} else if (rce.getClientId() == other.getId()) {
 					if (rce.getChosenRace() != otherList.getSelectedItem().getValue()) {
-						System.err.println("chosen race not the one requested");
+						Logger.getLogger(getClass()).error("chosen race not the one requested");
 					}	
 				}
 			} else {

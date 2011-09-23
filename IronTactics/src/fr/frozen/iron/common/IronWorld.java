@@ -125,10 +125,12 @@ public class IronWorld extends GameState {
 		if (map != null) {
 			map.renderTiles(deltaTime);
 			
-			List<GameObject> corpses = getGameObjectCollection("corpse");
-			if (corpses != null) {
-				for (GameObject corpse : corpses){
-					corpse.render(deltaTime);
+			synchronized (this) {
+				List<GameObject> corpses = getGameObjectCollection("corpse");
+				if (corpses != null) {
+					for (GameObject corpse : corpses){
+						corpse.render(deltaTime);
+					}
 				}
 			}
 			

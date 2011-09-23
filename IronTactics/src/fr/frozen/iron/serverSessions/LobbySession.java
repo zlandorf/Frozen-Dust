@@ -55,10 +55,10 @@ public class LobbySession extends BaseGameController {
 		Client dest = server.getClient(destId);
 
 		if (dest == null) {
-			System.err.println("problem, client is null (in send game list) in "+sessionType);
+			logger.error("problem, client is null (in send game list) in "+sessionType);
 			return;
 		}
-		System.out.println(dest+" requesting game list");
+		logger.debug(dest+" requesting game list");
 			
 		try {
 			byteArray.reset();

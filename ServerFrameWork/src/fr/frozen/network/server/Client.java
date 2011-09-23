@@ -44,6 +44,6 @@ public class Client {
 	}
 	
 	public String toString() {
-		return name+" id = "+id;
+		return "[ID="+id+"]"+name;
 	}
 }

@@ -7,6 +7,7 @@ import java.util.Hashtable;
 import java.util.List;
 import java.util.Vector;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
@@ -49,7 +50,6 @@ public class GameEngine implements IGameEngine {
 		_timer = new Timer();
 		_resolution = new Dimension();
 		_screenSize = Toolkit.getDefaultToolkit().getScreenSize();
-		System.out.println(_screenSize);
 	}
 	
 	
@@ -123,7 +123,7 @@ public class GameEngine implements IGameEngine {
 			return true;
 		} catch (Exception e) {
 			e.printStackTrace();
-			System.err.println("DisplayMode not supported");
+			Logger.getLogger(getClass()).error("DisplayMode not supported");
 		}
 		return false;
 	}
@@ -191,52 +191,53 @@ public class GameEngine implements IGameEngine {
 	/* ----------------------  protected ------------------------- */
 	
 	protected boolean setDisplayMode() {
-    		try {
-    			DisplayMode[] adm = Display.getAvailableDisplayModes();
-    			DisplayMode finaldm;
-    			finaldm = adm[0];
-    			for (DisplayMode dm : adm) {
-    				if (dm.isFullscreenCapable() 
-    					&& dm.getWidth() == _screenSize.getWidth() 
-    					&& dm.getHeight() == _screenSize.getHeight()) {
-    					
-    					finaldm = dm;
-    					break;
-    				}
-    			}
-    			
-    			/*org.lwjgl.util.Display.setDisplayMode(adm, new String[] {
+		Logger.getLogger(getClass()).debug("screen size wanted = "+_screenSize);
+		try {
+			DisplayMode[] adm = Display.getAvailableDisplayModes();
+			DisplayMode finaldm;
+			finaldm = adm[0];
+			for (DisplayMode dm : adm) {
+				if (dm.isFullscreenCapable() 
+						&& dm.getWidth() == _screenSize.getWidth() 
+						&& dm.getHeight() == _screenSize.getHeight()) {
+
+					finaldm = dm;
+					break;
+				}
+			}
+
+			/*org.lwjgl.util.Display.setDisplayMode(adm, new String[] {
     					"width=" + (int)_screenSize.getWidth(),
     					"height=" + (int)_screenSize.getHeight(),
     					"freq=" + 60,
     					"bpp=" + org.lwjgl.opengl.Display.getDisplayMode().getBitsPerPixel()
     					});*/
-    			
-    			
-    			Display.setDisplayMode(finaldm);
-    			System.out.println("fullscreen "+_fullScreen);
-    			Display.setFullscreen(_fullScreen);
-    			return true;
-    		} catch (Exception e) {
-      			e.printStackTrace();
-      			System.out.println("Unable to enter fullscreen, continuing in windowed mode");
-    		}
-		
-//		try {
-//			// get modes
-//			DisplayMode[] dm = org.lwjgl.util.Display.getAvailableDisplayModes((int)_screenSize.getWidth(), (int)_screenSize.getHeight(), -1, -1, -1, -1, 60, 60);
-//			
-//			org.lwjgl.util.Display.setDisplayMode(dm, new String[] {
-//			"width=" + (int)_screenSize.getWidth(),
-//			"height=" + (int)_screenSize.getHeight(),
-//			"freq=" + 60,
-//			"bpp=" + org.lwjgl.opengl.Display.getDisplayMode().getBitsPerPixel()
-//			});
-//			return true;
-//			} catch (Exception e) {
-//			e.printStackTrace();
-//			System.out.println("Unable to enter fullscreen, continuing in windowed mode");
-//			}
+
+			Logger.getLogger(getClass()).debug("screen size found = ["+finaldm.getWidth()+","+finaldm.getHeight()+"]");
+			Logger.getLogger(getClass()).debug("fullscreen "+_fullScreen);
+			Display.setDisplayMode(finaldm);
+			Display.setFullscreen(_fullScreen);
+			return true;
+		} catch (Exception e) {
+			e.printStackTrace();
+			Logger.getLogger(getClass()).error("Unable to enter fullscreen, continuing in windowed mode");
+		}
+
+		//		try {
+		//			// get modes
+		//			DisplayMode[] dm = org.lwjgl.util.Display.getAvailableDisplayModes((int)_screenSize.getWidth(), (int)_screenSize.getHeight(), -1, -1, -1, -1, 60, 60);
+		//			
+		//			org.lwjgl.util.Display.setDisplayMode(dm, new String[] {
+		//			"width=" + (int)_screenSize.getWidth(),
+		//			"height=" + (int)_screenSize.getHeight(),
+		//			"freq=" + 60,
+		//			"bpp=" + org.lwjgl.opengl.Display.getDisplayMode().getBitsPerPixel()
+		//			});
+		//			return true;
+		//			} catch (Exception e) {
+		//			e.printStackTrace();
+		//			System.out.println("Unable to enter fullscreen, continuing in windowed mode");
+		//			}
 
 		return false;
 	}

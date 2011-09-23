@@ -3,6 +3,8 @@ package fr.frozen.iron.client;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.ISpriteManager;
@@ -14,6 +16,7 @@ import fr.frozen.iron.client.gameStates.Lobby;
 import fr.frozen.iron.client.gameStates.MainMenu;
 import fr.frozen.iron.client.gameStates.OptionMenu;
 import fr.frozen.iron.client.messageEvents.NewSessionEvent;
+import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.util.IronConfig;
 import fr.frozen.network.client.ConnectEvent;
@@ -53,11 +56,11 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		if (ne instanceof ConnectEvent) {
 			ConnectEvent ce = (ConnectEvent) ne;
 			if (ce.getStatus()) {
-				System.out.println("IronTactics connected successfully");
+				Logger.getLogger(getClass()).info("IronTactics connected successfully");
 				netClient.sendMessage(Protocol.SERVER_C_SEND_PLAYER_NAME, IronConfig.getUserName());
 				netClient.start();
 			} else {
-				System.out.println("IronTactics failed to connect");
+				Logger.getLogger(getClass()).error("IronTactics failed to connect");
 			}
 		}
 		
@@ -80,10 +83,10 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				break;
 				
 			default : 
-				System.out.println("game session not handled : "+nse.getType());
+				Logger.getLogger(getClass()).error("game session not handled : "+nse.getType());
 				break;
 			}
-			System.out.println("switching to "+newGameState);
+			Logger.getLogger(getClass()).info("switching to "+newGameState);
 			if (newGameState != null && !newGameState.equals(getCurrentGameState().getName())) {
 				switchToState(newGameState);
 			}
@@ -114,6 +117,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	@Override
 	protected void buildAssets() {
 		ISpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
+		@SuppressWarnings("unused")
+		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
 		FontManager.loadFont("Data/Font.png");
 		FontManager.loadFont("Data/DamageFont.png");
 		FontManager.loadFont("Data/StatsFont.png",7);
@@ -158,6 +163,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 			System.out.println("you can add an argument to specify host address");
 		}
 		
+		IronConfig.configClientLogger();
 		IronTactics it = new IronTactics(host);
 		it.setTitle("Iron Tactics");
 		it.setVSync(true);

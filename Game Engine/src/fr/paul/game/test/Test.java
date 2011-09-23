@@ -1,5 +1,8 @@
 package fr.paul.game.test;
 
+import org.apache.log4j.BasicConfigurator;
+import org.apache.log4j.Level;
+import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
 
 import fr.frozen.game.GameEngine;
@@ -11,8 +14,12 @@ class Test extends GameEngine {
 
 	int viewX = 0;
 	int viewY = 0;
+	protected Logger logger = Logger.getLogger("engine");
 	
 	public Test() {
+		BasicConfigurator.configure();
+		logger.setLevel(Level.ALL);
+		logger.info("TEST JUST INSTANCIATED !!");
 	}
 	
 	@Override

@@ -2,6 +2,8 @@ package fr.frozen.network.common;
 
 import java.nio.ByteBuffer;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.network.server.BaseServer;
 
 public class Attachment {
@@ -69,7 +71,7 @@ public class Attachment {
 			payLoadSize = readBuf.getInt();
 
 			if (payLoadSize <= 0 || payLoadSize > NetConstants.MAX_MSG_SIZE) {
-				System.err.println("problem with payloadsize");
+				Logger.getLogger(getClass()).error("problem with payloadsize");
 				//TODO throw exception ?
 				return false;
 			}

@@ -7,6 +7,7 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.opengl.Display;
 
 import fr.frozen.game.FontManager;
@@ -158,7 +159,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		if (ne instanceof PlayerListReceivedEvent) {
 			PlayerListReceivedEvent plre = (PlayerListReceivedEvent) ne;
-			if (plre.getList().size() != 2) System.err.println("PROBLEM WITH NUMBER OF PLAYERS");
+			if (plre.getList().size() != 2)Logger.getLogger(getClass()).error("PROBLEM WITH NUMBER OF PLAYERS");
 			for (IronPlayer player : plre.getList())
 				players.add(player);
 			
@@ -273,7 +274,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			skill.executeClientSide(world, unitSrc.getId(), x, y, values);
 			break;
 		default :
-			System.out.println("Action not recognised "+gae.getType());
+			Logger.getLogger(getClass()).error("Action not recognised "+gae.getType());
 		}
 	}
 	

@@ -34,8 +34,6 @@ public class Intro extends GameState {
 		float y = (dm.getHeight() / 2) - scale * 16 /2;
 		textPos = new Vector2f(x, y);
 
-		System.out.println(dm);
-		System.out.println("pos = "+textPos);
 	}
 
 	@Override
@@ -70,7 +68,6 @@ public class Intro extends GameState {
 		}
 		
 		if (ended) {
-			System.out.println("intro ended");
 			setActive(false);
 			setVisible(false);
 			gameEngine.getGameState("mainMenu").setActive(true);

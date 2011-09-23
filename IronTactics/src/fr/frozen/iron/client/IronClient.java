@@ -7,6 +7,8 @@ import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.iron.client.messageEvents.ChatMessageEvent;
 import fr.frozen.iron.client.messageEvents.GameActionEvent;
 import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
@@ -129,7 +131,7 @@ public class IronClient extends BaseClient {
 			
 		case CONNECTION_S_SEND_PLAYER_ID :
 			myId = IronUtil.byteArrayToInt(msg.getData());
-			System.out.println("ID received : "+myId);
+			Logger.getLogger(getClass()).info("ID received : "+myId);
 			break;
 			
 		case SESSION_S_SERVER_MESSAGE : 
@@ -170,7 +172,7 @@ public class IronClient extends BaseClient {
 			break;
 			
 		default : 
-			System.out.println("not handled : "+Protocol.get(msg.getType()));
+			Logger.getLogger(getClass()).error("not handled : "+Protocol.get(msg.getType()));
 		}
 	}
 	

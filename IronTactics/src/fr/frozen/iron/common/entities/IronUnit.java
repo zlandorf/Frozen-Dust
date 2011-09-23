@@ -5,6 +5,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 import fr.frozen.game.AnimationSequence;
@@ -321,7 +322,7 @@ public class IronUnit extends GameObject implements Mover {
 		String base = "unitstats/"+typeNames[type]+"/"+racestr;
 		
 		if (racestr == null) {
-			System.err.println("PROBLEM WHILE GETTING UNIT STATS");
+			Logger.getLogger(getClass()).error("PROBLEM WHILE GETTING UNIT STATS");
 			return;
 		}
 		
@@ -440,7 +441,7 @@ public class IronUnit extends GameObject implements Mover {
 			if (!skills.contains(skill)) {
 				addSkill(skill);
 			} else {
-				System.out.println("already contains skill "+skill);
+				Logger.getLogger(getClass()).debug("already contains skill "+skill);
 			}
 		} else {
 			if (skills.contains(skill)) {

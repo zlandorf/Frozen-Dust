@@ -3,6 +3,7 @@ package fr.frozen.game;
 import java.io.IOException;
 import java.util.HashMap;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
@@ -17,6 +18,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 	
 	private HashMap<String, ISprite> sprites;
 	private HashMap<String, AnimationSequence> animations;
+	private Logger logger = Logger.getLogger(getClass());
 	
 	public SpriteManagerImpl() {
 		sprites = new HashMap<String, ISprite>();
@@ -37,7 +39,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 			addSprite(spritename, new SpriteImpl(tex));
 			return true;
 		} catch (IOException e) {
-			System.err.println("error when loading "+filename);
+			logger.error("error when loading "+filename);
 		}
 		return false;
 	}
@@ -48,7 +50,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 			addSprite(filename, new SpriteImpl(tex));
 			return true;
 		} catch (IOException e) {
-			System.err.println("error when loading "+filename);
+			logger.error("error when loading "+filename);
 		}
 		return false;
 	}
@@ -56,12 +58,12 @@ public class SpriteManagerImpl extends ISpriteManager {
 	
 	protected void addSprite(String name, ISprite sprite) {
 		sprites.put(name.replaceAll("\\.png", ""), sprite);//in case
-		System.out.println("new sprite loaded and added : "+name);
+		logger.debug("new sprite loaded and added : "+name);
 	}
 	
 	protected void addAnimation(String name, AnimationSequence as) {
 		animations.put(name, as);//in case
-		System.out.println("new animation loaded and added : ["+name+"] [nb frames ="+as.getFrames().size()+"]");
+		logger.debug("new animation loaded and added : ["+name+"] [nb frames ="+as.getFrames().size()+"]");
 	}
 	
 	public boolean loadImagesFromXml(String filename) {
@@ -87,10 +89,33 @@ public class SpriteManagerImpl extends ISpriteManager {
 			}
 		}
 		
-		System.out.println("XML image loading : "+(success ? "success":"failure"));
+		String imagesAdded = "images added = ";
+		imagesAdded += getArrayStr(sprites.keySet().toArray());
+		
+		String animationsAdded = "animations added = ";
+		animationsAdded += getArrayStr(animations.keySet().toArray());
+		
+		logger.info(imagesAdded);
+		logger.info(animationsAdded);
+		
+		if (success) {
+			logger.info("XML Image Loading success");
+		} else {
+			logger.error("XML Image Loading failure");
+		}
 		return success;
 	}
 	
+	protected String getArrayStr(Object[] array) {
+		String str = "[";
+		for (int i = 0; i < array.length; i++) {
+			str += array[i];
+			if (i < array.length - 1) {
+				str += ",";
+			}
+		}
+		return str+"]";
+	}
 	
 	private boolean getAnimationFromNode(Node node) {
 		if (node == null || !node.hasAttributes()) return false;
@@ -103,7 +128,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 		for (int i = 0; i < attr.length; i++) {
 			attrnode = attributes.getNamedItem(attr[i]);
 			if (attrnode == null) {
-				System.out.println("attribute not found : "+attr[i]);
+				logger.error("attribute not found : "+attr[i]);
 				return false;
 			}
 			vals[i] = attrnode.getNodeValue();
@@ -134,7 +159,6 @@ public class SpriteManagerImpl extends ISpriteManager {
 			offSets[i] = new Vector2f(offx, offy);
 			frameDims[i] = new Vector2f(framewidth, frameheight);
 		}
-		System.out.println("framedim[0] = "+frameDims[0]);
 		if (node.hasChildNodes()) {
 			NodeList children = node.getChildNodes();
 			for (int i = 0; i < children.getLength(); i++) {
@@ -161,8 +185,6 @@ public class SpriteManagerImpl extends ISpriteManager {
 					offy = Integer.parseInt(attrnode.getNodeValue());
 					offSets[index].setY(offy);
 				}
-				
-				
 				
 				attrnode = attributes.getNamedItem("width");
 				if (attrnode != null) {
@@ -197,7 +219,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 		try {
 			tex = TextureLoader.getInstance().getTexture(filename);
 		} catch (IOException e) {
-			System.err.println("error when loading texture "+filename);
+			logger.error("error when loading texture "+filename);
 		}
 		return tex;
 	}
@@ -221,7 +243,7 @@ public class SpriteManagerImpl extends ISpriteManager {
 		for (int i = 0; i < attr.length; i++) {
 			attrnode = attributes.getNamedItem(attr[i]);
 			if (attrnode == null) {
-				System.out.println("attribute not found : "+attr[i]);
+				logger.error("attribute not found : "+attr[i]);
 				return false;
 			}
 			vals[i] = attrnode.getNodeValue();

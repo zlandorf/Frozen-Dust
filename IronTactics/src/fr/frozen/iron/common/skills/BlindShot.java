@@ -3,6 +3,7 @@ package fr.frozen.iron.common.skills;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 import fr.frozen.iron.common.IronWorld;
@@ -120,7 +121,7 @@ public class BlindShot extends Skill {
 			y2 = values.get(0)[1] % IronConst.MAP_HEIGHT;
 
 			if (x2 < 0 || x2 >= IronConst.MAP_WIDTH || y2 < 0 || y2 >= IronConst.MAP_HEIGHT) {
-				System.out.println("OUT OF BOUNDS IN BLIND SHOT CLIENT SIDE !! x="+x2+" y="+y2);
+				Logger.getLogger(getClass()).warn("OUT OF BOUNDS IN BLIND SHOT CLIENT SIDE !! x="+x2+" y="+y2);
 			}
 			
 			x2 *= IronConst.TILE_WIDTH;

@@ -2,6 +2,8 @@ package fr.frozen.iron.common.skills;
 
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.DamageParticle;
@@ -33,7 +35,7 @@ public abstract class Skill {
 		case CHARGE :
 			return Charge.getInstance();
 		default :
-			System.out.println("Skill not found");
+			Logger.getLogger(Skill.class).error("Skill not found");
 		}
 		
 		return null;

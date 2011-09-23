@@ -55,7 +55,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		playerInfo.put(host, new PlayerGameInfo(Protocol.get(hostRace), hostColor));
 		playerInfo.put(other, new PlayerGameInfo(Protocol.get(otherRace), otherColor));
 		
-		System.out.println("New game : "+host+"("+Protocol.get(hostRace)+") vs "+
+		logger.info("New game : "+host+"("+Protocol.get(hostRace)+") vs "+
 				other+"("+Protocol.get(otherRace)+")");
 		
 		
@@ -142,7 +142,7 @@ public class GameSession extends BaseGameController implements GameContext {
 			for (int i = 0; i < nblines; i++) {
 				line[i] = parser.getAttributeValue("deployement/"+race, "line"+(i+1));
 				if (line[i] == null) {
-					System.out.println("probs at parsing deployement line "+(i+1));
+					logger.error("probs at parsing deployement line "+(i+1));
 					continue main;
 				}
 			}
@@ -258,7 +258,7 @@ public class GameSession extends BaseGameController implements GameContext {
 			}
 			break;
 		default :
-			System.out.println("ACTION NOT SUPPORTED :"+ actionType);
+			logger.error("ACTION NOT SUPPORTED :"+ actionType);
 		}
 	}
 
@@ -320,7 +320,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		Client dest = server.getClient(clientId);
 
 		if (dest == null) {
-			System.err.println("problem, client is null (in sendMap");
+			logger.error("problem, client is null (in sendMap");
 			return;
 		}
 		try {
@@ -343,7 +343,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		Set<Client> keySet = playerInfo.keySet();
 
 		if (dest == null || keySet.size() != 2) {
-			System.err.println("problem, in send playerInfo");
+			logger.error("problem, in send playerInfo");
 			return;
 		}
 		try {
@@ -366,7 +366,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		Client dest = server.getClient(clientId);
 
 		if (dest == null) {
-			System.err.println("problem, client is null (in sendGameUnit");
+			logger.error("problem, client is null (in sendGameUnit");
 			return;
 		}
 		try {

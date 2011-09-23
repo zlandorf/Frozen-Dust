@@ -10,12 +10,13 @@ import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.serverSessions.GameCreationSession;
 import fr.frozen.iron.serverSessions.GameSession;
 import fr.frozen.iron.serverSessions.LobbySession;
+import fr.frozen.iron.util.IronConfig;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.BaseServer;
-import fr.frozen.network.server.IGameController;
 import fr.frozen.network.server.Client;
+import fr.frozen.network.server.IGameController;
 
 public class IronServer extends BaseServer {
 
@@ -71,7 +72,7 @@ public class IronServer extends BaseServer {
 			c.setCurrentGameSession(gc);
 			
 			notifySessionChange(c, gc.getSessionType());
-			System.out.println("new gameCreation created by "+c);
+			logger.info("new gameCreation created by "+c);
 			return gc;
 		}
 	}
@@ -127,7 +128,7 @@ public class IronServer extends BaseServer {
 				
 				//TODO : handle the case where two people have the same name
 				sender.setName(name);
-				System.out.println("name chosen : "+ name);
+				logger.info(sender+ " chose name : "+ name);
 				if (currentGameSession == null) {
 					sender.setCurrentGameSession(lobby);
 					lobby.addClient(sender);
@@ -159,6 +160,7 @@ public class IronServer extends BaseServer {
 	}
 	
 	public static void main(String []args) {
+		IronConfig.configServerLogger();
 		BaseServer server = new IronServer();
 		server.start();
 	}

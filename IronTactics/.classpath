@@ -12,5 +12,6 @@
 	<classpathentry kind="lib" path="jar/jinput.jar"/>
 	<classpathentry kind="lib" path="jar/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="engine.jar"/>
+	<classpathentry kind="lib" path="jar/log4j-1.2.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

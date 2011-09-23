@@ -51,9 +51,9 @@ public class Charge extends Skill {
 	@Override
 	public void executeCommon(IronWorld world, int srcId, int x, int y,
 			List<int[]> values) {
-		super.executeCommon(world, srcId, x, y, values);
 		IronUnit src = world.getUnitFromId(srcId);
 		IronUnit dst = world.getUnitAtXY(x, y);
+		super.executeCommon(world, srcId, x, y, values);
 		if (src == null) return;
 		
 		src.getStats().setMana(src.getStats().getMana() - src.getMeleeWeapon().getManaCost());
@@ -77,6 +77,7 @@ public class Charge extends Skill {
 			}
 		}
 		src.move(xmove, ymove, 0);
+		src.setPlayed(true);
 	}
 	
 	@Override

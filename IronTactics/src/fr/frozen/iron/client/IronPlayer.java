@@ -26,6 +26,6 @@ public class IronPlayer {
 	}
 	
 	public String toString() {
-		return "["+Id+ "] "+name;
+		return "[ID="+Id+ "] "+name;
 	}
 }

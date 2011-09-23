@@ -90,7 +90,6 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 	}
 	
 	private void refresh() {
-		System.out.println("refresh !");
 		removeButtons();
 		netClient.sendEmptyMessage(Protocol.SESSION_GAME_LIST_REQUEST);
 	}

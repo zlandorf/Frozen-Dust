@@ -13,5 +13,6 @@
 	</classpathentry>
 	<classpathentry kind="lib" path="jar/jinput.jar"/>
 	<classpathentry kind="lib" path="jar/lwjgl_util.jar"/>
+	<classpathentry kind="lib" path="/home/paul/Frozen-Dust/IronTactics/jar/log4j-1.2.16.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

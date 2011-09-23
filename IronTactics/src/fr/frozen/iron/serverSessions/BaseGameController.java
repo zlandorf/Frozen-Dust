@@ -6,6 +6,8 @@ import java.nio.channels.SocketChannel;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.iron.net.IronServer;
 import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.util.IronUtil;
@@ -26,6 +28,7 @@ public class BaseGameController implements IGameController {
 	protected ByteArrayOutputStream byteArray;
 	
 	protected IronServer server;
+	protected Logger logger = Logger.getLogger(getClass());
 	
 	public BaseGameController(String name, IronServer server, Protocol sessionType) {
 		this.sessionName = name;
@@ -48,7 +51,7 @@ public class BaseGameController implements IGameController {
 			sendPlayerList(msg.getClientId());
 			break;
 		default :
-			System.out.println("not handled in session "+sessionName+"  "+Protocol.get(msg.getType()));
+			logger.error("not handled in session "+sessionName+"  "+Protocol.get(msg.getType()));
 			break;
 		}
 	}
@@ -65,7 +68,7 @@ public class BaseGameController implements IGameController {
 	
 	@Override
 	public synchronized void addClient(Client p) {
-		System.out.println("adding "+p+" to "+sessionType);
+		logger.info("adding "+p+" to "+sessionType);
 		List<SocketChannel> channels = getAllChannels();
 		
 		if (channels != null)  {
@@ -89,7 +92,7 @@ public class BaseGameController implements IGameController {
 	
 	@Override
 	public synchronized void removeClient(Client p, String reason) { //TODO add a reason to this method, to know why he disconnected
-		System.out.println("removing "+p+" from "+sessionType);
+		logger.info("removing "+p+" from "+sessionType);
 		clients.remove(p);
 		List<SocketChannel> channels = getAllChannels();
 		if (channels == null) return;
@@ -114,10 +117,10 @@ public class BaseGameController implements IGameController {
 		Client dest = server.getClient(destId);
 
 		if (dest == null) {
-			System.err.println("problem, client is null (in send playerlist");
+			logger.error("problem, client is null (in send playerlist");
 			return;
 		}
-		System.out.println(dest+" requesting player list");
+		logger.debug(dest+" requesting player list");
 			
 		try {
 			byteArray.reset();
@@ -145,7 +148,7 @@ public class BaseGameController implements IGameController {
 		if (channels == null) return;
 		
 		String chatMessage = msg.getClientId() + new String(msg.getData());
-		System.out.println("new chat message : "+chatMessage);
+		logger.info("new chat message : "+chatMessage);
 		
 		try {
 			byteArray.reset();

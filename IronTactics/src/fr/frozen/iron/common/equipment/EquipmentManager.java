@@ -2,6 +2,7 @@ package fr.frozen.iron.common.equipment;
 
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
@@ -37,6 +38,32 @@ public class EquipmentManager {
 		
 		findWeaponsInXml(IronConfig.getIronXMLParser());
 		findShieldsAndArmorsInXml(IronConfig.getIronXMLParser());
+		
+		String weaponsStr = "Weapons added = [";
+		weaponsStr += getArrayStr(weaponsByName.values().toArray());
+		weaponsStr += "]";
+		Logger.getLogger(getClass()).info(weaponsStr);
+		
+		String armorStr = "Armors added = [";
+		armorStr += getArrayStr(armorsByName.values().toArray());
+		armorStr += "]";
+		Logger.getLogger(getClass()).info(armorStr);
+		
+		String shieldStr = "Shields added = [";
+		shieldStr += getArrayStr(shieldsByName.values().toArray());
+		shieldStr += "]";
+		Logger.getLogger(getClass()).info(shieldStr);
+	}
+	
+	protected String getArrayStr(Object[] array) {
+		String str = "";
+		for (int i = 0; i < array.length; i++) {
+			str += array[i];
+			if (i < array.length - 1) {
+				str += ",";
+			}
+		}
+		return str;
 	}
 	
 	public Weapon getWeapon(int id) {
@@ -124,11 +151,9 @@ public class EquipmentManager {
 				if (node.getNodeName().equals("shield")) {
 					shieldsById.put(id, armor);
 					shieldsByName.put(name,armor);
-					System.out.println("adding shield "+name);
 				} else {
 					armorsById.put(id, armor);
 					armorsByName.put(name,armor);
-					System.out.println("adding armor "+name);
 				}
 			}
 		}
@@ -198,8 +223,6 @@ public class EquipmentManager {
 				
 				weaponsById.put(id, weapon);
 				weaponsByName.put(name, weapon);
-				
-				System.out.println("adding weapon "+name);
 			}
 		}
 	}

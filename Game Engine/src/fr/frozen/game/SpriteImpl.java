@@ -1,5 +1,6 @@
 package fr.frozen.game;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 
@@ -83,9 +84,8 @@ public class SpriteImpl implements ISprite {
 	@Override
 	public void setAlpha(float val) {
 		if (val < 0 || val > 1) {
-			System.err.println("BAD ALPHA VALUE : "+val);
-			//TODO : remplacer par un assert ou un throw ?
-			return;
+			Logger.getLogger(getClass()).warn("bad alpha value : "+val);
+			val = Math.min(1, Math.max(0, val));
 		}
 		alpha = val;
 	}

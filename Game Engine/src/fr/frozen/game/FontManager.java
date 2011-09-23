@@ -3,6 +3,8 @@ package fr.frozen.game;
 import java.io.IOException;
 import java.util.Hashtable;
 
+import org.apache.log4j.Logger;
+
 public class FontManager {
 
 	private static FontManager instance = new FontManager();;
@@ -42,8 +44,7 @@ public class FontManager {
 			font = new Font(filename, size);
 			String []tmp = filename.split("/");
 			String fontName = tmp[tmp.length - 1].replaceAll("\\.png", "");
-			System.out.println("adding font : "+fontName);
-			
+			Logger.getLogger(getClass()).info("adding font : "+fontName);
 			fonts.put(fontName,font);
 		} catch (IOException e) {
 			e.printStackTrace();

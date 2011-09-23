@@ -45,7 +45,6 @@ public class TestShooter extends GameObject {
 		
 		scaletmp += deltaTime;
 		scaletmp %= 2;
-		System.out.println("modulo float :"+scaletmp);
 		
 		if (scaletmp > 1) {
 			scale = 1 - (scaletmp % 1);

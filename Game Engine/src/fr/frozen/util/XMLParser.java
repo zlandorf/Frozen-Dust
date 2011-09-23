@@ -12,8 +12,6 @@ import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
 
-import fr.frozen.game.TextureLoader;
-
 
 public class XMLParser {
 
@@ -34,7 +32,7 @@ public class XMLParser {
 
 	public void parseXml(String filename) {
 		try {
-			URL url = TextureLoader.class.getClassLoader().getResource(filename);
+			URL url = XMLParser.class.getClassLoader().getResource(filename);
 	        
 	        if (url == null) {
 	            throw new IOException("Cannot find: "+filename);

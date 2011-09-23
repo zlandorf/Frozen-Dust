@@ -10,6 +10,7 @@ import java.io.IOException;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
 import fr.frozen.iron.common.IronWorld;
@@ -99,7 +100,7 @@ public class IronUtil {
 			}
 			br.close();
 		} catch (Exception e) {
-			System.out.println("error when trying to find "+option+"  : "+e.getLocalizedMessage());
+			Logger.getLogger(IronUtil.class).warn("error when trying to find "+option+"  : "+e.getLocalizedMessage());
 		}
 		
 		return option;
@@ -145,7 +146,7 @@ public class IronUtil {
 			bw.flush();
 			bw.close();
 		}catch (Exception e) {
-			System.out.println("error in saveOption when saving "+option+value+ " :"+e.getLocalizedMessage());
+			Logger.getLogger(IronUtil.class).error("error in saveOption when saving "+option+value+ " :"+e.getLocalizedMessage());
 		}
 	}
 	
@@ -369,7 +370,7 @@ public class IronUtil {
 	
 	public static int byteArrayToInt(byte []array) {
 		if (array.length != 4) {
-			System.err.println("wrong array length cannot parse it to int");
+			Logger.getLogger(IronUtil.class).error("wrong array length cannot parse it to int");
 			return 0;
 		}
 		int val = 0;

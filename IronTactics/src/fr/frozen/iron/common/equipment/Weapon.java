@@ -31,7 +31,7 @@ public class Weapon implements Cloneable {
 	}
 	
 	public String toString() {
-		return "["+id+"] "+name+"  damage ="+damage+"  range=["+minRange+ ","+maxRange+"]";
+		return "["+id+"] "+name;//+"  damage ="+damage+"  range=["+minRange+ ","+maxRange+"]";
 	}
 	
 	public int getId() {

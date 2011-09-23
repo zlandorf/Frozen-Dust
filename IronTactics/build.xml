@@ -20,7 +20,7 @@
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.client.IronTactics"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
             </manifest>
 	
             <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
@@ -37,16 +37,18 @@
 	                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
 	                <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.net.IronServer"/>
 	                <attribute name="Class-Path" value="."/>
-	                <attribute name="Rsrc-Class-Path" value="./ netframework.jar lwjgl_util.jar engine.jar"/>
+	                <attribute name="Rsrc-Class-Path" value="./ log4j-1.2.16.jar netframework.jar lwjgl_util.jar engine.jar"/>
 	            </manifest>
 		
 	            <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
 	            <fileset dir="${bin.dir}">
 					<exclude name="**/images/*"/>
 				</fileset>
-	            <zipfileset file="${engine-jar}"/>
+	
+	        	<zipfileset file="${engine-jar}"/>
 				<zipfileset file="${netengine-jar}"/>
 	            <zipfileset file="${jar.dir}/lwjgl_util.jar"/>
+				<zipfileset file="${jar.dir}/log4j-1.2.16.jar"/>
 	        </jar>
 	</target>
 	

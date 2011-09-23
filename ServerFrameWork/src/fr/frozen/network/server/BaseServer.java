@@ -10,6 +10,8 @@ import java.util.ArrayList;
 import java.util.HashMap;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.network.common.Attachment;
 import fr.frozen.network.common.IMessageProcessor;
 import fr.frozen.network.common.Message;
@@ -36,6 +38,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	protected List<IGameController> gameSessionsToAdd;
 	protected List<IGameController> gameSessionsToRemove;
 	
+	protected Logger logger = Logger.getLogger(getClass());
 	
 	protected double lastTime = 0;
 	protected double deltaTime = 0;
@@ -53,7 +56,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	}
 	
 	public void init() {
-		System.out.println("initialising server...");
+		Logger.getLogger(getClass()).info("initialising server...");
 		initServerSocket();
 		buildInitialGameSessions();
 		msgWriter = new MessageWriter();
@@ -103,10 +106,10 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		    
 		    selector = Selector.open();
 		    socketChannel.register(selector, SelectionKey.OP_ACCEPT);
-		    System.out.println("server initialised "+addr);
+		    logger.info("server initialised "+addr);
 		}
 		catch (Exception e) {
-			System.out.println("Server failed to launch");
+			logger.fatal("Server failed to launch");
 			e.printStackTrace();
 		    System.exit(1);
 		}
@@ -151,15 +154,15 @@ public class BaseServer extends Thread implements IMessageProcessor {
 				}
 			}
 			catch (IOException ioe) {
-				System.err.println("error during serverSocket select(): " + ioe.getMessage());
+				logger.error("error during serverSocket select(): " + ioe.getMessage());
 				ioe.printStackTrace();
 			}
 			catch (Exception e) {
-				System.err.println("exception in run()");
+				logger.error("exception in run()");
 				e.printStackTrace();
 			}
 		}
-		System.out.println("Server no longer running");
+		logger.fatal("Server no longer running");
 	}
 	
 	protected Client addNewClient(SocketChannel channel) throws IOException {
@@ -172,7 +175,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		//player.setCurrentGameSession(lobby);
 		
 		channel.register(selector, SelectionKey.OP_READ, new Attachment(player.getId(), this));
-		System.out.println("new client ! "+channel.socket().getInetAddress()+" "+player);
+		logger.info("new client connected : "+channel.socket().getInetAddress()+" "+player);
 		return player;
 	}
 	
@@ -211,13 +214,13 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		} catch (IOException e) {
 			e.printStackTrace();
 		}
-		System.out.println("player dropped : "+player);
+		logger.info("player dropped : "+player+" logged out");
 	}
 	
 	public void processMessage(Message msg) {
 		IGameController currentGameSession = clientsById.get(msg.getClientId()).getCurrentGameSession();
 		if (currentGameSession == null) {
-			System.err.println("player does not have any game session");
+			logger.error("player does not have any game session");
 			return;
 		}
 		else {

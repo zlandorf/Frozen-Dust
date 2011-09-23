@@ -1,5 +1,7 @@
 package fr.frozen.iron.client.gameStates;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
@@ -35,7 +37,7 @@ public class MainMenu extends GameState {
 		quit.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				System.out.println("ok, bye bye");
+				Logger.getLogger(getClass()).info("ok, bye bye");
 				ge.stopGame();
 			}
 		});
