@@ -148,6 +148,7 @@ public class IronUtil {
 		}catch (Exception e) {
 			Logger.getLogger(IronUtil.class).error("error in saveOption when saving "+option+value+ " :"+e.getLocalizedMessage());
 		}
+		Logger.getLogger(IronUtil.class).info("saved "+option+value+" in file "+filePath);
 	}
 	
 	public static String getRaceStr(Protocol race) {
