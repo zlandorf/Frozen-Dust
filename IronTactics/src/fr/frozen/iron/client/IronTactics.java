@@ -174,5 +174,4 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		it.setSize(800, 600);
 		it.start();
 	}
-
 }
