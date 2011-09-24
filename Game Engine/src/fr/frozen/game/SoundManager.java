@@ -169,13 +169,17 @@ public class SoundManager {
 	public static void main(String []args) {
 		SoundManager.getInstance().loadSound("OGG","sword.ogg");
 		//SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
-		float volume = 1.f;
+		Sound sound = SoundManager.getInstance().getSound("sword");
 		for (int i = 0; i < 5; i++) {
 			try {
-				SoundManager.getInstance().setGlobalGain(volume);
-				SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
-				volume -= 0.2;
-				Thread.sleep(1000);
+				SoundManager.getInstance().setGlobalGain(0.5f);
+				//SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
+				sound.setGain(0.5f);
+				sound.playAsSoundEffect(false);
+				Thread.sleep(200);
+				sound.setGain(1f);
+				sound.playAsSoundEffect(false);
+				Thread.sleep(600);
 			} catch (InterruptedException e) {
 				e.printStackTrace();
 			}
