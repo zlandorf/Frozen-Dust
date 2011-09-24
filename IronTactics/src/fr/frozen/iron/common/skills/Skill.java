@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.frozen.game.Sound;
 import fr.frozen.game.SoundManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
@@ -20,6 +21,8 @@ public abstract class Skill {
 	public static final int BLIND_SHOT = 3;
 	public static final int SHIELD_BLOCK = 4;
 	public static final int CHARGE = 5;
+	
+	protected SoundManager soundManager;
 	
 	public static Skill getSkill(int type) {
 		switch (type) {
@@ -48,6 +51,7 @@ public abstract class Skill {
 	protected Skill(String name, int type) {
 		this.name = name;
 		this.type = type;
+		soundManager = SoundManager.getInstance();
 	}
 	
 	public abstract boolean canDo(IronWorld world, int srcId, int x, int y);
@@ -100,14 +104,38 @@ public abstract class Skill {
 			}
 			if (target.isDead()) {
 				target.setCorpseSprite();
+				Sound deathSound = soundManager.getSound(target.getRaceStr()+"_death");
+				if (deathSound != null) {
+					deathSound.playAsSoundEffect(false);
+				}
+				
 			}
 			damage = new DamageParticle(world, target.getX() * IronConst.TILE_WIDTH,
 											   target.getY() * IronConst.TILE_WIDTH,
 											   couple[1]);
 			
 			world.addGameObject(damage, "gfx");
+			
+			if (couple[1] < 0) {
+				if (couple[1] > 100) {
+					SoundManager.getInstance().getSound("strong_hit").playAsSoundEffect(false);
+				} else {
+					float armorValue = 0;
+					if (target.getArmor() != null) {
+						armorValue += target.getArmor().getPhysicalArmor();
+					} 
+					if (target.getShield() != null) {
+						armorValue += target.getShield().getPhysicalArmor();
+					}
+
+					if (armorValue >= 50) {
+						SoundManager.getInstance().getSound("armor_hit").playAsSoundEffect(false);
+					} else {
+						SoundManager.getInstance().getSound("medium_hit").playAsSoundEffect(false);
+					}
+				}
+			}
 		}
-		SoundManager.getInstance().getSound("strong_hit").playAsSoundEffect(1, 1, false);
 		
 		int manaAfter = src.getStats().getMana();
 		if (src.getStats().getMaxMana() > 0) {

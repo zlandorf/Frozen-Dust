@@ -5,6 +5,7 @@ import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
 
+import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
@@ -118,5 +119,8 @@ public class RangedAttack extends Skill {
 									   y1 - IronConst.TILE_HEIGHT / 2,
 									   new Vector2f(x2 - x1, y2 - y1), weapon.getProjectileName());
 		world.addGameObject(arrow, "gfx");
+		if (weapon.getProjectileName().equals("arrow")) {
+			SoundManager.getInstance().getSound("arrow").playAsSoundEffect(false);
+		}
 	}
 }

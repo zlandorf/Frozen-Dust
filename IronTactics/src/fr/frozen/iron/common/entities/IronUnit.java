@@ -311,7 +311,7 @@ public class IronUnit extends GameObject implements Mover {
 		return getStats().getMovement();
 	}
 	
-	protected String getRaceStr() {
+	public String getRaceStr() {
 		return IronUtil.getRaceStr(world.getContext().getPlayerInfo(ownerId).getRace());
 	}
 	

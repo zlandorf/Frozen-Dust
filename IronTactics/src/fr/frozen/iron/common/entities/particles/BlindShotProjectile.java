@@ -70,7 +70,7 @@ public class BlindShotProjectile extends Projectile {
 				} else {
 					_sprite = spriteGrounded;
 					setPos(xdst, ydst);
-					SoundManager.getInstance().getSound("arrow_ground").playAsSoundEffect(1, 1, false);
+					SoundManager.getInstance().getSound("arrow_ground").playAsSoundEffect(false);
 				}
 				return;
 			}

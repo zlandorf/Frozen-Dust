@@ -6,6 +6,7 @@ import java.util.List;
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
 
+import fr.frozen.game.SoundManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.BlindShotProjectile;
@@ -138,5 +139,9 @@ public class BlindShot extends Skill {
 				   y1 - IronConst.TILE_HEIGHT / 2,
 				   new Vector2f(x2 - x1, y2 - y1), weapon.getProjectileName(), xdst, ydst, missed);
 		world.addGameObject(arrow, "gfx");
+		
+		if (weapon.getProjectileName().equals("arrow")) {
+			SoundManager.getInstance().getSound("arrow").playAsSoundEffect(false);
+		}
 	}
 }

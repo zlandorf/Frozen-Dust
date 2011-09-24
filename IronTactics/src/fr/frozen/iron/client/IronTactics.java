@@ -119,6 +119,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	protected void buildAssets() {
 		SpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
 		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
+		SoundManager.getInstance().setGlobalGain(0.8f);
 		@SuppressWarnings("unused")
 		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
 		FontManager.loadFont("Data/Font.png");

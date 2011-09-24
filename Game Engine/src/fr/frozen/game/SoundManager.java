@@ -25,15 +25,43 @@ public class SoundManager {
 		return instance;
 	}
 	
-	protected Hashtable<String, Audio> audioClips;
-
+	protected Hashtable<String, Sound> audioClips;
+	protected float globalGain = 1.f;
+	protected float globalPitch = 1.f;
+	
 	public SoundManager() {
-		audioClips = new Hashtable<String, Audio>();
+		audioClips = new Hashtable<String, Sound>();
 	}
 	
+	
+	
+	public float getGlobalGain() {
+		return globalGain;
+	}
+
+
+
+	public void setGlobalGain(float globalGain) {
+		this.globalGain = globalGain;
+	}
+
+
+
+	public float getGlobalPitch() {
+		return globalPitch;
+	}
+
+
+
+	public void setGlobalPitch(float globalPitch) {
+		this.globalPitch = globalPitch;
+	}
+
+
+
 	protected synchronized void addAudioClip(Audio audioClip, String name) {
 		if (audioClip != null) {
-			audioClips.put(name.replaceAll("\\..{3,4}", ""), audioClip);
+			audioClips.put(name.replaceAll("\\..{3,4}", ""), new Sound(audioClip,this));
 			Logger.getLogger(getClass()).debug("sound added : "+name);
 		}		
 	}
@@ -47,8 +75,8 @@ public class SoundManager {
 		}
 	}
 	
-	public synchronized Audio getSound(String soundName) {
-		Audio audioClip = audioClips.get(soundName);
+	public synchronized Sound getSound(String soundName) {
+		Sound audioClip = audioClips.get(soundName);
 		return audioClip;
 	}
 	
@@ -140,13 +168,17 @@ public class SoundManager {
 	
 	public static void main(String []args) {
 		SoundManager.getInstance().loadSound("OGG","sword.ogg");
-		SoundManager.getInstance().getSound("sword").playAsSoundEffect(1.0f, 1.0f, false);
-		try {
-			Thread.sleep(1000);
-			SoundManager.getInstance().getSound("sword").playAsSoundEffect(1.0f, 1.0f, false);
-			Thread.sleep(1000);
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+		//SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
+		float volume = 1.f;
+		for (int i = 0; i < 5; i++) {
+			try {
+				SoundManager.getInstance().setGlobalGain(volume);
+				SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
+				volume -= 0.2;
+				Thread.sleep(1000);
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
 		AL.destroy();
 	}

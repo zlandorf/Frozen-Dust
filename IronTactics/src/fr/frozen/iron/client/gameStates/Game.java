@@ -15,6 +15,8 @@ import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
 import fr.frozen.game.ISprite;
+import fr.frozen.game.Sound;
+import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.IronClient;
 import fr.frozen.iron.client.IronPlayer;
@@ -78,6 +80,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	protected ISprite backTex;
 	protected ISprite backTex2;
 	
+	protected Sound forestSound;
+	
 	public Game(IGameEngine ge) {
 		super(ge, "game", false, false);
 		netClient = ((IronTactics)gameEngine).getNetClient();
@@ -131,6 +135,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
+		
+		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
 	}
 	
 	protected void requestEndTurn() {
@@ -193,8 +199,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			
 			setTurn(gte.getPlayerId());
 
-			if (!worldReady)
+			if (!worldReady) {
 				worldReady = true;
+				forestSound.playAsMusic(true);
+			}
 		}
 		/* in game actions */
 		
