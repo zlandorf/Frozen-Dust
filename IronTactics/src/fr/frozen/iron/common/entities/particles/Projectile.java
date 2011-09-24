@@ -3,7 +3,7 @@ package fr.frozen.iron.common.entities.particles;
 import org.lwjgl.util.vector.Vector2f;
 
 import fr.frozen.game.GameObject;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronUtil;
@@ -26,7 +26,7 @@ public class Projectile extends GameObject {
 		this.world = world;
 		this.speed = speed;
 		
-		_sprite = ISpriteManager.getInstance().getSprite(spriteName);
+		_sprite = SpriteManager.getInstance().getSprite(spriteName);
 		_sprite.setAngle((float)IronUtil.getAngle(vec));
 		
 		dir = new Vector2f();

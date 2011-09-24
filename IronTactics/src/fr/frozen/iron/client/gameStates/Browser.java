@@ -6,7 +6,7 @@ import java.util.List;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.GameInfo;
 import fr.frozen.iron.client.IronClient;
 import fr.frozen.iron.client.IronTactics;
@@ -42,11 +42,11 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 		gui = new GUI();
 		
 		gameButtons = new ArrayList<GameBrowseButton>();
-		backTex = ISpriteManager.getInstance().getSprite("backTex");
+		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
 		
-		ISprite spriteNormal = ISpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = ISpriteManager.getInstance().getSprite("buttonHover");
+		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
+		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
 		
 		Button button = new Button("Refresh", 600, 300, 0, 0);
 		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());

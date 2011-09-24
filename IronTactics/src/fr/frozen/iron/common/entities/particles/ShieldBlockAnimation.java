@@ -1,11 +1,11 @@
 package fr.frozen.iron.common.entities.particles;
 
 import fr.frozen.game.GameState;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 
 public class ShieldBlockAnimation extends AnimatedParticle {
 	public ShieldBlockAnimation(GameState gs, float x, float y) {
-		super(gs, x, y, ISpriteManager.getInstance().getAnimationSequence("shieldblockanimation"));
+		super(gs, x, y, SpriteManager.getInstance().getAnimationSequence("shieldblockanimation"));
 	}
 	
 	@Override

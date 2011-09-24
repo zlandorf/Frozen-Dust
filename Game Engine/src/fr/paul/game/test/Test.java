@@ -60,9 +60,6 @@ class Test extends GameEngine {
 	@Override
 	protected void update() {
 		super.update();
-		if (!forestAudio.isPlaying()) {
-			forestAudio.playAsMusic(1, 1, true);
-		}
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
 			viewX += 1;

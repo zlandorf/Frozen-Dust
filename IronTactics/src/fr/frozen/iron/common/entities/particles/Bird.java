@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Vector2f;
 import fr.frozen.game.AnimatedObject;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronUtil;
 
@@ -15,7 +15,7 @@ public class Bird extends AnimatedObject {
 	protected float angle = 0;
 	
 	public Bird(GameState gs) {
-		super(gs,0, 0, ISpriteManager.getInstance().getAnimationSequence("bird_fly"));
+		super(gs,0, 0, SpriteManager.getInstance().getAnimationSequence("bird_fly"));
 		init();
 	}
 	

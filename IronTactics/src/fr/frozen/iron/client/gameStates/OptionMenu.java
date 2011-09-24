@@ -3,7 +3,7 @@ package fr.frozen.iron.client.gameStates;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.IronTactics;
 import fr.frozen.iron.client.components.ActionEvent;
 import fr.frozen.iron.client.components.ActionListener;
@@ -68,7 +68,7 @@ public class OptionMenu extends GameState {
 		gui.addComponent(showGrid);
 		gui.addComponent(showGridLabel);
 		
-		backTex = ISpriteManager.getInstance().getSprite("backTex");
+		backTex = SpriteManager.getInstance().getSprite("backTex");
 	}
 	
 	protected void toggleShowGrid() {

@@ -13,7 +13,7 @@ import fr.frozen.game.Font;
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.particles.ManaParticle;
 import fr.frozen.iron.common.equipment.Armor;
@@ -273,7 +273,7 @@ public class IronUnit extends GameObject implements Mover {
 	public void findSprite() {
 		String spriteName = typeNames[type]+"_"+getRaceStr();
 		if (_spriteManager.isSpriteLoaded(spriteName)) {
-			setSprite(ISpriteManager.getInstance().getSprite(spriteName));
+			setSprite(SpriteManager.getInstance().getSprite(spriteName));
 		} else {
 			animation = _spriteManager.getAnimationSequence(spriteName);
 			if (animation != null) {

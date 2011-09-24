@@ -6,8 +6,7 @@ import java.util.List;
 
 import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
-import fr.frozen.game.SpriteManagerImpl;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.util.IronConst;
 
@@ -230,7 +229,7 @@ public class Tile {
 	
 	@SuppressWarnings("unchecked")
 	public void findSprites() {
-		ISpriteManager spriteManager = SpriteManagerImpl.getInstance();
+		SpriteManager spriteManager = SpriteManager.getInstance();
 		String spriteName = tile_names[type];
 		if (subType > 0) {
 			spriteName += "_"+subType;
@@ -299,13 +298,13 @@ public class Tile {
 				String type = tile_names[type(i)];
 				
 				if (getType() == TYPE_WATER) {
-					spriteToAdd = ISpriteManager.getInstance().getSprite("water_rincle_"+coords[i][0]);
+					spriteToAdd = SpriteManager.getInstance().getSprite("water_rincle_"+coords[i][0]);
 					spriteToAdd.setMirrorX((Boolean)coords[i][1]);
 					spriteToAdd.setMirrorY((Boolean)coords[i][2]);
 					overlaySprites[DISPLAY_BOTTOM].add(spriteToAdd);
 				}
 				
-				spriteToAdd = ISpriteManager.getInstance().getSprite(type+"_overlay_"+coords[i][0]);
+				spriteToAdd = SpriteManager.getInstance().getSprite(type+"_overlay_"+coords[i][0]);
 				spriteToAdd.setMirrorX((Boolean)coords[i][1]);
 				spriteToAdd.setMirrorY((Boolean)coords[i][2]);
 				
@@ -327,13 +326,13 @@ public class Tile {
 					}
 					
 					if (getType() == TYPE_WATER) {
-						spriteToAdd = ISpriteManager.getInstance().getSprite("water_rincle_corner");
+						spriteToAdd = SpriteManager.getInstance().getSprite("water_rincle_corner");
 						spriteToAdd.setMirrorX(mirX);
 						spriteToAdd.setMirrorY(mirY);
 						overlaySprites[DISPLAY_MIDDLE_BOTTOM].add(spriteToAdd);
 					}
 					
-					spriteToAdd = ISpriteManager.getInstance().getSprite(tile_names[typeTmp]+"_overlay_corner");
+					spriteToAdd = SpriteManager.getInstance().getSprite(tile_names[typeTmp]+"_overlay_corner");
 					spriteToAdd.setMirrorX(mirX);
 					spriteToAdd.setMirrorY(mirY);
 					

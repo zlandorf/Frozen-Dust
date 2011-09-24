@@ -130,7 +130,7 @@ public class SoundManager {
 		try {
 			Audio audioClip = AudioLoader.getAudio(type, getClass().getClassLoader().getResourceAsStream(SOUNDS_DIRECTORY+filename));
 			addAudioClip(audioClip, name);
-		} catch (IOException e) {
+		} catch (Exception e) {
 			Logger.getLogger(getClass()).error("failed to load "+filename);
 			e.printStackTrace();
 			return false;

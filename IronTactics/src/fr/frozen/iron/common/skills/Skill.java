@@ -4,6 +4,7 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 
+import fr.frozen.game.SoundManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.DamageParticle;
@@ -106,7 +107,7 @@ public abstract class Skill {
 			
 			world.addGameObject(damage, "gfx");
 		}
-		
+		SoundManager.getInstance().getSound("strong_hit").playAsSoundEffect(1, 1, false);
 		
 		int manaAfter = src.getStats().getMana();
 		if (src.getStats().getMaxMana() > 0) {

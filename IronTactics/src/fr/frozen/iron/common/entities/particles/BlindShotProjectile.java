@@ -3,6 +3,7 @@ package fr.frozen.iron.common.entities.particles;
 import org.lwjgl.util.vector.Vector2f;
 
 import fr.frozen.game.ISprite;
+import fr.frozen.game.SoundManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.util.IronConst;
 
@@ -69,6 +70,7 @@ public class BlindShotProjectile extends Projectile {
 				} else {
 					_sprite = spriteGrounded;
 					setPos(xdst, ydst);
+					SoundManager.getInstance().getSound("arrow_ground").playAsSoundEffect(1, 1, false);
 				}
 				return;
 			}

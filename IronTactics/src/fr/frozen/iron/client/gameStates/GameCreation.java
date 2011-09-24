@@ -5,7 +5,7 @@ import org.apache.log4j.Logger;
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.IronClient;
 import fr.frozen.iron.client.IronPlayer;
 import fr.frozen.iron.client.IronTactics;
@@ -62,11 +62,11 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		hostList.setEditable(false);
 		otherList.setEditable(false);
 		
-		backTex = ISpriteManager.getInstance().getSprite("backTex");
+		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
 		Button button = new Button("Start", 600, 350, 0, 0);
-		ISprite spriteNormal = ISpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = ISpriteManager.getInstance().getSprite("buttonHover");
+		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
+		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
 
 		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
 		

@@ -7,7 +7,8 @@ import org.apache.log4j.Logger;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SoundManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.gameStates.Browser;
 import fr.frozen.iron.client.gameStates.Game;
 import fr.frozen.iron.client.gameStates.GameCreation;
@@ -116,7 +117,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	
 	@Override
 	protected void buildAssets() {
-		ISpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
+		SpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
+		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
 		@SuppressWarnings("unused")
 		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
 		FontManager.loadFont("Data/Font.png");

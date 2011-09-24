@@ -5,7 +5,7 @@ import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
 
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.Projectile;
@@ -105,7 +105,7 @@ public class RangedAttack extends Skill {
 		}
 		RangedWeapon weapon = (RangedWeapon)src.getRangedWeapon();
 		if (weapon == null || !weapon.sendsProjectile()) return;
-		if (!ISpriteManager.getInstance().isSpriteLoaded(weapon.getProjectileName())) return;
+		if (!SpriteManager.getInstance().isSpriteLoaded(weapon.getProjectileName())) return;
 		
 
 		int x1 = (int)src.getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2;

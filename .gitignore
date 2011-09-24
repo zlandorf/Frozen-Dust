@@ -1,7 +1,7 @@
 */bin/*
 Game Engine/native/
+Game Engine/jar*
 IronTactics/native/
-*.jar
-*jar/*
 IronTactics/dist/IronTactics.zip
 IronTactics/dist/IronTacticsLight.zip
+IronTactics/dist/*.jar

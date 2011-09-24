@@ -5,7 +5,7 @@ import java.util.List;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
@@ -37,10 +37,10 @@ public class PopupList extends Component {
 		super(x, y, 0, 0);
 		this.world = world;
 		visible = false;
-		tex = ISpriteManager.getInstance().getSprite("popupTex");
-		corner = ISpriteManager.getInstance().getSprite("popup_corner");
-		top = ISpriteManager.getInstance().getSprite("popup_top");
-		left = ISpriteManager.getInstance().getSprite("popup_left");
+		tex = SpriteManager.getInstance().getSprite("popupTex");
+		corner = SpriteManager.getInstance().getSprite("popup_corner");
+		top = SpriteManager.getInstance().getSprite("popup_top");
+		left = SpriteManager.getInstance().getSprite("popup_left");
 		
 		skills = new ArrayList<SkillInfo>();
 	}

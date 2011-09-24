@@ -6,7 +6,6 @@ import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 
 public class TestShooter extends GameObject {
@@ -56,7 +55,6 @@ public class TestShooter extends GameObject {
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			if (!reload.animating() && !fire.animating() && ammo > 0) {
 				fire.start();
-				SoundManager.getInstance().getSound("arrow").playAsSoundEffect(1, 1, false);
 				ammo--;
 			}
 		}

@@ -6,7 +6,7 @@ import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.IronTactics;
 import fr.frozen.iron.client.components.ActionEvent;
 import fr.frozen.iron.client.components.ActionListener;
@@ -53,7 +53,7 @@ public class MainMenu extends GameState {
 		gui.addComponent(quit);
 		gui.addComponent(option);
 		
-		backTex = ISpriteManager.getInstance().getSprite("backTex");
+		backTex = SpriteManager.getInstance().getSprite("backTex");
 	}
 	
 	@Override
@@ -72,7 +72,7 @@ public class MainMenu extends GameState {
 	
 	@Override
 	public void createGameObjects() {
-		GameObject logo = new GameObject(this, 0, 0, ISpriteManager.getInstance().getSprite("logo")) {
+		GameObject logo = new GameObject(this, 0, 0, SpriteManager.getInstance().getSprite("logo")) {
 			@Override
 			public void update(float deltaTime) {
 				double x = gameEngine.getScreenSize().getWidth() / 2  - _sprite.getWidth() / 2;
