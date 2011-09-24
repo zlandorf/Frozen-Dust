@@ -14,5 +14,8 @@
 	<classpathentry kind="lib" path="jar/jinput.jar"/>
 	<classpathentry kind="lib" path="jar/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="/home/paul/Frozen-Dust/IronTactics/jar/log4j-1.2.16.jar"/>
+	<classpathentry kind="lib" path="/IronTactics/jar/slick-util.jar"/>
+	<classpathentry kind="lib" path="/IronTactics/jar/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="/IronTactics/jar/jorbis-0.0.15.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

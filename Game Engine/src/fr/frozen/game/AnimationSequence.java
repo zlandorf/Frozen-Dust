@@ -54,7 +54,7 @@ public class AnimationSequence {
 	}
 	
 	public void createFramesFromSpriteSheet(String sheetName, int nbFrames, Vector2f start, Vector2f []dim, Vector2f []offSets, int duration) {
-		createFramesFromSpriteSheet(ISpriteManager.getInstance().getSprite(sheetName),
+		createFramesFromSpriteSheet(SpriteManager.getInstance().getSprite(sheetName),
 									nbFrames, start, dim, offSets, duration);
 	}
 	
@@ -62,7 +62,7 @@ public class AnimationSequence {
 		//TRYING FOR STRIP HERE !!
 		AnimationFrame frame;
 		for (int i = 0; i < nbFrames; i++) {
-			frame = new AnimationFrame(ISpriteManager.getInstance().getSubSprite(sheet, start, dim[i], offSets[i]), duration);
+			frame = new AnimationFrame(SpriteManager.getInstance().getSubSprite(sheet, start, dim[i], offSets[i]), duration);
 			_frames.add(frame);
 			start.setX(dim[i].getX() + start.getX());
 		}

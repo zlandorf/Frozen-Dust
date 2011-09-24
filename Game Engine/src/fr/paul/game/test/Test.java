@@ -4,17 +4,20 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.openal.Audio;
 
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SoundManager;
+import fr.frozen.game.SpriteManager;
 
 class Test extends GameEngine {
 
 	int viewX = 0;
 	int viewY = 0;
 	protected Logger logger = Logger.getLogger("engine");
+	protected Audio forestAudio;
 	
 	public Test() {
 		BasicConfigurator.configure();
@@ -27,7 +30,9 @@ class Test extends GameEngine {
 		/*ISpriteManager.getInstance().loadSprite("image.png");
 		ISpriteManager.getInstance().loadSprite("rebel.png");
 		ISpriteManager.getInstance().loadSprite("sheet.png");*/
-		ISpriteManager.getInstance().loadImagesFromXml("Data/iron.cfg");
+		SpriteManager.getInstance().loadImagesFromXml("Data/iron.cfg");
+		SoundManager.getInstance().loadSoundsFromXml("Data/iron.cfg");
+		forestAudio = SoundManager.getInstance().getSound("forest_music");
 	}
 	
 	protected void buildInitialGameStates() {
@@ -55,8 +60,13 @@ class Test extends GameEngine {
 	@Override
 	protected void update() {
 		super.update();
+		if (!forestAudio.isPlaying()) {
+			forestAudio.playAsMusic(1, 1, true);
+		}
+		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
 			viewX += 1;
+			SoundManager.getInstance().getSound("sword").playAsSoundEffect(1, 1, false);
 		}
 		if (Keyboard.isKeyDown(Keyboard.KEY_RIGHT)) {
 			viewX -= 1;

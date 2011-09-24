@@ -3,15 +3,15 @@ package fr.paul.game.test;
 import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 
 public class TestObject2 extends GameObject {
 	AnimationSequence as;
-	ISpriteManager spriteManager;
+	SpriteManager spriteManager;
 
 	public TestObject2(GameState gs, int x, int y) {
-		super(gs,x,y,ISpriteManager.getInstance().getSprite("rebel"));
-		spriteManager = ISpriteManager.getInstance();
+		super(gs,x,y,SpriteManager.getInstance().getSprite("rebel"));
+		spriteManager = SpriteManager.getInstance();
 		as = spriteManager.getAnimationSequence("rebel_shot");
 		as.start();
 	}

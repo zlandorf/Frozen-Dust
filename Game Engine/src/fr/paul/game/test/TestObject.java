@@ -5,15 +5,15 @@ import org.lwjgl.input.Keyboard;
 import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SpriteManager;
 
 public class TestObject extends GameObject {
 	AnimationSequence asRunning;
-	ISpriteManager spriteManager;
+	SpriteManager spriteManager;
 	
 	public TestObject(GameState gs, int x, int y, float scale) {
 		super(gs,x,y,null);
-		spriteManager = ISpriteManager.getInstance();
+		spriteManager = SpriteManager.getInstance();
 		asRunning = spriteManager.getAnimationSequence("rebel_running");
 		
 		_sprite = spriteManager.getSprite("rebel");

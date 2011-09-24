@@ -10,10 +10,12 @@ import java.util.Vector;
 import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.input.Keyboard;
+import org.lwjgl.openal.AL;
 import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Timer;
+import org.newdawn.slick.openal.SoundStore;
 
 public class GameEngine implements IGameEngine {
   
@@ -355,12 +357,14 @@ public class GameEngine implements IGameEngine {
 			render();
 			onPostRender();
 			
+			SoundStore.get().poll(0);
 			//if (!Display.isActive()) Thread.yield();
 			if(Display.isCloseRequested()) {
 				_gameRunning = false;
 			}
 		}
 		Display.destroy();
+		AL.destroy();
 		System.exit(0);
 	}
 }

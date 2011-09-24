@@ -6,7 +6,8 @@ import fr.frozen.game.AnimationSequence;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
 import fr.frozen.game.ISprite;
-import fr.frozen.game.ISpriteManager;
+import fr.frozen.game.SoundManager;
+import fr.frozen.game.SpriteManager;
 
 public class TestShooter extends GameObject {
 	private AnimationSequence fire;
@@ -20,10 +21,10 @@ public class TestShooter extends GameObject {
 	
 	public TestShooter(GameState gs, int x, int y) {
 		super(gs,x,y,null);
-		fire = ISpriteManager.getInstance().getAnimationSequence("rebel_fire");
-		reload = ISpriteManager.getInstance().getAnimationSequence("rebel_reload");
+		fire = SpriteManager.getInstance().getAnimationSequence("rebel_fire");
+		reload = SpriteManager.getInstance().getAnimationSequence("rebel_reload");
 		
-		_sprite = idle =  ISpriteManager.getInstance().getSprite("rebel_fire_idle");
+		_sprite = idle =  SpriteManager.getInstance().getSprite("rebel_fire_idle");
 	
 	}
 
@@ -55,6 +56,7 @@ public class TestShooter extends GameObject {
 		if (Keyboard.isKeyDown(Keyboard.KEY_SPACE)) {
 			if (!reload.animating() && !fire.animating() && ammo > 0) {
 				fire.start();
+				SoundManager.getInstance().getSound("arrow").playAsSoundEffect(1, 1, false);
 				ammo--;
 			}
 		}

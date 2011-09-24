@@ -5,7 +5,7 @@ import org.lwjgl.util.vector.Vector2f;
 public class GameObject {
 	protected Vector2f _pos;
 	protected ISprite _sprite = null;
-	protected ISpriteManager _spriteManager;
+	protected SpriteManager _spriteManager;
 	
 	protected GameState _gameState;
 	//animated object = sequence of sprites ?
@@ -23,7 +23,7 @@ public class GameObject {
 		_pos = new Vector2f(x, y);
 		_gameState = gs;
 		_sprite = sprite;
-		_spriteManager = ISpriteManager.getInstance();
+		_spriteManager = SpriteManager.getInstance();
 	}
 	
 	public Vector2f getPos() {
