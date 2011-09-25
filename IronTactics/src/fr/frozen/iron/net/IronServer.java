@@ -127,8 +127,8 @@ public class IronServer extends BaseServer {
 			if (name != null && name.length() > 0) {
 				
 				//TODO : handle the case where two people have the same name
-				sender.setName(name);
 				logger.info(sender+ " chose name : "+ name);
+				sender.setName(name);
 				if (currentGameSession == null) {
 					sender.setCurrentGameSession(lobby);
 					lobby.addClient(sender);

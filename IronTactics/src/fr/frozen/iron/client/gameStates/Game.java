@@ -35,7 +35,9 @@ import fr.frozen.iron.client.messageEvents.GameActionEvent;
 import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
 import fr.frozen.iron.client.messageEvents.GameTurnEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
+import fr.frozen.iron.client.messageEvents.NameChangeEvent;
 import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
+import fr.frozen.iron.client.messageEvents.PlayerLogoutEvent;
 import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
 import fr.frozen.iron.common.GameContext;
@@ -64,6 +66,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	protected boolean worldReady = false; 
 	
 	protected List<IronPlayer> players;
+	protected Hashtable<Integer, IronPlayer> playersById;
 	protected Hashtable<Integer, PlayerGameInfo> playerInfo;
 	
 	protected int turnPlayerId = -1;
@@ -86,8 +89,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		super(ge, "game", false, false);
 		netClient = ((IronTactics)gameEngine).getNetClient();
 		gui = new GUI(this);
-		
-		
+		playersById = new Hashtable<Integer, IronPlayer>();
 		players = new ArrayList<IronPlayer>();
 		//playerInfo = new Hashtable<Integer, PlayerGameInfo>();
 		
@@ -130,8 +132,22 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			}
 		});
 		
+		
+		Button optionButton = new Button("Options", 590, 450, 0, 0);
+		optionButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
+		optionButton.setHoverSprite(spriteHover);
+		optionButton.setNormalSprite(spriteNormal);
+		
+		optionButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openOptions();
+			}
+		});
+		
 		gui.addComponent(button);
 		gui.addComponent(undoButton);
+		gui.addComponent(optionButton);
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
@@ -143,6 +159,13 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		netClient.sendEmptyMessage(Protocol.GAME_END_TURN_REQUEST);
 	}
 	
+	private void openOptions() {
+		setVisible(false);
+		
+		gameEngine.getGameState("optionMenu").setActive(true);
+		gameEngine.getGameState("optionMenu").setVisible(true);
+		gameEngine.setCurrentGameState(gameEngine.getGameState("optionMenu"));
+	}
 	
 	@Override
 	public int getClientId() {
@@ -157,7 +180,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		if (ne instanceof ChatMessageEvent) {
 			ChatMessageEvent cme = (ChatMessageEvent) ne;
-			IronPlayer sender = players.get(cme.getSenderId());
+			IronPlayer sender = playersById.get(cme.getSenderId());
 			if (sender == null) return;
 			chatWindow.addMessage(new ChatWindowMessage(ChatWindowMessage.CHAT_MESSAGE, sender.getName()+ " says : ", cme.getText()));
 		}
@@ -166,9 +189,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		if (ne instanceof PlayerListReceivedEvent) {
 			PlayerListReceivedEvent plre = (PlayerListReceivedEvent) ne;
 			if (plre.getList().size() != 2)Logger.getLogger(getClass()).error("PROBLEM WITH NUMBER OF PLAYERS");
-			for (IronPlayer player : plre.getList())
+			for (IronPlayer player : plre.getList()) {
 				players.add(player);
-			
+				playersById.put(player.getId(), player);
+			}
 			netClient.sendEmptyMessage(Protocol.GAME_PLAYER_INFO_REQUEST);
 		}
 		
@@ -219,6 +243,25 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			if (unit != null) {
 				unit.undoMove();
 			}
+		}
+		
+		if (ne instanceof PlayerLogoutEvent) {
+			PlayerLogoutEvent ploe = (PlayerLogoutEvent) ne;
+			IronPlayer player = playersById.get(ploe.getId());
+			if (player == null) return;
+			chatWindow.addMessage(
+					new ChatWindowMessage(ChatWindowMessage.SERVER_MESSAGE,
+										  player.getName()+ " left : "+ploe.getReason()));
+		}
+		
+		if (ne instanceof NameChangeEvent) {
+			NameChangeEvent nce = (NameChangeEvent) ne;
+			IronPlayer player = playersById.get(nce.getPlayerId());
+			if (player == null) return;
+			chatWindow.addMessage(
+					new ChatWindowMessage(ChatWindowMessage.SERVER_MESSAGE,
+										  player.getName()+ " changed name to "+nce.getName()));
+			player.setName(nce.getName());
 		}
 	}
 	
@@ -290,7 +333,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	@Override
 	public void update(float deltaTime) {
 		super.update(deltaTime);
-		gui.update(deltaTime);
+		if (visible) {
+			gui.update(deltaTime);
+		}
 		
 		if (!worldReady) return;
 		world.update(deltaTime);
@@ -417,9 +462,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	@Override
 	public void setActive(boolean val) {
 		super.setActive(val);
-		if (!val) {
-			//players.clear();
-		} else {
+		if (val && !worldReady) {
 			netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
 		}
 	}

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
+import fr.frozen.game.GameState;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.gameStates.Browser;
@@ -94,15 +95,19 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		}
 	}
 	
-	public void switchToState(String newGameState) {
-		if (getGameState(newGameState) == null) return;
+	public void switchToState(GameState gameState) {
+		if (gameState == null) return;
 		
-		getGameState(newGameState).setActive(true);
-		getGameState(newGameState).setVisible(true);
+		gameState.setActive(true);
+		gameState.setVisible(true);
 
 		getCurrentGameState().setActive(false);
 		getCurrentGameState().setVisible(false);
-		setCurrentGameState(getGameState(newGameState));
+		setCurrentGameState(gameState);
+	}
+	
+	public void switchToState(String newGameState) {
+		switchToState(getGameState(newGameState));
 	}
 
 	public IronClient getNetClient() {
@@ -119,7 +124,9 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	protected void buildAssets() {
 		SpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
 		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
-		SoundManager.getInstance().setGlobalGain(0.8f);
+		//this is because there is a bug where music plays even when music is off
+		//so i do this to fix that
+		IronConfig.setVolume(IronConfig.getVolume());
 		@SuppressWarnings("unused")
 		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
 		FontManager.loadFont("Data/Font.png");

@@ -117,7 +117,7 @@ public abstract class Skill {
 			world.addGameObject(damage, "gfx");
 			
 			if (couple[1] < 0) {
-				if (couple[1] > 100) {
+				if (couple[1] <= -100) {
 					SoundManager.getInstance().getSound("strong_hit").playAsSoundEffect(false);
 				} else {
 					float armorValue = 0;

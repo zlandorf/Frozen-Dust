@@ -38,6 +38,7 @@ public class GameEngine implements IGameEngine {
 	protected Hashtable<String, GameState> _gameStatesByName;
 	
 	protected GameState currentGameState = null;
+	protected GameState previousGameState = null;
 	
 	public GameEngine(boolean fullScreen) {
 		this();
@@ -71,6 +72,7 @@ public class GameEngine implements IGameEngine {
 	
 	@Override
 	public void setCurrentGameState(GameState gs) {
+		previousGameState = currentGameState;
 		this.currentGameState = gs;
 	}
 	
@@ -79,6 +81,10 @@ public class GameEngine implements IGameEngine {
 		return currentGameState;
 	}
 	
+	@Override
+	public GameState getPreviousGameState() {
+		return previousGameState;
+	}
 	
 	@Override
 	public synchronized List<GameState> getGameStates() {

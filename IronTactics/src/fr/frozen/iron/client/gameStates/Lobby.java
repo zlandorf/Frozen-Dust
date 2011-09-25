@@ -63,6 +63,11 @@ public class Lobby extends GameState implements NetEventListener {
 		button2.setHoverSprite(spriteHover);
 		button2.setNormalSprite(spriteNormal);
 		
+		Button button3 = new Button("Options", 600, 500, 0, 0);
+		button3.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
+		button3.setHoverSprite(spriteHover);
+		button3.setNormalSprite(spriteNormal);
+		
 		button.addActionListener(new ActionListener() {
 			
 			@Override
@@ -78,12 +83,30 @@ public class Lobby extends GameState implements NetEventListener {
 				createGame();
 			}
 		});
+		
+		button3.addActionListener(new ActionListener() {
+			
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				openOptions();
+			}
+		});
+		
 		gui.addComponent(textField);
 		gui.addComponent(chatWindow);
 		gui.addComponent(button);
 		gui.addComponent(button2);
+		gui.addComponent(button3);
 	}
 
+	private void openOptions() {
+		setVisible(false);
+		
+		gameEngine.getGameState("optionMenu").setActive(true);
+		gameEngine.getGameState("optionMenu").setVisible(true);
+		gameEngine.setCurrentGameState(gameEngine.getGameState("optionMenu"));
+	}
+	
 	public void joinGameBrowser() {
 		/* when browsing the game list, the lobby is still active, but not visible */
 		/* i am still in the lobby game session on the server side */
@@ -93,7 +116,6 @@ public class Lobby extends GameState implements NetEventListener {
 		gameEngine.getGameState("browser").setActive(true);
 		gameEngine.getGameState("browser").setVisible(true);
 		gameEngine.setCurrentGameState(gameEngine.getGameState("browser"));
-	
 	}
 	
 	public void createGame() {

@@ -13,6 +13,7 @@ public interface IGameEngine {
 	public GameState getGameState(String name);
 	public void setCurrentGameState(GameState gs);
 	public GameState getCurrentGameState();
+	public GameState getPreviousGameState();
 	
 	public void setTitle(String title);
 	public void setResolution(int x, int y);

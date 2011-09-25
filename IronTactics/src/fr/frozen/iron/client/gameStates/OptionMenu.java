@@ -19,6 +19,7 @@ public class OptionMenu extends GameState {
 	protected ISprite backTex;
 	protected TextField textField;
 	protected Label showGridLabel;
+	protected Label volumeLabel;
 	
 	public OptionMenu(final GameEngine ge) {
 		super(ge, "optionMenu", false, false);
@@ -30,9 +31,13 @@ public class OptionMenu extends GameState {
 		//320
 		Button showGrid = new IronMenuButton("ShowGrid",320);
 		showGridLabel = new Label(IronConfig.isShowGrid() ? "on" : "off",
-								  525, 310, 30, 50);
+								  525, 325, 60, 25);
 		
-		Button back = new IronMenuButton("Back", 390);
+		Button volume = new IronMenuButton("Toggle Sound",390);
+		volumeLabel = new Label(IronConfig.getVolume() == 0.0 ? "off" : "on",
+								  525, 395, 60, 25);
+		
+		Button back = new IronMenuButton("Back", 460);
 		
 		apply.addActionListener(new ActionListener() {
 			@Override
@@ -45,6 +50,13 @@ public class OptionMenu extends GameState {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				toggleShowGrid();
+			}
+		});
+		
+		volume.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				toggleVolume();
 			}
 		});
 		
@@ -61,14 +73,21 @@ public class OptionMenu extends GameState {
 				changeName();
 			}
 		});
-		
+
 		gui.addComponent(apply);
 		gui.addComponent(back);
 		gui.addComponent(textField);
 		gui.addComponent(showGrid);
 		gui.addComponent(showGridLabel);
+		gui.addComponent(volumeLabel);
+		gui.addComponent(volume);
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
+	}
+	
+	protected void toggleVolume() {
+		IronConfig.setVolume(1 - IronConfig.getVolume());
+		volumeLabel.setLabel(IronConfig.getVolume() == 0.0 ? "off" : "on");
 	}
 	
 	protected void toggleShowGrid() {
@@ -77,8 +96,7 @@ public class OptionMenu extends GameState {
 	}
 	
 	protected void quit() {
-		//TODO switch back to old state, and not mainMenu !
-		((IronTactics)gameEngine).switchToState("mainMenu");
+		((IronTactics)gameEngine).switchToState(((IronTactics)gameEngine).getPreviousGameState());
 	}
 	
 	protected void changeName() {

@@ -7,6 +7,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.openal.AL;
 import org.newdawn.slick.openal.Audio;
 import org.newdawn.slick.openal.AudioLoader;
+import org.newdawn.slick.openal.SoundStore;
 import org.w3c.dom.Element;
 import org.w3c.dom.NamedNodeMap;
 import org.w3c.dom.Node;
@@ -26,42 +27,42 @@ public class SoundManager {
 	}
 	
 	protected Hashtable<String, Sound> audioClips;
-	protected float globalGain = 1.f;
-	protected float globalPitch = 1.f;
 	
-	public SoundManager() {
+	protected SoundManager() {
 		audioClips = new Hashtable<String, Sound>();
 	}
 	
+	public float getMusicVolume() {
+		return SoundStore.get().getMusicVolume();
+	}
 	
+	public float getSoundVolume() {
+		return SoundStore.get().getSoundVolume();
+	}
+
+	public void setMusicVolume(float globalVolume) {
+		SoundStore.get().setMusicVolume(globalVolume);
+	}
 	
-	public float getGlobalGain() {
-		return globalGain;
+	public void setSoundVolume(float globalVolume) {
+		SoundStore.get().setSoundVolume(globalVolume);
 	}
 
-
-
-	public void setGlobalGain(float globalGain) {
-		this.globalGain = globalGain;
+	public void setMusicPitch(float globalPitch) {
+		SoundStore.get().setMusicPitch(globalPitch);
 	}
-
-
-
-	public float getGlobalPitch() {
-		return globalPitch;
+	
+	public void setMusicOn(boolean on) {
+		SoundStore.get().setMusicOn(on);
 	}
-
-
-
-	public void setGlobalPitch(float globalPitch) {
-		this.globalPitch = globalPitch;
+	
+	public void setSoundsOn(boolean on) {
+		SoundStore.get().setSoundsOn(on);
 	}
-
-
 
 	protected synchronized void addAudioClip(Audio audioClip, String name) {
 		if (audioClip != null) {
-			audioClips.put(name.replaceAll("\\..{3,4}", ""), new Sound(audioClip,this));
+			audioClips.put(name.replaceAll("\\..{3,4}",""), new Sound(audioClip));
 			Logger.getLogger(getClass()).debug("sound added : "+name);
 		}		
 	}
@@ -170,14 +171,18 @@ public class SoundManager {
 		SoundManager.getInstance().loadSound("OGG","sword.ogg");
 		//SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
 		Sound sound = SoundManager.getInstance().getSound("sword");
+		//SoundManager.getInstance().seSoundsOn(false);
 		for (int i = 0; i < 5; i++) {
 			try {
-				SoundManager.getInstance().setGlobalGain(0.5f);
+				SoundManager.getInstance().setSoundVolume(0.0f);
 				//SoundManager.getInstance().getSound("sword").playAsSoundEffect(false);
-				sound.setGain(0.5f);
-				sound.playAsSoundEffect(false);
+				//sound.setGain(0.5f);
+				//sound.getAudioClip().playAsMusic(1.f,1.f,false);
 				Thread.sleep(200);
 				sound.setGain(1f);
+				sound.playAsSoundEffect(false);
+				sound.playAsSoundEffect(false);
+				sound.playAsSoundEffect(false);
 				sound.playAsSoundEffect(false);
 				Thread.sleep(600);
 			} catch (InterruptedException e) {

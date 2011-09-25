@@ -9,6 +9,7 @@ import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.apache.log4j.PatternLayout;
 
+import fr.frozen.game.SoundManager;
 import fr.frozen.util.XMLParser;
 
 public class IronConfig {
@@ -40,6 +41,13 @@ public class IronConfig {
 				showGrid = false;
 			}
 		}
+		
+		float volume = 1.f;
+		String volumeOption = IronUtil.findOptionValue("volume");
+		if (volumeOption != null) {
+			volume = Float.parseFloat(volumeOption);
+		}
+		setVolumeAux(volume);
 	}
 	
 	public static void configClientLogger() {
@@ -88,6 +96,23 @@ public class IronConfig {
 	public static void setShowGrid(boolean value) {
 		instance.showGrid = value;
 		IronUtil.saveOptionValue("showgrid", value ? "true":"false");
+	}
+
+	public static float getVolume() {
+		return SoundManager.getInstance().getMusicVolume();
+	}
+	
+	private static void setVolumeAux(float val) {
+		SoundManager.getInstance().setMusicVolume(val);
+		SoundManager.getInstance().setSoundVolume(val);
+		
+		SoundManager.getInstance().setMusicOn(val > 0);
+		SoundManager.getInstance().setSoundsOn(val > 0);
+	}
+	
+	public static void setVolume(float val) {
+		setVolumeAux(val);
+		IronUtil.saveOptionValue("volume", String.valueOf(val));
 	}
 	
 	public static XMLParser getIronXMLParser() {
