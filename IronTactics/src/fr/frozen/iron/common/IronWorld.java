@@ -34,6 +34,12 @@ public class IronWorld extends GameState {
 		gameObjects = new ArrayList<GameObject>();
 	}
 	
+	public synchronized void reInit() {
+		map = null;
+		units.clear();
+		gameObjects.clear();
+	}
+	
 	public void endTurn(int playerId) {
 		for (IronUnit unit : getPlayerUnits(playerId)) {
 			unit.onEndTurn();
@@ -44,6 +50,14 @@ public class IronWorld extends GameState {
 		for (IronUnit unit : getPlayerUnits(playerId)) {
 			unit.onStartTurn(addParticles);
 		}
+	}
+	
+	public boolean areAllUnitsDead(int playerId) {
+		boolean res = true;
+		for (IronUnit unit : getPlayerUnits(playerId)) {
+			res &= unit.isDead();
+		}
+		return res;
 	}
 	
 	public boolean haveAllUnitsPlayed(int playerId) {
@@ -71,11 +85,11 @@ public class IronWorld extends GameState {
 		pathFinder = new AStar(map, false);
 	}
 	
-	public Collection<IronUnit> getUnits() {
+	public synchronized Collection<IronUnit> getUnits() {
 		return units.values();
 	}
 	
-	public Collection<IronUnit> getPlayerUnits(int playerId) {
+	public synchronized Collection<IronUnit> getPlayerUnits(int playerId) {
 		List<IronUnit> list = new ArrayList<IronUnit>();
 		
 		for (IronUnit unit : getUnits()) {
@@ -86,51 +100,49 @@ public class IronWorld extends GameState {
 		return list;
 	}
 	
-	public IronUnit getUnitAtXY(int x, int y) {
+	public synchronized IronUnit getUnitAtXY(int x, int y) {
 		//returns null if no one at XY
 		return map.getTile(x, y).getUnitOnTile();
 	}
 
-	public IronUnit getUnitFromId(int id) {
+	public synchronized IronUnit getUnitFromId(int id) {
 		return units.get(id);
 	}
 	
-	public void addUnit(IronUnit unit) {
+	public synchronized void addUnit(IronUnit unit) {
 		units.put(unit.getId(), unit);
 		getMap().getTile((int)unit.getPos().getX(), (int)unit.getPos().getY()).setUnitOnTile(unit);
 	}
 	
 	
-	public void removeUnit(int id) {
+	public synchronized void removeUnit(int id) {
 		IronUnit unit = units.get(id);
 		getMap().getTile((int)unit.getPos().getX(), (int)unit.getPos().getY()).setUnitOnTile(null);
 		units.remove(id);
 	}
 	
-	public void setUnits(List<IronUnit> units) {
+	public synchronized void setUnits(List<IronUnit> units) {
 		this.units.clear();
 		for (IronUnit unit : units) {
 			addUnit(unit);
 		}
 	}
 	
-	public void update(float deltaTime) {
+	public synchronized void update(float deltaTime) {
 		super.update(deltaTime);
 		for (IronUnit unit : getUnits()) {
 			unit.update(deltaTime);
 		}
 	}
 	
-	public void render(float deltaTime, IronUnit selectedUnit) {
+	public synchronized void render(float deltaTime, IronUnit selectedUnit) {
 		if (map != null) {
 			map.renderTiles(deltaTime);
 			
-			synchronized (this) {
-				List<GameObject> corpses = getGameObjectCollection("corpse");
-				if (corpses != null) {
-					for (GameObject corpse : corpses){
-						corpse.render(deltaTime);
-					}
+			List<GameObject> corpses = getGameObjectCollection("corpse");
+			if (corpses != null) {
+				for (GameObject corpse : corpses){
+					corpse.render(deltaTime);
 				}
 			}
 			
@@ -159,12 +171,10 @@ public class IronWorld extends GameState {
 			//map.renderUnits(deltaTime);
 			
 			
-			synchronized (this) {
-				List<GameObject> gfxList = getGameObjectCollection("gfx");
-				if (gfxList != null) {
-					for (GameObject gfx : gfxList){
-						gfx.render(deltaTime);
-					}
+			List<GameObject> gfxList = getGameObjectCollection("gfx");
+			if (gfxList != null) {
+				for (GameObject gfx : gfxList){
+					gfx.render(deltaTime);
 				}
 			}
 		}

@@ -61,8 +61,6 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 			}
 		});
 		
-		
-		
 		Button button2 = new Button("Back to lobby", 600, 400, 0, 0);
 		button2.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
 		button2.setHoverSprite(spriteHover);

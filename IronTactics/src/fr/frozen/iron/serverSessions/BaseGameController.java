@@ -56,7 +56,7 @@ public class BaseGameController implements IGameController {
 		}
 	}
 	
-	public List<SocketChannel> getAllChannels() {
+	public synchronized List<SocketChannel> getAllChannels() {
 		if (clients.size() == 0) return null;
 		List<SocketChannel> channels = new ArrayList<SocketChannel>();
 		
@@ -120,7 +120,6 @@ public class BaseGameController implements IGameController {
 			logger.error("problem, client is null (in send playerlist");
 			return;
 		}
-		logger.debug(dest+" requesting player list");
 			
 		try {
 			byteArray.reset();

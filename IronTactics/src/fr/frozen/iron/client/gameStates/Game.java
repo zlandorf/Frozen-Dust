@@ -27,12 +27,14 @@ import fr.frozen.iron.client.components.Button;
 import fr.frozen.iron.client.components.ChatWindow;
 import fr.frozen.iron.client.components.ChatWindowMessage;
 import fr.frozen.iron.client.components.GUI;
+import fr.frozen.iron.client.components.IronMenuButton;
 import fr.frozen.iron.client.components.MouseListener;
 import fr.frozen.iron.client.components.PopupList;
 import fr.frozen.iron.client.components.TextField;
 import fr.frozen.iron.client.messageEvents.ChatMessageEvent;
 import fr.frozen.iron.client.messageEvents.GameActionEvent;
 import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
+import fr.frozen.iron.client.messageEvents.GameOverEvent;
 import fr.frozen.iron.client.messageEvents.GameTurnEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
 import fr.frozen.iron.client.messageEvents.NameChangeEvent;
@@ -57,13 +59,17 @@ import fr.frozen.network.client.NetEventListener;
 public class Game extends GameState implements NetEventListener, MouseListener, ActionListener, GameContext {
 
 	protected GUI gui;
+	protected GUI ingameMenu;
+	
 	protected IronClient netClient;
 	protected TextField textField;
 	protected ChatWindow chatWindow;
 	protected Button undoButton;
 	
 	protected IronWorld world;
-	protected boolean worldReady = false; 
+	protected boolean worldReady = false;
+	protected boolean gameOver = false;
+	protected int winnerId = -1;
 	
 	protected List<IronPlayer> players;
 	protected Hashtable<Integer, IronPlayer> playersById;
@@ -85,10 +91,13 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	
 	protected Sound forestSound;
 	
+	protected boolean showIngameMenu = false;
+	
 	public Game(IGameEngine ge) {
 		super(ge, "game", false, false);
 		netClient = ((IronTactics)gameEngine).getNetClient();
 		gui = new GUI(this);
+		ingameMenu = new GUI(this);
 		playersById = new Hashtable<Integer, IronPlayer>();
 		players = new ArrayList<IronPlayer>();
 		//playerInfo = new Hashtable<Integer, PlayerGameInfo>();
@@ -133,11 +142,24 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		});
 		
 		
-		Button optionButton = new Button("Options", 590, 450, 0, 0);
-		optionButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		optionButton.setHoverSprite(spriteHover);
-		optionButton.setNormalSprite(spriteNormal);
+		Button menuButton = new Button("Menu", 590, 450, 0, 0);
+		menuButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
+		menuButton.setHoverSprite(spriteHover);
+		menuButton.setNormalSprite(spriteNormal);
 		
+		menuButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showIngameMenu = true;
+			}
+		});
+		
+		gui.addComponent(button);
+		gui.addComponent(undoButton);
+		gui.addComponent(menuButton);
+		
+		
+		Button optionButton = new IronMenuButton("Options", 150);
 		optionButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -145,14 +167,58 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			}
 		});
 		
-		gui.addComponent(button);
-		gui.addComponent(undoButton);
-		gui.addComponent(optionButton);
+		Button backButton = new IronMenuButton("Back to game", 250);
+		backButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				showIngameMenu = false;
+			}
+		});
+		
+		Button leaveButton = new IronMenuButton("Leave game", 350);
+		leaveButton.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				leaveGame();
+			}
+		});
+		
+		ingameMenu.addComponent(leaveButton);
+		ingameMenu.addComponent(optionButton);
+		ingameMenu.addComponent(backButton);
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
 		
 		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
+	}
+	
+	protected void leaveGame() {
+		netClient.sendMessage(Protocol.SERVER_C_REQUEST_SESSION, IronUtil.intToByteArray(Protocol.SESSION_LOBBY.ordinal()));
+	}
+	
+	
+	protected void reInit() {
+		worldReady = false;
+		gameOver = false;
+		winnerId = -1;
+		
+		world.reInit();
+		
+		players.clear();
+		playersById.clear();
+		playerInfo.clear();
+		
+		turnPlayerId = -1;
+		timeLeftForTurn = 0;
+		
+		selectedUnit = null;
+		hoveredUnit = null;
+		lastUnitMoved = null;
+		
+		showIngameMenu = false;
+		
+		chatWindow.clearMessages();
 	}
 	
 	protected void requestEndTurn() {
@@ -175,7 +241,6 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	@Override
 	public synchronized void onNetEvent(NetEvent ne) {
 		//order : playerList -> playerList Info -> game map -> game units list
-		
 		if (!active) return;
 		
 		if (ne instanceof ChatMessageEvent) {
@@ -263,6 +328,12 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 										  player.getName()+ " changed name to "+nce.getName()));
 			player.setName(nce.getName());
 		}
+		
+		if (ne instanceof GameOverEvent) {
+			GameOverEvent goe = (GameOverEvent) ne;
+			winnerId = goe.getWinnerId();
+			gameOver = true;
+		}
 	}
 	
 	
@@ -331,10 +402,14 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	
 
 	@Override
-	public void update(float deltaTime) {
+	public synchronized void update(float deltaTime) {
 		super.update(deltaTime);
 		if (visible) {
-			gui.update(deltaTime);
+			if (showIngameMenu) {
+				ingameMenu.update(deltaTime);
+			} else {
+				gui.update(deltaTime);
+			}
 		}
 		
 		if (!worldReady) return;
@@ -370,8 +445,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	}
 
 	@Override
-	public void render(float deltaTime) {
+	public synchronized void render(float deltaTime) {
 		//super.render(deltaTime);
+		if (!worldReady) return;
+		
 		world.render(deltaTime, selectedUnit);
 
 		if (hoveredUnit != null && !hoveredUnit.isDead()) {
@@ -382,18 +459,35 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			GameObject bird = getGameObjectCollection("bird").get(0);
 			bird.render(deltaTime);
 		}
-		
-		if (worldReady) {
-			renderGuiBackground(deltaTime);
 
-			renderCountDown(deltaTime);
+		renderGuiBackground(deltaTime);
 
-			gui.render(deltaTime);
-			if (hoveredUnit != null) {
-				renderStatsInGui(deltaTime, hoveredUnit);
-			} else if (selectedUnit != null) {
-				renderStatsInGui(deltaTime, selectedUnit);
+		renderCountDown(deltaTime);
+
+		gui.render(deltaTime);
+
+		if (hoveredUnit != null) {
+			renderStatsInGui(deltaTime, hoveredUnit);
+		} else if (selectedUnit != null) {
+			renderStatsInGui(deltaTime, selectedUnit);
+		}
+
+		if (gameOver) {
+			if (winnerId == netClient.getClientId()) {
+				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
+				FontManager.getFont("DamageFont").glPrint("You Win !", 50, 50);
+			} else {
+				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
+				FontManager.getFont("DamageFont").glPrint("You Lose !", 50, 50);
 			}
+		}
+
+		if (showIngameMenu) {
+			IronGL.drawRect(0, 0, 
+					Display.getDisplayMode().getWidth(),
+					Display.getDisplayMode().getHeight(),
+					0, 0, 0, 0.75f);	
+			ingameMenu.render(deltaTime);
 		}
 	}
 	
@@ -447,7 +541,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		drawGuiBox(x - 5, y - 5, 117, 48);
 		
 		FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y, 0, 1f);
+		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y);
 
 		x += 40;//4 * 11
 		y += 20;
@@ -456,14 +550,23 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		if (timeLeftForTurn < 10) {
 			timeStr = "0";
 		}
-		FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y, 0, 1f);
+		if (gameOver) {
+			FontManager.getFont("DamageFont").glPrint("--", x, y);
+		} else {
+			FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y);
+		}
 	}
 	
 	@Override
-	public void setActive(boolean val) {
+	public synchronized void setActive(boolean val) {
+		boolean oldVal = isActive();
 		super.setActive(val);
-		if (val && !worldReady) {
+		if (val && !oldVal) {
+			//launching a new game, we need to start over again
 			netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
+		} if (!val) {
+			//clear everything for a future game
+			reInit();
 		}
 	}
 	
@@ -529,7 +632,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 
 	@Override
 	public void onHover(int x, int y) {
-		if (!worldReady) return;
+		if (!worldReady || showIngameMenu) return;
 		
 		x /= IronConst.TILE_WIDTH;
 		y /= IronConst.TILE_HEIGHT;
@@ -542,6 +645,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 
 	@Override
 	public void onLeftClick(int x, int y) {
+		if (!worldReady || showIngameMenu) return;
+		
 		x /= IronConst.TILE_WIDTH;
 		y /= IronConst.TILE_HEIGHT;
 		//out of bounds
@@ -563,9 +668,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 
 	@Override
 	public void onRightClick(int x, int y) {
-		//int x = Mouse.getX();
-		//int y = (Display.getDisplayMode().getHeight() - Mouse.getY());
-		//if (x < 0 || x >= Display.getDisplayMode().getWidth() || y < 0 || y >= Display.getDisplayMode().getHeight()) return;
+		if (!worldReady || showIngameMenu) return;
 		
 		if (selectedUnit != null) {
 			if (!popup.isVisible()) {

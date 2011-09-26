@@ -82,6 +82,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				
 			case SESSION_GAME :
 				newGameState = "game";
+				getGameState("lobby").setActive(false);
 				break;
 				
 			default : 

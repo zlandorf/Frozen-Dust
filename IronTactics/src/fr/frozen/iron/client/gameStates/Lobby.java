@@ -111,7 +111,6 @@ public class Lobby extends GameState implements NetEventListener {
 		/* when browsing the game list, the lobby is still active, but not visible */
 		/* i am still in the lobby game session on the server side */
 		setVisible(false);
-		//setActive(false);
 		
 		gameEngine.getGameState("browser").setActive(true);
 		gameEngine.getGameState("browser").setVisible(true);
@@ -145,11 +144,15 @@ public class Lobby extends GameState implements NetEventListener {
 	
 	@Override
 	public void setActive(boolean val) {
+		boolean oldVal = isActive();
 		super.setActive(val);
 		if (!val) {
 			players.clear();
+			chatWindow.clearMessages();
 		} else {
-			netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
+			if (!oldVal && val) {
+				netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
+			}
 		}
 	}
 	
@@ -169,6 +172,9 @@ public class Lobby extends GameState implements NetEventListener {
 			for (IronPlayer player : plre.getList()) {
 				addPlayer(player);
 			}
+			chatWindow.addMessage(
+					new ChatWindowMessage(ChatWindowMessage.SERVER_MESSAGE,
+										  "There are "+(plre.getList().size() - 1)+" players connected."));
 		}
 		
 		if (ne instanceof NewPlayerEvent) {

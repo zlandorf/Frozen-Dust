@@ -13,6 +13,7 @@ import fr.frozen.iron.client.messageEvents.ChatMessageEvent;
 import fr.frozen.iron.client.messageEvents.GameActionEvent;
 import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
 import fr.frozen.iron.client.messageEvents.GameListReceivedEvent;
+import fr.frozen.iron.client.messageEvents.GameOverEvent;
 import fr.frozen.iron.client.messageEvents.GameTurnEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
 import fr.frozen.iron.client.messageEvents.NameChangeEvent;
@@ -67,6 +68,9 @@ public class IronClient extends BaseClient {
 		switch (Protocol.get(msg.getType())) {
 		case GAME_TURN :
 			dispatchEvent(new GameTurnEvent(IronUtil.byteArrayToInt(msg.getData())));
+			break;
+		case GAME_OVER :
+			dispatchEvent(new GameOverEvent(IronUtil.byteArrayToInt(msg.getData())));
 			break;
 		case GAME_UNDO:
 			dispatchEvent(new UndoMoveEvent(IronUtil.byteArrayToInt(msg.getData())));

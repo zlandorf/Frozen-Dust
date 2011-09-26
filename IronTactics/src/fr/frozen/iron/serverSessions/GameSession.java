@@ -24,6 +24,7 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
+import fr.frozen.network.server.IGameController;
 import fr.frozen.util.XMLParser;
 import fr.frozen.util.pathfinding.Path;
 
@@ -40,6 +41,7 @@ public class GameSession extends BaseGameController implements GameContext {
 	protected int lastReadyId = -1;
 	protected int nbReady = 0;
 	protected boolean gameStarted = false;
+	protected boolean gameOver = false;
 	
 	
 	protected float timeLeftForTurn = 0;
@@ -67,6 +69,23 @@ public class GameSession extends BaseGameController implements GameContext {
 		world.setUnits(createGameUnitsList());
 	}
 	
+	@Override
+	public synchronized void removeClient(Client c, String reason) {
+		super.removeClient(c, reason);
+		
+		if (!gameOver && clients.size() > 0) {
+			int winnerId= clients.get(0).getId();
+			gameOver = true;
+			notifyGameEnded(winnerId);
+		}
+		
+		if (clients.size() == 0) {
+			server.removeGameSession(this);
+			logger.debug(this+" removed");
+		}
+	}
+	
+	
 	public synchronized void setTurn(int playerId) {
 		if (turnPlayerId != -1) {
 			getPlayerInfo(turnPlayerId).setTurnToPlay(false);
@@ -93,6 +112,23 @@ public class GameSession extends BaseGameController implements GameContext {
 		gameStarted = true;
 	}
 	
+	public void notifyGameEnded(int winnerId) {
+		List<SocketChannel> channels = getAllChannels();
+		if (channels == null) return;
+		
+		try {
+			byteArray.reset();
+			byteArray.write(IronUtil.intToByteArray(winnerId));
+
+			MessageToSend msgToSend = new MessageToSend(channels,
+					Protocol.GAME_OVER.ordinal(),
+					byteArray.toByteArray());
+			server.getWriter().addMsg(msgToSend);
+		} catch (IOException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	@Override
 	public synchronized void update(float deltaTime) {
 		super.update(deltaTime);
@@ -105,9 +141,16 @@ public class GameSession extends BaseGameController implements GameContext {
 			turnEnded = true;
 		}
 		
+		if (!gameOver) {
+			gameOver = world.areAllUnitsDead(clients.get(turnIndex ^ 1).getId());
+			if (gameOver) {
+				notifyGameEnded(turnPlayerId);
+			}
+		}
+		
 		turnEnded |= world.haveAllUnitsPlayed(turnPlayerId);
 		
-		if (turnEnded) {
+		if (turnEnded && !gameOver) {
 			switchTurns();
 		}
 	}
@@ -170,11 +213,12 @@ public class GameSession extends BaseGameController implements GameContext {
 	
 	@Override
 	public void handle(Message msg) {
+		
 		//TODO : add security everywhere in case there is false data sending
 		switch (Protocol.get(msg.getType())) {
 		case GAME_END_TURN_REQUEST :
 			synchronized (this) {
-				if (turnPlayerId == msg.getClientId()) {
+				if (!gameOver && turnPlayerId == msg.getClientId()) {
 					switchTurns();
 				}
 			}
@@ -183,7 +227,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		case GAME_UNDO_REQUEST :
 			IronUnit unit = world.getUnitFromId(IronUtil.byteArrayToInt(msg.getData()));
 			if (unit != null && msg.getClientId() == turnPlayerId && !unit.isDead() 
-					&& unit.getOwnerId() == turnPlayerId && unit.canUndo()) {
+					&& unit.getOwnerId() == turnPlayerId && unit.canUndo() && !gameOver) {
 				
 				unit.undoMove();
 				
@@ -200,7 +244,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		
 		case GAME_ACTION_REQUEST : 
 			try {
-				if (turnPlayerId == msg.getClientId()) {
+				if (!gameOver && turnPlayerId == msg.getClientId()) {
 					handleActionRequest(msg.getData());
 				}
 			} catch (IOException e) {
@@ -224,6 +268,19 @@ public class GameSession extends BaseGameController implements GameContext {
 				if (nbReady == 2) {
 					startGame();
 				}
+			}
+			break;
+			
+			
+		case SERVER_C_REQUEST_SESSION : 
+			if (Protocol.get(IronUtil.byteArrayToInt(msg.getData())) == Protocol.SESSION_LOBBY) {
+				IGameController lobby = server.getLobbySession();
+				Client client = server.getClient(msg.getClientId());
+				
+				client.getCurrentGameSession().removeClient(client, "left game.");
+				client.setCurrentGameSession(lobby);
+
+				lobby.addClient(client);
 			}
 			break;
 		default :

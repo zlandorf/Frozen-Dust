@@ -87,6 +87,23 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		gui.addComponent(button);
 	}
 	
+	protected void reInit() {
+		host = null;
+		other = null;
+		
+		hostName.setLabel(TXT_HOST);
+		otherName.setLabel(TXT_WAITING);
+		
+		hostList.setLabel(TXT_RACE_NOT_CHOSEN);
+		otherList.setLabel(TXT_RACE_NOT_CHOSEN);
+		
+		hostList.reInit();
+		otherList.reInit();
+		
+		hostList.setEditable(false);
+		otherList.setEditable(false);
+	}
+	
 	protected void setReady() {
 		netClient.sendEmptyMessage(Protocol.GAME_CREATION_READY);
 	}
@@ -95,8 +112,7 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 	public void setActive(boolean val) {
 		super.setActive(val);
 		if (!val) {
-			host = null;
-			other = null;
+			reInit();
 		} else {
 			netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
 		}
@@ -173,6 +189,7 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 	protected void setList(DropList list) {
 		list.setEditable(true);
 		list.setLabel("choose your race");
+		
 		list.addItem(new DropListItem("orc", Protocol.ORC_RACE.ordinal()));
 		list.addItem(new DropListItem("human", Protocol.HUMAN_RACE.ordinal()));
 		list.addActionListener(this);

@@ -19,6 +19,10 @@ public class ChatWindow extends Component {
 		charPerLine = (w - 2 * PADDING) / 11;
 	}
 
+	public synchronized void clearMessages() {
+		messages.clear();
+	}
+	
 	@Override
 	public synchronized void render(float deltaTime) {
 		if (!visible) return;

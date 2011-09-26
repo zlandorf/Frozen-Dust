@@ -29,6 +29,17 @@ public class DropList extends Component {
 		items = new ArrayList<DropListItem>();
 	}
 	
+	public void reInit() {
+		listeners.clear();
+		items.clear();
+
+		itemHovered = -1;
+		itemSelected = -1;
+		selected = false;
+		hover = false;
+	}
+	
+	
 	public String getLabel() {
 		return label;
 	}
