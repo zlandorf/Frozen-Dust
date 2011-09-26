@@ -475,10 +475,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		if (gameOver) {
 			if (winnerId == netClient.getClientId()) {
 				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-				FontManager.getFont("DamageFont").glPrint("You Win !", 50, 50);
+				FontManager.getFont("DamageFont").glPrint("Victory !", 150, 200, 0, 4f);
 			} else {
 				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-				FontManager.getFont("DamageFont").glPrint("You Lose !", 50, 50);
+				FontManager.getFont("DamageFont").glPrint("You Lose !", 150, 200, 0, 4f);
 			}
 		}
 
