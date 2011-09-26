@@ -30,6 +30,15 @@ public class IronConfig {
 	protected boolean showGrid;
 	
 	protected IronConfig() {
+	}
+	
+	public static IronConfig getInstance() {
+		return instance;
+	}
+	
+	//if i put in constructor, the server will need the jogg/jorbis jars
+	//so only the client initialises this
+	public void initClientConfig() {
 		username = IronUtil.findName();
 		
 		String showGridOption = IronUtil.findOptionValue("showgrid");

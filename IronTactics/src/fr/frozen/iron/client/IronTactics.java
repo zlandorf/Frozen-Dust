@@ -123,6 +123,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	
 	@Override
 	protected void buildAssets() {
+		IronConfig.getInstance().initClientConfig();
 		SpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
 		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
 		//this is because there is a bug where music plays even when music is off
