@@ -27,9 +27,39 @@ public class LobbySession extends BaseGameController {
 		case SESSION_JOIN_GAME_REQUEST :
 			handleJoinGameRequest(msg.getClientId(), msg.getData());
 			break;
+		case IRONTACTICS_INFO_REQUEST :
+			sendGameInfo(msg.getClientId());
+			break;
 		default :
 			super.handle(msg);
 			break;
+		}
+	}
+	
+	public void sendGameInfo(int clientId) {
+		Client dest = server.getClient(clientId);
+
+		if (dest == null) {
+			logger.error("problem, client is null (in send gameInfo) in "+sessionType);
+			return;
+		}
+		logger.debug(dest+" requesting game info");
+			
+		try {
+			int nbPlayers = server.getPlayers().size();
+			int nbGames = server.getNbGames();
+
+			byteArray.reset();
+			byteArray.write(IronUtil.intToByteArray(nbPlayers));
+			byteArray.write(IronUtil.intToByteArray(nbGames));
+
+			MessageToSend msgToSend = new MessageToSend(dest.getChannel(),
+					Protocol.IRONTACTICS_INFO.ordinal(),
+					byteArray.toByteArray());
+			
+			server.getWriter().addMsg(msgToSend);
+		} catch (IOException e) {
+			e.printStackTrace();
 		}
 	}
 	

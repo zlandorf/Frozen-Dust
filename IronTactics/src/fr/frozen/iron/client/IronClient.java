@@ -15,6 +15,7 @@ import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
 import fr.frozen.iron.client.messageEvents.GameListReceivedEvent;
 import fr.frozen.iron.client.messageEvents.GameOverEvent;
 import fr.frozen.iron.client.messageEvents.GameTurnEvent;
+import fr.frozen.iron.client.messageEvents.IronTacticsInfoEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
 import fr.frozen.iron.client.messageEvents.NameChangeEvent;
 import fr.frozen.iron.client.messageEvents.NewPlayerEvent;
@@ -66,6 +67,16 @@ public class IronClient extends BaseClient {
 	public void processMessage(Message msg) {
 		DataInputStream is;
 		switch (Protocol.get(msg.getType())) {
+		case IRONTACTICS_INFO :
+			try {
+				is = new DataInputStream(new ByteArrayInputStream(msg.getData()));
+				int nbPlayers = is.readInt();
+				int nbGames = is.readInt();
+				dispatchEvent(new IronTacticsInfoEvent(nbPlayers, nbGames));
+			} catch (Exception e) {
+				e.printStackTrace();
+			}
+			break;
 		case GAME_TURN :
 			dispatchEvent(new GameTurnEvent(IronUtil.byteArrayToInt(msg.getData())));
 			break;

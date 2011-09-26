@@ -17,6 +17,7 @@ import fr.frozen.iron.client.components.ChatWindowMessage;
 import fr.frozen.iron.client.components.GUI;
 import fr.frozen.iron.client.components.TextField;
 import fr.frozen.iron.client.messageEvents.ChatMessageEvent;
+import fr.frozen.iron.client.messageEvents.IronTacticsInfoEvent;
 import fr.frozen.iron.client.messageEvents.NameChangeEvent;
 import fr.frozen.iron.client.messageEvents.NewPlayerEvent;
 import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
@@ -151,6 +152,7 @@ public class Lobby extends GameState implements NetEventListener {
 			chatWindow.clearMessages();
 		} else {
 			if (!oldVal && val) {
+				netClient.sendEmptyMessage(Protocol.IRONTACTICS_INFO_REQUEST);
 				netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
 			}
 		}
@@ -174,7 +176,16 @@ public class Lobby extends GameState implements NetEventListener {
 			}
 			chatWindow.addMessage(
 					new ChatWindowMessage(ChatWindowMessage.SERVER_MESSAGE,
-										  "There are "+(plre.getList().size() - 1)+" players connected."));
+										  "There are "+(plre.getList().size() - 1)+" other players connected in the lobby."));
+		}
+		
+		if (ne instanceof IronTacticsInfoEvent) {
+			IronTacticsInfoEvent itie = (IronTacticsInfoEvent) ne;
+			chatWindow.addMessage(
+					new ChatWindowMessage(ChatWindowMessage.SERVER_MESSAGE,
+										  "There are "+(itie.getNbPlayers() - 1)
+										  +" other players connected to the game and "+itie.getNbGames()
+										  + " games being played."));
 		}
 		
 		if (ne instanceof NewPlayerEvent) {

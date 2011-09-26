@@ -31,6 +31,21 @@ public class IronServer extends BaseServer {
 		super(1234);
 	}
 	
+	public synchronized List<IGameController> getGameSessions() {
+		return gameSessions;
+	}
+	
+	public synchronized int getNbGames() {
+		int res = 0;
+		for (IGameController session : getGameSessions()) {
+			if (session.getSessionType() == Protocol.SESSION_GAME.ordinal()) {
+				res++;
+			}
+		}
+		return res;
+	}
+	
+	
 	@Override
 	public void buildInitialGameSessions() {
 		lobby = new LobbySession(this);
