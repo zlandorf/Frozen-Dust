@@ -1,6 +1,7 @@
 package fr.frozen.iron.client.components;
 
-import fr.frozen.game.FontManager;
+import org.newdawn.slick.Color;
+
 import fr.frozen.iron.util.IronGL;
 
 public class Label extends Component {
@@ -32,9 +33,8 @@ public class Label extends Component {
 		IronGL.drawRect((int)pos.getX(),(int) pos.getY(), getWidth(), getHeight(),
 				r, g, b, 0.7f);
 		
-		int y = (int) (pos.getY() + getHeight()) - 16 - 5;
-		FontManager.getFont("Font").setColor(1, 1, 1);
-		FontManager.getFont("Font").glPrint(label, pos.getX() + 5, y, 0);
+		float y = pos.getY() + getHeight() - font.getHeight(label) - 5;
+		font.drawString(pos.getX() + 5, y, label, Color.white);
 	}
 
 	@Override

@@ -9,6 +9,8 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.opengl.Display;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
@@ -92,6 +94,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	protected Sound forestSound;
 	
 	protected boolean showIngameMenu = false;
+	protected Font endFont;
+	protected Font timeLeftFont;
 	
 	public Game(IGameEngine ge) {
 		super(ge, "game", false, false);
@@ -191,6 +195,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
 		
 		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
+		endFont = FontManager.loadFont("DamageFont.ttf", 30);
+		timeLeftFont = FontManager.loadFont("DamageFont.ttf", 12);
 	}
 	
 	protected void leaveGame() {
@@ -474,11 +480,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 
 		if (gameOver) {
 			if (winnerId == netClient.getClientId()) {
-				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-				FontManager.getFont("DamageFont").glPrint("Victory !", 150, 200, 0, 4f);
+				endFont.drawString(150, 200, "Victory !", Color.white);
 			} else {
-				FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-				FontManager.getFont("DamageFont").glPrint("You Lose !", 150, 200, 0, 4f);
+				endFont.drawString(150, 200, "You Lose !", Color.white);
 			}
 		}
 
@@ -535,26 +539,33 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	}
 	
 	protected void renderCountDown(float deltaTime) {
-		float x = 660;
-		float y = 20;
+		float x = 655;
+		float y = 15;
 		
-		drawGuiBox(x - 5, y - 5, 117, 48);
+		float width = 117;
+		float height = 48;
 		
-		FontManager.getFont("DamageFont").setColor(1, 1, 1, 1);
-		FontManager.getFont("DamageFont").glPrint("TimeLeft:", x, y);
+		drawGuiBox(x, y, width, height);
+		
+		float x2 = x + width / 2 - timeLeftFont.getWidth("TimeLeft:") / 2;
+		float y2 = y + 7;
+		
+		timeLeftFont.drawString(x2, y2, "TimeLeft:", Color.white);
 
-		x += 40;//4 * 11
-		y += 20;
-		
 		String timeStr = "";
 		if (timeLeftForTurn < 10) {
 			timeStr = "0";
 		}
+		timeStr += String.valueOf((int)timeLeftForTurn);
+		
 		if (gameOver) {
-			FontManager.getFont("DamageFont").glPrint("--", x, y);
-		} else {
-			FontManager.getFont("DamageFont").glPrint(timeStr+(int)timeLeftForTurn, x, y);
+			timeStr = "--";
 		}
+		
+		x2 = x + width / 2 - timeLeftFont.getWidth(timeStr) / 2;
+		y2 += 10 + timeLeftFont.getHeight("TimeLeft");
+		
+		timeLeftFont.drawString(x2, y2, timeStr, Color.white);
 	}
 	
 	@Override

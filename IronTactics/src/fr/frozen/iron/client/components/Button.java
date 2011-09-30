@@ -1,8 +1,8 @@
 package fr.frozen.iron.client.components;
 
 import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.Color;
 
-import fr.frozen.game.FontManager;
 import fr.frozen.game.ISprite;
 
 public class Button extends Component {
@@ -14,9 +14,12 @@ public class Button extends Component {
 	protected boolean enabled;
 	//protected ISprite selectedSprite = null;
 	
-	boolean hover;
+	protected boolean hover;
 	
-	boolean clickedLastTick = false;
+	protected boolean clickedLastTick = false;
+
+	protected Color hoverColor = new Color(0x5e, 0x32, 0x03);
+	protected Color normalColor = new Color(0x29, 0x16,0x2);
 	
 	
 	public Button(String label, int x, int y, int w, int h) {
@@ -60,14 +63,6 @@ public class Button extends Component {
 		}
 	}
 	
-	/*public void setSelectedSprite(ISprite sprite) {
-		sprite.setWidth((int) size.getWidth());
-		sprite.setHeight((int) size.getHeight());
-		selectedSprite = sprite;
-	}*/
-	
-	
-	
 	@Override
 	public void render(float deltaTime) {
 		
@@ -88,30 +83,15 @@ public class Button extends Component {
 		}
 		sprite.draw(pos.getX(), pos.getY());
 		
-		
-		float red = (float)0x5e / (float)0xff; 
-		float green = (float)0x32 / (float)0xff;
-		float blue = (float)0x03 / (float)0xff;
+		Color color = normalColor;
 		
 		if (hover && enabled) {
-			red = (float)0x29 / (float) 0xff; 
-			green = (float)0x16 / (float) 0xff;
-			blue = (float)0x2 / (float) 0xff;
+			color = hoverColor;
 		}
 		
-		//TODO : dans textrenderer mettre method qui retourne la distance entre deux lettres
-		float textWidth = label.length() * 10;
-		
-		
-		/*if (!enabled) {
-			red = green = blue = 0.5f;
-		}*/
-		
-		float x = (float) (pos.getX() + getWidth() / 2 - textWidth / 2);
-		float y = (float)(pos.getY() + getHeight() / 2 - 8);
-		//GL11.glColor3f(1,1,1);
-		FontManager.getFont("Font").setColor(red, green, blue, 1);
-		FontManager.getFont("Font").glPrint(label, x, y, 0);
+		float x = (float) (pos.getX() + getWidth() / 2 - font.getWidth(label) / 2);
+		float y = (float)(pos.getY() + getHeight() / 2 - font.getHeight(label) / 2);
+		font.drawString(x, y, label, color);
 	}
 
 	@Override

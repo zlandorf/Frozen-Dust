@@ -3,7 +3,8 @@ package fr.frozen.iron.client.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.frozen.game.FontManager;
+import org.newdawn.slick.Color;
+
 import fr.frozen.game.ISprite;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.common.IronWorld;
@@ -30,6 +31,10 @@ public class PopupList extends Component {
 	protected int itemSelected = -1;
 	
 	protected boolean clickedLastTick = false;
+	
+	protected Color canDoColor = new Color(0,0,0);
+	protected Color HoverColor = new Color(.6f,0,0);
+	protected Color cantDoColor = new Color(.5f,.5f,.5f);
 	
 	List<SkillInfo> skills;
 	
@@ -111,18 +116,18 @@ public class PopupList extends Component {
 		
 		int y = (int)pos.getY() + PADDING;
 
+		Color color;
 		for (int i = 0; i < skills.size(); i++) {
+			color = cantDoColor;
 			if (skills.get(i).canDo()) {
-				FontManager.getFont("Font").setColor(0, 0, 0);
-			} else {
-				FontManager.getFont("Font").setColor(0.5f, 0.5f, 0.5f);
+				color = canDoColor;
 			}
 			
 			if (i == itemHovered && skills.get(i).canDo()) {
-				FontManager.getFont("Font").setColor(0.6f, 0, 0);
+				color = HoverColor;
 			}
 			
-			FontManager.getFont("Font").glPrint(skills.get(i).getSkill().getSkillName(), pos.getX() + PADDING, y + 4, 0);
+			font.drawString(pos.getX() + PADDING, y + 4, skills.get(i).getSkill().getSkillName(), color);
 			y += SKILL_HEIGHT;
 		}
 	}

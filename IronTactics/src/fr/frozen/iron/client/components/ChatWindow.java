@@ -3,7 +3,8 @@ package fr.frozen.iron.client.components;
 import java.util.ArrayList;
 import java.util.List;
 
-import fr.frozen.game.FontManager;
+import org.newdawn.slick.Color;
+
 import fr.frozen.iron.util.IronGL;
 
 public class ChatWindow extends Component {
@@ -11,12 +12,14 @@ public class ChatWindow extends Component {
 	protected int PADDING = 5;
 	protected List<ChatWindowMessage> messages;
 	protected int maxMessages = 31;
-	protected int charPerLine;
+	
+	protected Color prefixColor = new Color(.3f, 0.8f, .3f);
+	protected Color normalColor = new Color(0.85f, 0.85f, 0.85f);
+	protected Color servColor = new Color(1f, 0f, 0f);
 	
 	public ChatWindow (int x, int y, int w, int h) {
 		super(x,y, w, h);
 		messages = new ArrayList<ChatWindowMessage>();
-		charPerLine = (w - 2 * PADDING) / 11;
 	}
 
 	public synchronized void clearMessages() {
@@ -37,27 +40,48 @@ public class ChatWindow extends Component {
 			int x = (int)pos.getX() + PADDING;
 			
 			if (messages.get(i).getPrefix() != null && !messages.get(i).getPrefix().equals("")) {
-				FontManager.getFont("Font").setColor(.3f, 0.8f, .3f);
-				FontManager.getFont("Font").glPrint(messages.get(i).getPrefix(), x, y, 0);
-				x += 11 * messages.get(i).getPrefix().length();
+				font.drawString(x, y, messages.get(i).getPrefix(), prefixColor);
+				x += font.getWidth(messages.get(i).getPrefix());
 			}
 			
 			
-			
-			if (messages.get(i).getType() == ChatWindowMessage.CHAT_MESSAGE) {
-				FontManager.getFont("Font").setColor(0.75f, 0.75f, 0.75f);
-			} else {
-				FontManager.getFont("Font").setColor(1, 0, 0);
+			Color color = normalColor;
+			if (messages.get(i).getType() == ChatWindowMessage.SERVER_MESSAGE) {
+				color = servColor;
 			}
+			
 			if (messages.get(i).getMessage() != null && !messages.get(i).getMessage().equals("")) {
-				FontManager.getFont("Font").glPrint(messages.get(i).getMessage(), x, y, 0);
+				font.drawString(x, y, messages.get(i).getMessage(), color);
 			}
-			y -= 16;
+			y -= font.getLineHeight();
 		}
 	}
 
 	public synchronized void addMessage(ChatWindowMessage message) {
-		String []splitMessages = message.getFullMessage().split("(?<=\\G.{"+charPerLine+"})");
+		
+		String fullMessage = message.getFullMessage();
+		int nbLines = 1 + font.getWidth(fullMessage) / getWidth();
+		String []splitMessages = new String[nbLines];
+		int []charPerLine = new int[nbLines];
+		
+		int startIndex = 0, currentIndex = 0;
+		for (int i = 0; i < nbLines; i++) {
+			charPerLine[i] = 0;
+			while (currentIndex < fullMessage.length()
+				   && font.getWidth(fullMessage.substring(startIndex, currentIndex)) < getWidth() - PADDING) {
+				currentIndex ++;
+				charPerLine[i]++;
+			}
+			
+			if (currentIndex < fullMessage.length()) {
+				currentIndex--;
+				charPerLine[i]--;
+			}
+			splitMessages[i] = fullMessage.substring(startIndex, currentIndex);
+			startIndex = currentIndex;
+		}
+		
+		//String []splitMessages = message.getFullMessage().split("(?<=\\G.{"+charPerLine+"})");
 		int prefixLeft = 0;
 		
 		if (message.getPrefix() != null) {
@@ -65,15 +89,16 @@ public class ChatWindow extends Component {
 		}
 		int prefixDone = 0;
 		ChatWindowMessage cwm;
-		for (String msg : splitMessages) {
+		for (int i = 0; i < splitMessages.length; i++) {
+			String msg = splitMessages[i];
 			if (prefixLeft > 0) {
-				int nbPrefix = Math.min(charPerLine, prefixLeft);
+				int nbPrefix = Math.min(charPerLine[i], prefixLeft);
 				String prefix = msg.substring(0, nbPrefix);
 				String strmsg;
-				if (nbPrefix >= charPerLine)
+				if (nbPrefix >= charPerLine[i])
 					strmsg = "";
 				else
-					strmsg = msg.substring(nbPrefix , Math.min(charPerLine, msg.length()));
+					strmsg = msg.substring(nbPrefix , Math.min(charPerLine[i], msg.length()));
 				cwm = new ChatWindowMessage(message.type, prefix, strmsg);
 				
 				prefixDone += nbPrefix;

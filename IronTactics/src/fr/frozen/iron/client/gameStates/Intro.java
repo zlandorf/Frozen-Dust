@@ -5,8 +5,9 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
-import fr.frozen.game.Font;
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
@@ -23,15 +24,13 @@ public class Intro extends GameState {
 	
 	protected String text = "Iron Tactics";
 	
-	protected float scale = 2;
-	
 	public Intro(GameEngine ge) {
 		super(ge, "intro", true, true);
-		font = FontManager.getFont("Font");
+		font = FontManager.loadFont("default.ttf", 20, false, true);
 		DisplayMode dm = Display.getDisplayMode();
 		
-		float x = (dm.getWidth() / 2) - (text.length() * 10 * scale / 2);
-		float y = (dm.getHeight() / 2) - scale * 16 /2;
+		float x = (dm.getWidth() / 2) - font.getWidth(text)  / 2;
+		float y = (dm.getHeight() / 2) - font.getLineHeight() / 2;
 		textPos = new Vector2f(x, y);
 
 	}
@@ -45,8 +44,10 @@ public class Intro extends GameState {
 		alphaLevel *= Math.PI;
 		alphaLevel = (float) Math.abs(Math.sin(alphaLevel));
 		
-		font.setColor(1, 1, 1, alphaLevel);
-		font.glPrint(text, textPos.getX(), textPos.getY(), 1,scale);
+		if (timeSpent > IronConst.INTRO_DURATION) alphaLevel = 0;
+		
+		Color color = new Color(1f, 1f, 1f, alphaLevel);
+		font.drawString(textPos.getX(), textPos.getY(), text, color);
 	}
 
 	@Override
@@ -59,7 +60,7 @@ public class Intro extends GameState {
 			started = true;
 		}
 		
-		if (timeSpent >= IronConst.INTRO_DURATION) {
+		if (timeSpent >= IronConst.INTRO_DURATION + .5f) {
 			ended = true;
 		}
 		

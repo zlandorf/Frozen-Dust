@@ -7,9 +7,10 @@ import java.util.List;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
 import fr.frozen.game.AnimationSequence;
-import fr.frozen.game.Font;
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
@@ -696,15 +697,12 @@ public class IronUnit extends GameObject implements Mover {
 		
 		x = 655;
 		y = 170;
-		Font font = FontManager.getFont("StatsFont");
-		font.setColor(1,1,1);
 		List<String> stats = new ArrayList<String>();
 		
+		Font font = FontManager.getFont("defaultFont");
 		if (name != null && !name.equals("")) {
-			Font font2 = FontManager.getFont("Font");
-			font2.setColor(1,1,1);
-			float offx = (w - 4) / 2 - name.length() * font2.getCharWidth() / 2;
-			font2.glPrint(name, x1 + offx, y);
+			float offx = (w - 4) / 2 - font.getWidth(name) / 2;
+			font.drawString(x1 + offx, y, name, Color.white);
 			
 			y += 25;
 		}
@@ -748,13 +746,14 @@ public class IronUnit extends GameObject implements Mover {
 		stats.add("Phys armor : "+physArmorValue);
 		stats.add("Magi armor : "+magicalArmorValue);
 		
+		Font statsFont = FontManager.getFont("statsFont");
 		for (String str : stats) {
 			if (str.equals("")) {
 				y += 5;
 				continue;
 			}
-			font.glPrint(str, x, y);
-			y += 16;
+			statsFont.drawString(x, y, str, Color.white);
+			y += statsFont.getLineHeight();
 		}
 	}
 	

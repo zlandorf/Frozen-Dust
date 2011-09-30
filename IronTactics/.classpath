@@ -13,8 +13,8 @@
 	<classpathentry kind="lib" path="jar/lwjgl_util.jar"/>
 	<classpathentry kind="lib" path="engine.jar"/>
 	<classpathentry kind="lib" path="jar/log4j-1.2.16.jar"/>
-	<classpathentry kind="lib" path="jar/slick-util.jar"/>
 	<classpathentry kind="lib" path="jar/jorbis-0.0.15.jar"/>
 	<classpathentry kind="lib" path="jar/jogg-0.0.7.jar"/>
+	<classpathentry kind="lib" path="jar/slick.jar"/>
 	<classpathentry kind="output" path="bin"/>
 </classpath>

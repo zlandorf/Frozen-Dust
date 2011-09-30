@@ -1,10 +1,13 @@
 package fr.paul.game.test;
 
+
 import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
+import org.newdawn.slick.Font;
 
+import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
@@ -16,11 +19,12 @@ class Test extends GameEngine {
 	int viewX = 0;
 	int viewY = 0;
 	protected Logger logger = Logger.getLogger("engine");
+	Font font;
+	Font font2;
 	
 	public Test() {
 		BasicConfigurator.configure();
 		logger.setLevel(Level.ALL);
-		logger.info("TEST JUST INSTANCIATED !!");
 	}
 	
 	@Override
@@ -30,6 +34,7 @@ class Test extends GameEngine {
 		ISpriteManager.getInstance().loadSprite("sheet.png");*/
 		SpriteManager.getInstance().loadImagesFromXml("Data/iron.cfg");
 		SoundManager.getInstance().loadSoundsFromXml("Data/iron.cfg");
+		font = FontManager.loadFont("visitor.ttf", 15, false, true);
 	}
 	
 	protected void buildInitialGameStates() {
@@ -50,6 +55,11 @@ class Test extends GameEngine {
 	@Override
 	protected void render() {
 		super.render();
+		String str = "Ceci est un test^éèàù£$¤";
+		font.drawString(300, 300, str);
+		//font2.drawString(300, 400, "testyttest");
+		//font.glPrint(str, 300, 300);
+		//font.glPrint("test 2", 300, 400);
 		//ISprite sprite = ISpriteManager.getInstance().getSprite("tex");
 		//sprite.fillIn(0, 0, 800, 600);
 	}

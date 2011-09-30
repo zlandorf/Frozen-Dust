@@ -1,10 +1,10 @@
 package fr.frozen.iron.common.entities.particles;
 
-import fr.frozen.game.Font;
+import org.newdawn.slick.Color;
+
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
 import fr.frozen.iron.common.IronWorld;
-import fr.frozen.iron.util.IronGL;
 
 public class IntParticle extends GameObject {
 	
@@ -15,11 +15,10 @@ public class IntParticle extends GameObject {
 	protected int value;
 	protected String str;
 	protected float timeToLive = PARTICLE_DURATION;
-	protected Font font;
-	protected float []negColor;
-	protected float []posColor;
+	protected Color negColor;
+	protected Color posColor;
 	
-	public IntParticle(IronWorld world, float x, float y, int value, int negColor, int posColor) {
+	public IntParticle(IronWorld world, float x, float y, int value, Color negColor, Color posColor) {
 		super(null, x, y);
 		this.world = world;
 		this.value = value;
@@ -29,9 +28,9 @@ public class IntParticle extends GameObject {
 		} else if (value == 0) {
 			str = " "+str;
 		}
-		font = FontManager.getFont("DamageFont");
-		this.negColor = IronGL.getRgb(negColor);
-		this.posColor = IronGL.getRgb(posColor);
+		System.out.println("value = "+value);
+		this.negColor = negColor;
+		this.posColor = posColor;
 	}
 	
 	@Override
@@ -48,15 +47,17 @@ public class IntParticle extends GameObject {
 	@Override
 	public void render(float deltaTime) {
 		float alpha = Math.max(0, Math.min(timeToLive, 1));
+		Color colortmp;
 		if (value < 0) {
-			font.setColor(negColor[0],negColor[1],negColor[2]);
+			colortmp = negColor;
 		} else if (value == 0) {
-			font.setColor(1, 1, 1);	
+			colortmp = Color.white;
 		} else {
-			font.setColor(posColor[0],posColor[1],posColor[2]);
+			colortmp = posColor;
 		}
-		font.setAlpha(alpha);
-		font.glPrint(str, _pos.getX(), _pos.getY());
+		Color color = new Color(colortmp.getRed(), colortmp.getGreen(), colortmp.getBlue(), alpha);
+		
+		FontManager.getFont("DamageFont").drawString(_pos.getX(), _pos.getY(), str, color);
 	}
 	
 	@Override

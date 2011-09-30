@@ -4,8 +4,8 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.lwjgl.util.vector.Vector2f;
+import org.newdawn.slick.Color;
 
-import fr.frozen.game.FontManager;
 import fr.frozen.iron.util.IronGL;
 
 public class DropList extends Component {
@@ -90,9 +90,9 @@ public class DropList extends Component {
 		IronGL.drawRect((int)pos.getX(),(int) pos.getY(), getWidth(), getHeight(),
 				r, g, b, 0.7f);
 		
-		float y = (float) (pos.getY() + boxSize.getY() - 16 - 5);//16 = font height and 5 for padding
-		FontManager.getFont("Font").setColor(1, 1, 1);
-		FontManager.getFont("Font").glPrint(label, pos.getX() + 5, y, 0);
+		float y = (float) (pos.getY() + boxSize.getY() - font.getHeight(label) - 5);//16 = font height and 5 for padding
+		
+		font.drawString(pos.getX() + 5, y, label, Color.white);
 
 		if (selected) {
 			float x = pos.getX();
@@ -121,8 +121,7 @@ public class DropList extends Component {
 		IronGL.drawRect((int)x, (int)y, getWidth(), ITEM_HEIGHT,
 				r, g, b, 0.7f);
 
-		FontManager.getFont("Font").setColor(1, 1, 1);
-		FontManager.getFont("Font").glPrint(item.getLabel(), x + 5, y + ITEM_HEIGHT - 16 - 5, 0);//16 = font height and 5 for padding
+		font.drawString(pos.getX() + 5, y + ITEM_HEIGHT - font.getHeight(item.getLabel()) - 5, item.getLabel(), Color.white);
 	}
 	
 	

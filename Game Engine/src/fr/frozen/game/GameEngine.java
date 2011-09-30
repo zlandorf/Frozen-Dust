@@ -53,6 +53,7 @@ public class GameEngine implements IGameEngine {
 		_timer = new Timer();
 		_resolution = new Dimension();
 		_screenSize = Toolkit.getDefaultToolkit().getScreenSize();
+		Keyboard.enableRepeatEvents(true);
 	}
 	
 	
