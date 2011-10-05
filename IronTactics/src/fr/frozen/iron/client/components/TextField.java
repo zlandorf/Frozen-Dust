@@ -10,6 +10,7 @@ import fr.frozen.iron.util.IronGL;
 public class TextField extends Component implements KeyboardListener {
 
 	protected static int CARRET_DISPLAY_TIME = 1;//s
+	protected static int PADDING = 5;
 
 	protected boolean active = true;
 	protected StringBuffer buffer;
@@ -44,11 +45,20 @@ public class TextField extends Component implements KeyboardListener {
 		IronGL.drawRect((int)pos.getX(),(int) pos.getY(), getWidth(), getHeight(),
 				r, g, b, 0.7f);
 
-		String text = buffer.toString();
-		chatFont.drawString(pos.getX() + 5 , pos.getY() + 5, text, Color.white);
-
+		String tmpText = buffer.toString();
+		String text = "";
+		if (tmpText != null && tmpText.length() > 0) {
+			int startIndex = tmpText.length() - 1;
+			
+			while (startIndex >= 0 && chatFont.getWidth(tmpText.substring(startIndex)) <= getWidth() - 2 * PADDING) {
+				startIndex --;
+			}
+			//text = tmpText.substring(Math.max(0, Math.min(startIndex + 1,tmpText.length() - 1)));
+			text = tmpText.substring(Math.min(startIndex + 1, tmpText.length()));
+			chatFont.drawString(pos.getX() + PADDING , pos.getY() + PADDING, text, Color.white);
+		}
 		if (showCarret) {
-			int x = (int)(pos.getX() + 5 + chatFont.getWidth(text) + 5);
+			int x = (int)(pos.getX() + PADDING + chatFont.getWidth(text) + PADDING);
 			int y = (int)pos.getY() + 6;
 
 			IronGL.drawRect(x, y, 6, 15,
@@ -81,7 +91,7 @@ public class TextField extends Component implements KeyboardListener {
 			if (buffer.length() >= 1)
 				notifyActionListeners();
 		} else {
-			if (eventChar >= 32 && eventChar <= 256 && eventChar != Keyboard.KEY_DELETE) {
+			if (eventChar >= 32 && eventChar <= 256 && eventKey != Keyboard.KEY_DELETE) {
 				buffer.append(Keyboard.getEventCharacter());
 			}
 		}

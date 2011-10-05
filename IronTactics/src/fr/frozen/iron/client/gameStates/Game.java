@@ -479,11 +479,17 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 
 		if (gameOver) {
+			String gameOverText; 
 			if (winnerId == netClient.getClientId()) {
-				endFont.drawString(150, 200, "Victory !", Color.white);
+				gameOverText = "Victory !";
 			} else {
-				endFont.drawString(150, 200, "You Lose !", Color.white);
+				gameOverText = "You Lose !";
 			}
+			int x = IronConst.MAP_WIDTH * IronConst.TILE_WIDTH  / 2;
+			x -= endFont.getWidth(gameOverText) / 2;
+			int y = IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT  / 2;
+			y -= endFont.getHeight(gameOverText) / 2;
+			endFont.drawString(x, y, gameOverText, Color.white);
 		}
 
 		if (showIngameMenu) {
