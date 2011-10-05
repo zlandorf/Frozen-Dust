@@ -1,5 +1,6 @@
 package fr.frozen.iron.client;
 
+import java.awt.Font;
 import java.net.InetAddress;
 import java.net.UnknownHostException;
 
@@ -131,9 +132,11 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		IronConfig.setVolume(IronConfig.getVolume());
 		@SuppressWarnings("unused")
 		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
-		FontManager.addFont(FontManager.loadFont("default.ttf", 9), "statsFont");
-		FontManager.addFont(FontManager.loadFont("default.ttf", 12), "defaultFont");
-		FontManager.addFont(FontManager.loadFont("DamageFont.ttf", 14), "DamageFont");
+		FontManager.addFont(FontManager.loadFont("visitor.ttf", 14), "statsFont");
+		FontManager.addFont(FontManager.loadFont(new Font("Arial", Font.PLAIN, 15)), "chatFont");
+		FontManager.addFont(FontManager.loadFont("default.ttf", 20), "defaultFont");
+		FontManager.addFont(FontManager.loadFont("default.ttf", 25), "componentFont");
+		FontManager.addFont(FontManager.loadFont("default.ttf", 25), "DamageFont");
 	}
 	
 	protected void buildInitialGameStates() {

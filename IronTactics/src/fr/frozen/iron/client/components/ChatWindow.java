@@ -4,7 +4,9 @@ import java.util.ArrayList;
 import java.util.List;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
+import fr.frozen.game.FontManager;
 import fr.frozen.iron.util.IronGL;
 
 public class ChatWindow extends Component {
@@ -17,9 +19,12 @@ public class ChatWindow extends Component {
 	protected Color normalColor = new Color(0.85f, 0.85f, 0.85f);
 	protected Color servColor = new Color(1f, 0f, 0f);
 	
+	protected Font chatFont;
+	
 	public ChatWindow (int x, int y, int w, int h) {
 		super(x,y, w, h);
 		messages = new ArrayList<ChatWindowMessage>();
+		chatFont = FontManager.getFont("chatFont");
 	}
 
 	public synchronized void clearMessages() {
@@ -40,8 +45,8 @@ public class ChatWindow extends Component {
 			int x = (int)pos.getX() + PADDING;
 			
 			if (messages.get(i).getPrefix() != null && !messages.get(i).getPrefix().equals("")) {
-				font.drawString(x, y, messages.get(i).getPrefix(), prefixColor);
-				x += font.getWidth(messages.get(i).getPrefix());
+				chatFont.drawString(x, y, messages.get(i).getPrefix(), prefixColor);
+				x += chatFont.getWidth(messages.get(i).getPrefix());
 			}
 			
 			
@@ -51,16 +56,16 @@ public class ChatWindow extends Component {
 			}
 			
 			if (messages.get(i).getMessage() != null && !messages.get(i).getMessage().equals("")) {
-				font.drawString(x, y, messages.get(i).getMessage(), color);
+				chatFont.drawString(x, y, messages.get(i).getMessage(), color);
 			}
-			y -= font.getLineHeight();
+			y -= chatFont.getLineHeight();
 		}
 	}
 
 	public synchronized void addMessage(ChatWindowMessage message) {
 		
 		String fullMessage = message.getFullMessage();
-		int nbLines = 1 + font.getWidth(fullMessage) / getWidth();
+		int nbLines = 1 + chatFont.getWidth(fullMessage) / getWidth();
 		String []splitMessages = new String[nbLines];
 		int []charPerLine = new int[nbLines];
 		
@@ -68,7 +73,7 @@ public class ChatWindow extends Component {
 		for (int i = 0; i < nbLines; i++) {
 			charPerLine[i] = 0;
 			while (currentIndex < fullMessage.length()
-				   && font.getWidth(fullMessage.substring(startIndex, currentIndex)) < getWidth() - PADDING) {
+				   && chatFont.getWidth(fullMessage.substring(startIndex, currentIndex)) < getWidth() - PADDING) {
 				currentIndex ++;
 				charPerLine[i]++;
 			}

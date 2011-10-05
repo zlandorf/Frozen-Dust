@@ -11,7 +11,7 @@ import fr.frozen.game.FontManager;
 
 public abstract class Component implements MouseListener {
 
-	protected static Font font = FontManager.getFont("defaultFont");
+	protected static Font font = FontManager.getFont("componentFont");
 
 	protected List<ActionListener> listeners;
 	protected boolean selected = false;

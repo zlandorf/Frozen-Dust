@@ -2,7 +2,9 @@ package fr.frozen.iron.client.components;
 
 import org.lwjgl.input.Keyboard;
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
+import fr.frozen.game.FontManager;
 import fr.frozen.iron.util.IronGL;
 
 public class TextField extends Component implements KeyboardListener {
@@ -10,14 +12,16 @@ public class TextField extends Component implements KeyboardListener {
 	protected static int CARRET_DISPLAY_TIME = 1;//s
 
 	protected boolean active = true;
-	StringBuffer buffer;
+	protected StringBuffer buffer;
 
-	float timeToNext = CARRET_DISPLAY_TIME;
-	boolean showCarret = false;
-
+	protected float timeToNext = CARRET_DISPLAY_TIME;
+	protected boolean showCarret = false;
+	protected Font chatFont;
+	
 	public TextField(int x, int y, int w, int h) {
 		super(x,y, w, h);
 		buffer = new StringBuffer();
+		chatFont = FontManager.getFont("chatFont");
 	}
 
 	public String getText() {
@@ -41,10 +45,10 @@ public class TextField extends Component implements KeyboardListener {
 				r, g, b, 0.7f);
 
 		String text = buffer.toString();
-		font.drawString(pos.getX() + 5 , pos.getY() + 5, text, Color.white);
+		chatFont.drawString(pos.getX() + 5 , pos.getY() + 5, text, Color.white);
 
 		if (showCarret) {
-			int x = (int)(pos.getX() + 5 + font.getWidth(text) + 5);
+			int x = (int)(pos.getX() + 5 + chatFont.getWidth(text) + 5);
 			int y = (int)pos.getY() + 6;
 
 			IronGL.drawRect(x, y, 6, 15,

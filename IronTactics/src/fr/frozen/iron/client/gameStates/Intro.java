@@ -26,7 +26,7 @@ public class Intro extends GameState {
 	
 	public Intro(GameEngine ge) {
 		super(ge, "intro", true, true);
-		font = FontManager.loadFont("default.ttf", 20, false, true);
+		font = FontManager.loadFont("default.ttf", 35, false, true);
 		DisplayMode dm = Display.getDisplayMode();
 		
 		float x = (dm.getWidth() / 2) - font.getWidth(text)  / 2;

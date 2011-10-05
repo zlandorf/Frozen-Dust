@@ -195,8 +195,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
 		
 		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
-		endFont = FontManager.loadFont("DamageFont.ttf", 30);
-		timeLeftFont = FontManager.loadFont("DamageFont.ttf", 12);
+		endFont = FontManager.loadFont("default.ttf", 40);
+		timeLeftFont = FontManager.getFont("defaultFont");
 	}
 	
 	protected void leaveGame() {
@@ -548,7 +548,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		drawGuiBox(x, y, width, height);
 		
 		float x2 = x + width / 2 - timeLeftFont.getWidth("TimeLeft:") / 2;
-		float y2 = y + 7;
+		float y2 = y;
 		
 		timeLeftFont.drawString(x2, y2, "TimeLeft:", Color.white);
 
@@ -563,7 +563,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 		
 		x2 = x + width / 2 - timeLeftFont.getWidth(timeStr) / 2;
-		y2 += 10 + timeLeftFont.getHeight("TimeLeft");
+		y2 += timeLeftFont.getHeight("TimeLeft");
 		
 		timeLeftFont.drawString(x2, y2, timeStr, Color.white);
 	}

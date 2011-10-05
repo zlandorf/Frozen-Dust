@@ -18,7 +18,7 @@ public class IntParticle extends GameObject {
 	protected Color negColor;
 	protected Color posColor;
 	
-	public IntParticle(IronWorld world, float x, float y, int value, Color negColor, Color posColor) {
+	public IntParticle(IronWorld world, float x, float y, int value, int negColor, int posColor) {
 		super(null, x, y);
 		this.world = world;
 		this.value = value;
@@ -28,9 +28,8 @@ public class IntParticle extends GameObject {
 		} else if (value == 0) {
 			str = " "+str;
 		}
-		System.out.println("value = "+value);
-		this.negColor = negColor;
-		this.posColor = posColor;
+		this.negColor = new Color(negColor);
+		this.posColor = new Color(posColor);
 	}
 	
 	@Override
@@ -55,7 +54,7 @@ public class IntParticle extends GameObject {
 		} else {
 			colortmp = posColor;
 		}
-		Color color = new Color(colortmp.getRed(), colortmp.getGreen(), colortmp.getBlue(), alpha);
+		Color color = new Color(colortmp.getRed(), colortmp.getGreen(), colortmp.getBlue(), (int)(alpha * 255));
 		
 		FontManager.getFont("DamageFont").drawString(_pos.getX(), _pos.getY(), str, color);
 	}
