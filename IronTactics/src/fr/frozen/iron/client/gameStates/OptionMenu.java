@@ -25,7 +25,7 @@ public class OptionMenu extends GameState {
 		super(ge, "optionMenu", false, false);
 		gui = new GUI();
 
-		textField = new TextField(300, 200, 200, 25);
+		textField = new TextField(300, 200, 200, 25, false);
 		textField.setText(IronConfig.getUserName());
 		Button apply = new IronMenuButton("apply", 250);
 		//320

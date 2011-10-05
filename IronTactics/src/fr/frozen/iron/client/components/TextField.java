@@ -15,14 +15,24 @@ public class TextField extends Component implements KeyboardListener {
 	protected boolean active = true;
 	protected StringBuffer buffer;
 
+	protected boolean historyActivated;
+	
 	protected float timeToNext = CARRET_DISPLAY_TIME;
 	protected boolean showCarret = false;
 	protected Font chatFont;
 	
-	public TextField(int x, int y, int w, int h) {
+	protected TextFieldHistory textHistory;
+	
+	public TextField(int x, int y, int w, int h, boolean historyActivated) {
 		super(x,y, w, h);
 		buffer = new StringBuffer();
 		chatFont = FontManager.getFont("chatFont");
+		this.historyActivated = historyActivated;
+		textHistory = TextFieldHistory.getInstance();
+	}
+	
+	public TextField(int x, int y, int w, int h) {
+		this(x,y, w, h, true);
 	}
 
 	public String getText() {
@@ -88,11 +98,24 @@ public class TextField extends Component implements KeyboardListener {
 		if (eventKey == Keyboard.KEY_BACK && buffer.length() >= 1) {
 			buffer.deleteCharAt(buffer.length() - 1);
 		} else if (eventKey == Keyboard.KEY_RETURN) {
-			if (buffer.length() >= 1)
+			if (buffer.length() >= 1) {
+				if (historyActivated) {
+					textHistory.addString(buffer.toString());
+					textHistory.resetIndex();
+				}
 				notifyActionListeners();
+			}
 		} else {
 			if (eventChar >= 32 && eventChar <= 256 && eventKey != Keyboard.KEY_DELETE) {
 				buffer.append(Keyboard.getEventCharacter());
+			} else {
+				if (historyActivated) {
+					if (eventKey == Keyboard.KEY_UP) {
+						setText(textHistory.getPrevious());
+					} else if (eventKey == Keyboard.KEY_DOWN) {
+						setText(textHistory.getNext());
+					}
+				}
 			}
 		}
 	}
