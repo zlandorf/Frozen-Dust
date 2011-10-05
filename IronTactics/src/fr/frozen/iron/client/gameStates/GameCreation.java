@@ -52,7 +52,7 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		gui = new GUI();
 		
 		int width = 200;
-		int height = 25;
+		int height = 30;
 		hostName = new Label(TXT_HOST, 100, 100, width, height);
 		otherName = new Label(TXT_WAITING, 100, 225, width, height);
 		

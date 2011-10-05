@@ -547,10 +547,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		drawGuiBox(x, y, width, height);
 		
-		float x2 = x + width / 2 - timeLeftFont.getWidth("TimeLeft:") / 2;
+		float x2 = x + width / 2 - timeLeftFont.getWidth("TimeLeft :") / 2;
 		float y2 = y;
 		
-		timeLeftFont.drawString(x2, y2, "TimeLeft:", Color.white);
+		timeLeftFont.drawString(x2, y2, "TimeLeft :", Color.white);
 
 		String timeStr = "";
 		if (timeLeftForTurn < 10) {

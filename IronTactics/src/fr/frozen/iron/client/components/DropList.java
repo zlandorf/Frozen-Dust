@@ -23,6 +23,7 @@ public class DropList extends Component {
 	
 	public DropList(String label, int x, int y, int w, int h) {
 		super(x,y, w, h);
+		ITEM_HEIGHT = h;
 		this.label = label;
 		selected = false;
 		boxSize = new Vector2f(w, h);
@@ -121,7 +122,7 @@ public class DropList extends Component {
 		IronGL.drawRect((int)x, (int)y, getWidth(), ITEM_HEIGHT,
 				r, g, b, 0.7f);
 
-		font.drawString(pos.getX() + 5, y + ITEM_HEIGHT - font.getHeight(item.getLabel()) - 5, item.getLabel(), Color.white);
+		font.drawString(pos.getX() + 5, y, item.getLabel(), Color.white);
 	}
 	
 	

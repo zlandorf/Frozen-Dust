@@ -14,13 +14,14 @@
     
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
-    <target name="clientBuild">
+    
+	<target name="clientBuild">
         <jar destfile="${dist.dir}/IronTactics.jar">
             <manifest>
                 <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
                 <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.client.IronTactics"/>
                 <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ slick-util.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+                <attribute name="Rsrc-Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
             </manifest>
 	
             <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
