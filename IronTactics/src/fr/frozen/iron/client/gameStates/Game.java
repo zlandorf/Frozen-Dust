@@ -210,6 +210,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		showIngameMenu = false;
 		
 		chatWindow.clearMessages();
+		forestSound.stop();
 	}
 	
 	protected void requestEndTurn() {
