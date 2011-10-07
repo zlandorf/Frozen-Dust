@@ -110,7 +110,7 @@ public abstract class Skill {
 				}
 				
 			}
-			damage = new DamageParticle(world, target.getX() * IronConst.TILE_WIDTH,
+			damage = new DamageParticle(world, target.getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2,
 											   target.getY() * IronConst.TILE_WIDTH,
 											   couple[1]);
 			
@@ -142,7 +142,7 @@ public abstract class Skill {
 			int manaCost = manaAfter - manaBefore;
 			
 			if (manaCost != 0) {
-				ManaParticle mp = new ManaParticle(world, src.getX() * IronConst.TILE_WIDTH,
+				ManaParticle mp = new ManaParticle(world, src.getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2,
 						src.getY() * IronConst.TILE_WIDTH,
 						manaCost);
 				world.addGameObject(mp, "gfx");

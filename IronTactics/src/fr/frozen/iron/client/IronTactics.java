@@ -137,7 +137,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		//FontManager.addFont(FontManager.loadFont("default.ttf", 20), "defaultFont");
 		//FontManager.addFont(FontManager.loadFont("default.ttf", 25), "componentFont");
 		
-		FontManager.addFont(FontManager.loadAngelFont("componentFont.fnt", "componentFont.png"), "defaultFont");
+		FontManager.addFont(FontManager.loadAngelFont("augusta.fnt", "augusta.png"), "defaultFont");
 		FontManager.addFont(FontManager.loadAngelFont("componentFont.fnt", "componentFont.png"), "componentFont");
 
 		FontManager.addFont(FontManager.loadAngelFont("DamageFont.fnt", "DamageFont.png"), "DamageFont");

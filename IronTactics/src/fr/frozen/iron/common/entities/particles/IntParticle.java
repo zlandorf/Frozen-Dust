@@ -1,6 +1,7 @@
 package fr.frozen.iron.common.entities.particles;
 
 import org.newdawn.slick.Color;
+import org.newdawn.slick.Font;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
@@ -18,6 +19,8 @@ public class IntParticle extends GameObject {
 	protected Color negColor;
 	protected Color posColor;
 	
+	protected Font damageFont;
+	
 	public IntParticle(IronWorld world, float x, float y, int value, int negColor, int posColor) {
 		super(null, x, y);
 		this.world = world;
@@ -28,6 +31,8 @@ public class IntParticle extends GameObject {
 		} else if (value == 0) {
 			str = " "+str;
 		}
+		damageFont = FontManager.getFont("DamageFont");
+		setPos((int)(getX() - damageFont.getWidth(str) / 2),(int)( getY() - damageFont.getHeight(str) / 2));
 		this.negColor = new Color(negColor);
 		this.posColor = new Color(posColor);
 	}
@@ -56,7 +61,7 @@ public class IntParticle extends GameObject {
 		}
 		Color color = new Color(colortmp.getRed(), colortmp.getGreen(), colortmp.getBlue(), (int)(alpha * 255));
 		
-		FontManager.getFont("DamageFont").drawString(_pos.getX(), _pos.getY(), str, color);
+		damageFont.drawString(_pos.getX(), _pos.getY(), str, color);
 	}
 	
 	@Override

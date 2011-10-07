@@ -210,7 +210,7 @@ public class IronUnit extends GameObject implements Mover {
 			int manaAfter = getStats().getMana();
 			if (manaAfter - manaBefore != 0 && addParticle) {
 				GameObject manaParticle = new ManaParticle(getWorld(), 
-														   getX() * IronConst.TILE_WIDTH, 
+														   getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2, 
 														   getY() * IronConst.TILE_HEIGHT, manaAfter - manaBefore);
 				world.addGameObject(manaParticle, "gfx");
 			}
