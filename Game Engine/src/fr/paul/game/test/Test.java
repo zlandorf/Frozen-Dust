@@ -8,7 +8,6 @@ import org.apache.log4j.BasicConfigurator;
 import org.apache.log4j.Level;
 import org.apache.log4j.Logger;
 import org.lwjgl.input.Keyboard;
-import org.lwjgl.opengl.GL11;
 import org.newdawn.slick.Font;
 import org.newdawn.slick.font.effects.OutlineEffect;
 
@@ -16,6 +15,7 @@ import fr.frozen.game.FontManager;
 import fr.frozen.game.GameEngine;
 import fr.frozen.game.GameState;
 import fr.frozen.game.IGameEngine;
+import fr.frozen.game.ISprite;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 
@@ -37,33 +37,16 @@ class Test extends GameEngine {
 		/*ISpriteManager.getInstance().loadSprite("image.png");
 		ISpriteManager.getInstance().loadSprite("rebel.png");
 		ISpriteManager.getInstance().loadSprite("sheet.png");*/
-		SpriteManager.getInstance().loadImagesFromXml("Data/iron.cfg");
-		SoundManager.getInstance().loadSoundsFromXml("Data/iron.cfg");
+		SpriteManager.getInstance().loadImagesFromXml("data/iron.cfg");
+		SoundManager.getInstance().loadSoundsFromXml("data/iron.cfg");
 		OutlineEffect outLineEffect = new OutlineEffect(20, new Color(.5f,.5f,.5f));
 		outLineEffect.setJoin(BasicStroke.JOIN_ROUND);
 		OutlineEffect outLineEffect2 = new OutlineEffect(20, new Color(1f,0,0, 0.5f));
 		outLineEffect2.setJoin(BasicStroke.JOIN_BEVEL);
 		font = FontManager.loadFont("visitor.ttf", 50, false, true, outLineEffect, outLineEffect2);
 		
-		/*try {
-			font2 = new AngelCodeFont("Data/augusta.fnt", "Data/augusta.png");
-		} catch (SlickException e) {
-			e.printStackTrace();
-		}*/
-//		UnicodeFont ufont = new UnicodeFont();
-//		try {
-//			ufont.addAsciiGlyphs();
-//			ufont.addGlyphs(400, 600);
-//			ufont.getEffects().add(new OutlineEffect(1,Color.red));
-//			ufont.getEffects().add(new ColorEffect(Color.white));
-//			ufont.loadGlyphs();
-//		} catch (SlickException e) {
-//			// TODO Auto-generated catch block
-//			e.printStackTrace();
-//		}
-		font2 = FontManager.loadFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 20), new OutlineEffect(1,Color.red));
-		System.out.println("\n"+font2.getLineHeight()+"\n");
-		
+		//font2 = FontManager.loadFont(new java.awt.Font("Arial", java.awt.Font.PLAIN, 20), new OutlineEffect(1,Color.red));
+		font2 = FontManager.loadAngelFont("augusta.fnt", "augusta.png");
 	}
 	
 	protected void buildInitialGameStates() {
@@ -86,13 +69,13 @@ class Test extends GameEngine {
 		super.render();
 		String str = "Ceci est un test^éèàù£$¤";
 		font.drawString(300, 300, str, org.newdawn.slick.Color.yellow);
-		//GL11.glDisable(GL11.GL_TEXTURE_2D);
-		font2.drawString(300, 400, "abcdefghijklmiwinop+-~");
-		GL11.glEnable(GL11.GL_TEXTURE_2D);
-		//font.glPrint(str, 300, 300);
-		//font.glPrint("test 2", 300, 400);
-		//ISprite sprite = ISpriteManager.getInstance().getSprite("tex");
-		//sprite.fillIn(0, 0, 800, 600);
+		font2.drawString(300, 400, "abcdefghijklmiwinop+-~", org.newdawn.slick.Color.yellow);
+		ISprite sprite = SpriteManager.getInstance().getSprite("tex");
+		sprite.fillIn(0, 0, 100, 600);
+		font2.drawString(300, 450, "abcdefghijklmiwinop+-~", org.newdawn.slick.Color.green);
+		sprite.fillIn(150, 0, 330, 600);
+		font2.drawString(300, 500, "abcdefghijklmiwinop+-~", org.newdawn.slick.Color.red);
+		font2.drawString(300, 550, "abcdefghijklmiwinop+-~", org.newdawn.slick.Color.blue);
 	}
 	
 	@Override

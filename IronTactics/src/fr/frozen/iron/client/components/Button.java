@@ -1,5 +1,6 @@
 package fr.frozen.iron.client.components;
 
+import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 
@@ -91,7 +92,9 @@ public class Button extends Component {
 		
 		float x = (float) (pos.getX() + getWidth() / 2 - font.getWidth(label) / 2);
 		float y = (float)(pos.getY() + getHeight() / 2 - font.getHeight(label) / 2);
+		GL11.glDisable(GL11.GL_TEXTURE_2D);
 		font.drawString(x, y, label, color);
+		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 
 	@Override

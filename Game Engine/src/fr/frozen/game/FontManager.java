@@ -10,7 +10,7 @@ import org.newdawn.slick.font.effects.ColorEffect;
 import org.newdawn.slick.font.effects.Effect;
 
 public class FontManager {
-	public static String FONT_DIR = "Data/";
+	public static String FONT_DIR = "fonts/";
 	private static FontManager instance = new FontManager();
 	
 	private Hashtable<String, Font> fonts;
@@ -37,6 +37,10 @@ public class FontManager {
 		return loadFont(filename, 10, effects);
 	}
 	
+	public static Font loadAngelFont(String fntFile, String imgFile) {
+		return instance.loadAngelFontAux(fntFile, imgFile);
+	}
+	
 	public static Font loadFont(String filename, int fontSize, Effect ... effects) {
 		return loadFont(filename, fontSize, false, false, effects);
 	}
@@ -44,6 +48,17 @@ public class FontManager {
 	public static Font loadFont(String filename, int fontSize, boolean bold, boolean italic, Effect ... effects) {
 		
 		return instance.loadFontAux(filename, fontSize, bold, italic, effects);
+	}
+	
+	
+	private Font loadAngelFontAux(String fntFile, String imgFile) {
+		Font font = null;
+		try {
+			font = new AngelCodeFontFix(FONT_DIR+fntFile, FONT_DIR+imgFile);
+		} catch (SlickException e) {
+			e.printStackTrace();
+		}
+		return font;
 	}
 	
 	private Font loadFontAux(String filename, int size, boolean bold, boolean italic, Effect ... effects) {

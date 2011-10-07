@@ -14,7 +14,7 @@ import fr.frozen.util.XMLParser;
 
 public class IronConfig {
 	
-	protected static XMLParser xmlinstance = new XMLParser("Data/iron.cfg");
+	protected static XMLParser xmlinstance = new XMLParser("data/iron.cfg");
 	protected static IronConfig instance = new IronConfig();
 	
 	protected static String CLIENT_LOG_FILE = "client.log";
