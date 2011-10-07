@@ -15,7 +15,7 @@ import fr.frozen.iron.util.IronConst;
 
 public class PopupList extends Component {
 
-	protected static int SKILL_HEIGHT = 25;
+	protected static int SKILL_HEIGHT = 30;
 	protected static int PADDING = 16;
 	
 	
@@ -66,17 +66,17 @@ public class PopupList extends Component {
 		int skilly = y / IronConst.TILE_HEIGHT;
 		
 		unitId = unit.getId();
-		int maxCharWidth = 0;
+		int maxSkillWidth = 0;
 		for (Skill skill : unit.getSkills()) {
 			boolean canDo = skill.canDo(world, unitId, skillx, skilly);
 			skills.add(skills.size(), new SkillInfo(skill, unitId, skillx, skilly, canDo));
-			if (skill.getSkillName().length() > maxCharWidth) {
-				maxCharWidth = skill.getSkillName().length();
+			if (font.getWidth(skill.getSkillName()) > maxSkillWidth) {
+				maxSkillWidth = font.getWidth(skill.getSkillName());
 			}
 		}
 		
 		int height = PADDING * 2 + skills.size() * SKILL_HEIGHT;
-		int width = maxCharWidth * 11 + 5 + PADDING * 2;// 5 just to widen a bit more
+		int width = maxSkillWidth + 5 + PADDING * 2;// 5 just to widen a bit more
 
 		int maxWidth = world.getMap().getWidth() * IronConst.TILE_WIDTH;
 		int maxHeight= world.getMap().getHeight() * IronConst.TILE_HEIGHT;
@@ -127,7 +127,7 @@ public class PopupList extends Component {
 				color = HoverColor;
 			}
 			
-			font.drawString(pos.getX() + PADDING, y + 4, skills.get(i).getSkill().getSkillName(), color);
+			font.drawString(pos.getX() + PADDING, y, skills.get(i).getSkill().getSkillName(), color);
 			y += SKILL_HEIGHT;
 		}
 	}
