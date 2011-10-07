@@ -72,11 +72,24 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 			}
 		});
 		
+		Button button2 = new Button("Back to Lobby", 600, 450, 0, 0);
+		button2.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				backToLobby();
+			}
+		});
+		
 		gui.addComponent(hostName);
 		gui.addComponent(otherName);
 		gui.addComponent(hostList);
 		gui.addComponent(otherList);
 		gui.addComponent(button);
+		gui.addComponent(button2);
+	}
+	
+	protected void backToLobby() {
+		netClient.sendMessage(Protocol.SERVER_C_REQUEST_SESSION, IronUtil.intToByteArray(Protocol.SESSION_LOBBY.ordinal()));
 	}
 	
 	protected void reInit() {

@@ -24,7 +24,6 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
-import fr.frozen.network.server.IGameController;
 import fr.frozen.util.XMLParser;
 import fr.frozen.util.pathfinding.Path;
 
@@ -268,19 +267,6 @@ public class GameSession extends BaseGameController implements GameContext {
 				if (nbReady == 2) {
 					startGame();
 				}
-			}
-			break;
-			
-			
-		case SERVER_C_REQUEST_SESSION : 
-			if (Protocol.get(IronUtil.byteArrayToInt(msg.getData())) == Protocol.SESSION_LOBBY) {
-				IGameController lobby = server.getLobbySession();
-				Client client = server.getClient(msg.getClientId());
-				
-				client.getCurrentGameSession().removeClient(client, "left game.");
-				client.setCurrentGameSession(lobby);
-
-				lobby.addClient(client);
 			}
 			break;
 		default :

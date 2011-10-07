@@ -50,6 +50,19 @@ public class BaseGameController implements IGameController {
 		case SESSION_PLAYER_LIST_REQUEST :
 			sendPlayerList(msg.getClientId());
 			break;
+		case SERVER_C_REQUEST_SESSION : 
+			if (Protocol.get(IronUtil.byteArrayToInt(msg.getData())) == Protocol.SESSION_LOBBY) {
+				IGameController lobby = server.getLobbySession();
+				Client client = server.getClient(msg.getClientId());
+				
+				if (!lobby.equals(client.getCurrentGameSession())) {
+					client.getCurrentGameSession().removeClient(client, "left game.");
+					client.setCurrentGameSession(lobby);
+					
+					lobby.addClient(client);
+				}
+			}
+			break;
 		default :
 			logger.error("not handled in session "+sessionName+"  "+Protocol.get(msg.getType()));
 			break;
