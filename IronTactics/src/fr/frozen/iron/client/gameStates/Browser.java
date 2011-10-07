@@ -44,17 +44,8 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 		gameButtons = new ArrayList<GameBrowseButton>();
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
-		
-		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
-		
 		Button button = new Button("Refresh", 600, 300, 0, 0);
-		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		button.setHoverSprite(spriteHover);
-		button.setNormalSprite(spriteNormal);
-		
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				refresh();
@@ -62,12 +53,7 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 		});
 		
 		Button button2 = new Button("Back to lobby", 600, 400, 0, 0);
-		button2.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		button2.setHoverSprite(spriteHover);
-		button2.setNormalSprite(spriteNormal);
-		
 		button2.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				leave();

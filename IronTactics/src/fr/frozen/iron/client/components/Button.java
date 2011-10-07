@@ -5,6 +5,7 @@ import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
 
 import fr.frozen.game.ISprite;
+import fr.frozen.game.SpriteManager;
 
 public class Button extends Component {
 
@@ -27,6 +28,18 @@ public class Button extends Component {
 		super (x,y, w, h);
 		this.label = label;
 		enabled = true;
+
+		if (SpriteManager.getInstance().isSpriteLoaded("buttonNormal")
+		    && SpriteManager.getInstance().isSpriteLoaded("buttonHover")) {
+			
+			ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
+			ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
+
+			setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
+			
+			setHoverSprite(spriteHover);
+			setNormalSprite(spriteNormal);
+		}
 	}
 	
 	public void enable() {

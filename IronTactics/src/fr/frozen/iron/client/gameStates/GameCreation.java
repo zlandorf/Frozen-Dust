@@ -65,14 +65,6 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
 		Button button = new Button("Start", 600, 350, 0, 0);
-		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
-
-		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		
-		button.setHoverSprite(spriteHover);
-		button.setNormalSprite(spriteNormal);
-		
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

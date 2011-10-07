@@ -118,15 +118,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		gui.addComponent(chatWindow);
 		
 		
-		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
 		Button button = new Button("End Turn", 590, 500, 0, 0);
-		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		button.setHoverSprite(spriteHover);
-		button.setNormalSprite(spriteNormal);
-		
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				requestEndTurn();
@@ -134,10 +127,6 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		});
 		
 		undoButton = new Button("Undo move", 590, 550, 0, 0);
-		undoButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		undoButton.setHoverSprite(spriteHover);
-		undoButton.setNormalSprite(spriteNormal);
-		
 		undoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -147,10 +136,6 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		
 		Button menuButton = new Button("Menu", 590, 450, 0, 0);
-		menuButton.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		menuButton.setHoverSprite(spriteHover);
-		menuButton.setNormalSprite(spriteNormal);
-		
 		menuButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

@@ -51,26 +51,10 @@ public class Lobby extends GameState implements NetEventListener {
 		
 		//TODO put the sprite shit in a button class directly
 		Button button = new Button("Join", 600, 300, 0, 0);
-		ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
-		ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
-
-		button.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		
-		button.setHoverSprite(spriteHover);
-		button.setNormalSprite(spriteNormal);
-
 		Button button2 = new Button("Create", 600, 400, 0, 0);
-		button2.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		button2.setHoverSprite(spriteHover);
-		button2.setNormalSprite(spriteNormal);
-		
 		Button button3 = new Button("Options", 600, 500, 0, 0);
-		button3.setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
-		button3.setHoverSprite(spriteHover);
-		button3.setNormalSprite(spriteNormal);
 		
 		button.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				joinGameBrowser();
@@ -78,7 +62,6 @@ public class Lobby extends GameState implements NetEventListener {
 		});
 		
 		button2.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				createGame();
@@ -86,7 +69,6 @@ public class Lobby extends GameState implements NetEventListener {
 		});
 		
 		button3.addActionListener(new ActionListener() {
-			
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				openOptions();
