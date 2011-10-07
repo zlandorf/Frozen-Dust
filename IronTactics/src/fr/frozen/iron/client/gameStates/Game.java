@@ -399,6 +399,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 				values.add(new int[]{dstId, value});
 			}
 			
+			if (unitSrc.hasPlayed()) {
+				unitSrc.setSelected(false);
+				selectedUnit = null;
+			}
 			skill.executeClientSide(world, unitSrc.getId(), x, y, values);
 			break;
 		default :
@@ -642,8 +646,6 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			
 			netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
 			
-			selectedUnit.setSelected(false);
-			selectedUnit = null;
 		}
 	}
 

@@ -102,6 +102,8 @@ public class IronWorld extends GameState {
 	
 	public synchronized IronUnit getUnitAtXY(int x, int y) {
 		//returns null if no one at XY
+		if (map == null) return null;
+		if (map.getTile(x, y) == null) return null;
 		return map.getTile(x, y).getUnitOnTile();
 	}
 

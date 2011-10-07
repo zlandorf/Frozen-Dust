@@ -77,6 +77,8 @@ public class IronUnit extends GameObject implements Mover {
 	protected boolean canUndo = false;
 	protected Vector2f oldPos;
 	
+	protected boolean usedShieldBlock = false;
+	
 	public IronUnit(IronWorld world, int id, int type, int ownerId, float x, float y) {
 		super(null, x, y);
 		this.id = id;
@@ -147,6 +149,14 @@ public class IronUnit extends GameObject implements Mover {
 			playedLastTurn = true;
 		played = true;
 		canUndo = false;
+	}
+	
+	public boolean hasUsedShieldBlock() {
+		return usedShieldBlock;
+	}
+	
+	public void setUsedShieldBlock(boolean val) {
+		usedShieldBlock = val;
 	}
 	
 	public boolean canUndo() {
@@ -220,6 +230,7 @@ public class IronUnit extends GameObject implements Mover {
 		canUndo = false;
 		getStats().reInit();
 		getEquipment().reInit();
+		usedShieldBlock = false;
 	}
 	
 	public List<Skill> getSkills() {

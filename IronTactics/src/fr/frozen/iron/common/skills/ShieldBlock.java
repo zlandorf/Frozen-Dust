@@ -27,6 +27,7 @@ public class ShieldBlock extends Skill {
 		
 		if (src == null || src.getShield() == null || src.isDead()) return false;
 		if (src.getMovement() < 2 * IronConst.MOVE_COST_DEFAULT || src.hasPlayed()) return false;
+		if (src.hasUsedShieldBlock()) return false;
 		return true;
 	}
 
@@ -49,7 +50,13 @@ public class ShieldBlock extends Skill {
 		
 		shield.setPhysicalArmor(shield.getPhysicalArmor() * 2);
 		shield.setMagicalArmor(shield.getMagicalArmor() * 2);
-		src.setPlayed(true);
+		
+		src.getStats().setMovement(src.getStats().getMovement() - 2 * IronConst.MOVE_COST_DEFAULT);
+		if (src.getStats().getMovement() == 0) {
+			src.setPlayed(true);
+		}
+		
+		src.setUsedShieldBlock(true);
 	}
 	
 	@Override
