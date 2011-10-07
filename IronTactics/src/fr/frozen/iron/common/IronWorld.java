@@ -13,6 +13,7 @@ import fr.frozen.game.GameState;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronGL;
+import fr.frozen.iron.util.IronUtil;
 import fr.frozen.util.pathfinding.AStar;
 import fr.frozen.util.pathfinding.Path;
 import fr.frozen.util.pathfinding.PathFinder;
@@ -107,6 +108,21 @@ public class IronWorld extends GameState {
 		return map.getTile(x, y).getUnitOnTile();
 	}
 
+	public synchronized boolean isInMelee(int unitId) {
+		IronUnit unitSrc = getUnitFromId(unitId);
+		if (unitSrc == null) return false;
+		
+		for (IronUnit unit : getUnits()) {
+			if (unit.getOwnerId() != unitSrc.getOwnerId()) {
+				if (IronUtil.distance(unit.getX(), unit.getY(),
+									  unitSrc.getX(), unitSrc.getY()) <= 1) {
+					return true;
+				}
+			}
+		}
+		return false;
+	}
+	
 	public synchronized IronUnit getUnitFromId(int id) {
 		return units.get(id);
 	}

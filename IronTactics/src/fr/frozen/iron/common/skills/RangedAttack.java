@@ -44,6 +44,7 @@ public class RangedAttack extends Skill {
 		
 		
 		if (distance < minRange || distance > maxRange) return false;
+		
 		return true;
 	}
 	
@@ -61,6 +62,7 @@ public class RangedAttack extends Skill {
 		IronUnit dst = world.getUnitAtXY(x, y);
 		
 		if (!canDoAux(src, dst)) return false;
+		if (world.isInMelee(srcId)) return false;
 		
 		int x1 = (int)src.getX() * IronConst.TILE_WIDTH + IronConst.TILE_WIDTH / 2;
 		int y1 = (int)src.getY() * IronConst.TILE_HEIGHT + IronConst.TILE_HEIGHT / 2;

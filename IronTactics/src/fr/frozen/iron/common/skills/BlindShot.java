@@ -48,7 +48,7 @@ public class BlindShot extends Skill {
 		
 		
 		if (distance < minRange || distance > maxRange) return false;
-		return true;
+		return !world.isInMelee(srcId);
 	}
 
 	@Override
