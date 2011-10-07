@@ -38,7 +38,7 @@ public class OptionMenu extends GameState {
 								  525, 395, 60, 25);
 		
 		Button back = new IronMenuButton("Back", 460);
-		
+
 		apply.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

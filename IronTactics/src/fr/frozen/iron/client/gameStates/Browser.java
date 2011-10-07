@@ -44,7 +44,7 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 		gameButtons = new ArrayList<GameBrowseButton>();
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
-		Button button = new Button("Refresh", 600, 300, 0, 0);
+		Button button = new Button("Refresh", 570, 300, 0, 0);
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -52,7 +52,7 @@ public class Browser extends GameState implements NetEventListener, ActionListen
 			}
 		});
 		
-		Button button2 = new Button("Back to lobby", 600, 400, 0, 0);
+		Button button2 = new Button("Back to lobby", 570, 400, 0, 0);
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

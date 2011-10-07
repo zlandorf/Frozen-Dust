@@ -64,7 +64,7 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 		
-		Button button = new Button("Start", 600, 350, 0, 0);
+		Button button = new Button("Start", 570, 350, 0, 0);
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -72,7 +72,7 @@ public class GameCreation extends GameState implements NetEventListener, ActionL
 			}
 		});
 		
-		Button button2 = new Button("Back to Lobby", 600, 450, 0, 0);
+		Button button2 = new Button("Back to Lobby", 570, 450, 0, 0);
 		button2.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {

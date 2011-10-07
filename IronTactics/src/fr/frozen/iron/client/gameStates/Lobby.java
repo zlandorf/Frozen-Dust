@@ -50,9 +50,9 @@ public class Lobby extends GameState implements NetEventListener {
 		textField.addActionListener(new TextFieldListener());
 		
 		//TODO put the sprite shit in a button class directly
-		Button button = new Button("Join", 600, 300, 0, 0);
-		Button button2 = new Button("Create", 600, 400, 0, 0);
-		Button button3 = new Button("Options", 600, 500, 0, 0);
+		Button button = new Button("Join", 570, 300, 0, 0);
+		Button button2 = new Button("Create", 570, 400, 0, 0);
+		Button button3 = new Button("Options", 570, 500, 0, 0);
 		
 		button.addActionListener(new ActionListener() {
 			@Override
