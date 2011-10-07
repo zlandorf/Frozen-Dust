@@ -645,7 +645,6 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			System.arraycopy(IronUtil.intToByteArray(y), 0, data, 16, 4);
 			
 			netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
-			
 		}
 	}
 
