@@ -700,11 +700,12 @@ public class IronUnit extends GameObject implements Mover {
 		List<String> stats = new ArrayList<String>();
 		
 		Font font = FontManager.getFont("defaultFont");
+		y = y - font.getLineHeight() / 2 + 5;
 		if (name != null && !name.equals("")) {
 			float offx = (w - 4) / 2 - font.getWidth(name) / 2;
 			font.drawString(x1 + offx, y, name, Color.white);
 			
-			y += 25;
+			y += font.getLineHeight() + 5;
 		}
 		stats.add("HP   : "+getStats().getHp()+"/"+getStats().getMaxHp());
 		if (getStats().getMaxMana() > 0) {
