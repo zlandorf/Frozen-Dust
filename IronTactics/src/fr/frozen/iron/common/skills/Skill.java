@@ -117,8 +117,9 @@ public abstract class Skill {
 			world.addGameObject(damage, "gfx");
 			
 			if (couple[1] < 0) {
+				Sound impactSound = null;
 				if (couple[1] <= -100) {
-					SoundManager.getInstance().getSound("strong_hit").playAsSoundEffect(false);
+					impactSound = SoundManager.getInstance().getSound("strong_hit");
 				} else {
 					float armorValue = 0;
 					if (target.getArmor() != null) {
@@ -129,10 +130,13 @@ public abstract class Skill {
 					}
 
 					if (armorValue >= 50) {
-						SoundManager.getInstance().getSound("armor_hit").playAsSoundEffect(false);
+						impactSound = SoundManager.getInstance().getSound("armor_hit");
 					} else {
-						SoundManager.getInstance().getSound("medium_hit").playAsSoundEffect(false);
+						impactSound = SoundManager.getInstance().getSound("medium_hit");
 					}
+				}
+				if (impactSound != null) {
+					impactSound.playAsSoundEffect(false);
 				}
 			}
 		}

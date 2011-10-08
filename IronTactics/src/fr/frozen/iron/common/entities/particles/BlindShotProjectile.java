@@ -1,8 +1,12 @@
 package fr.frozen.iron.common.entities.particles;
 
+import java.util.List;
+
 import org.lwjgl.util.vector.Vector2f;
 
+import fr.frozen.game.GameObject;
 import fr.frozen.game.ISprite;
+import fr.frozen.game.Sound;
 import fr.frozen.game.SoundManager;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.util.IronConst;
@@ -28,8 +32,9 @@ public class BlindShotProjectile extends Projectile {
 	
 	
 	public BlindShotProjectile(IronWorld world, int x, int y, Vector2f vec,
-			String spriteName, int xdst, int ydst, boolean missed) {
-		super(world, x, y, vec, spriteName, IronConst.BLIND_PROJECTILE_SPEED);
+			String spriteName, int xdst, int ydst, boolean missed,
+			GameObject damageParticle, List<Sound> impactSounds) {
+		super(world, x, y, vec, spriteName, IronConst.BLIND_PROJECTILE_SPEED, damageParticle, impactSounds);
 		
 		this.xdst = xdst;
 		this.ydst = ydst;
@@ -67,6 +72,7 @@ public class BlindShotProjectile extends Projectile {
 				coveredDist = true;
 				if (!missed) {
 					world.removeGameObject(this);
+					onRemoval();
 				} else {
 					_sprite = spriteGrounded;
 					setPos(xdst, ydst);
