@@ -63,6 +63,11 @@ public class Button extends Component {
 	}
 	
 	@Override
+	public void setDim(int x, int y) {
+		setDim(new Vector2f(x, y));
+	}
+	
+	@Override
 	public void setDim(Vector2f val) {
 		super.setDim(val);
 		

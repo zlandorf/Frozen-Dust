@@ -96,6 +96,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	protected boolean showIngameMenu = false;
 	protected Font endFont;
 	protected Font timeLeftFont;
+	protected Font turnFont;
+	
+	protected float notifyNewTurnDuration = 5;//s
+	protected float notifyNewTurnTimeLeft = notifyNewTurnDuration;
 	
 	public Game(IGameEngine ge) {
 		super(ge, "game", false, false);
@@ -113,12 +117,22 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		
 		textField = new TextField(5, 575, 500, 20);
 		chatWindow = new ChatWindow(5,500, 500,70);
+		
+		backTex = SpriteManager.getInstance().getSprite("backTex");
+		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
+		
+		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
+		endFont = FontManager.loadFont("default.ttf", 40);
+		turnFont = FontManager.getFont("DamageFont");
+		timeLeftFont = FontManager.getFont("defaultFont");
+		
+		
 		textField.addActionListener(new TextFieldListener());
 		gui.addComponent(textField);
 		gui.addComponent(chatWindow);
 		
 		
-		Button button = new Button("End Turn", 590, 500, 0, 0);
+		Button button = new Button("End Turn", 650, 480, 0, 0);
 		button.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -126,7 +140,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			}
 		});
 		
-		undoButton = new Button("Undo move", 590, 550, 0, 0);
+		undoButton = new Button("Undo move", 650, 530, 0, 0);
 		undoButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -135,7 +149,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		});
 		
 		
-		Button menuButton = new Button("Menu", 590, 450, 0, 0);
+		Button menuButton = new Button("Menu", 650, 430, 0, 0);
 		menuButton.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
@@ -143,9 +157,15 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 			}
 		});
 		
+		button.setDim(140, 50);
+		undoButton.setDim(140, 50);
+		menuButton.setDim(140, 50);
+
 		gui.addComponent(button);
 		gui.addComponent(undoButton);
 		gui.addComponent(menuButton);
+		
+
 		
 		
 		Button optionButton = new IronMenuButton("Options", 150);
@@ -176,12 +196,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		ingameMenu.addComponent(optionButton);
 		ingameMenu.addComponent(backButton);
 		
-		backTex = SpriteManager.getInstance().getSprite("backTex");
-		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
-		
-		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
-		endFont = FontManager.loadFont("default.ttf", 40);
-		timeLeftFont = FontManager.getFont("defaultFont");
+
 	}
 	
 	protected void leaveGame() {
@@ -348,6 +363,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 		selectedUnit = null;
 		lastUnitMoved = null;
+		
+		notifyNewTurnTimeLeft = notifyNewTurnDuration;
 	}
 	
 	
@@ -459,7 +476,9 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		renderGuiBackground(deltaTime);
 
 		renderCountDown(deltaTime);
-
+		renderWhosTurn(deltaTime);
+		displayNotifyNewTurn(deltaTime);
+		
 		gui.render(deltaTime);
 
 		if (hoveredUnit != null) {
@@ -491,14 +510,67 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		}
 	}
 	
-	public void renderStatsInGui( float deltaTime, IronUnit unit) {
+	public void displayNotifyNewTurn(float deltaTime) {
+		if (gameOver) return;
+		notifyNewTurnTimeLeft -= deltaTime;
+		if (notifyNewTurnTimeLeft > 0) {
+			String text;
+			if (turnPlayerId == netClient.getClientId()) {
+				text = "It's your turn";
+			} else {
+				text = "It's your opponent's turn";
+			}
+			
+			int x = IronConst.MAP_WIDTH * IronConst.TILE_WIDTH  / 2;
+			x -= turnFont.getWidth(text) / 2;
+			int y = IronConst.MAP_HEIGHT * IronConst.TILE_HEIGHT  / 2;
+			y -= turnFont.getHeight(text) / 2;
+			
+			Color color = new Color(1, 1, 1, Math.min(1, notifyNewTurnTimeLeft));
+			turnFont.drawString(x, y, text, color);
+		}
+	}
+	
+	public void renderWhosTurn (float deltaTime) {
+		int x = 662;
+		int y = 70;
+		
+		float width = 117;
+		float height = 48;
+		
+		drawGuiBox(x, y, width, height);
+		
+		String text1 = "Turn :";
+		int x2 = (int)(x + width / 2 - timeLeftFont.getWidth(text1) / 2);
+		int y2 = y;
+		
+		timeLeftFont.drawString(x2, y2, text1, Color.white);
+
+		String turnText = "";
+		if (turnPlayerId == netClient.getClientId()) {
+			turnText = "Your's";
+		} else {
+			turnText = "Opponent's";
+		}
+		
+		if (gameOver) {
+			turnText = "--";
+		}
+		
+		x2 = (int)(x + width / 2 - timeLeftFont.getWidth(turnText) / 2);
+		y2 += timeLeftFont.getHeight(text1);
+		
+		timeLeftFont.drawString(x2, y2, turnText, Color.white);
+	}
+	
+	public void renderStatsInGui(float deltaTime, IronUnit unit) {
 		float x,y,w,h;
 		x = IronConst.MAP_WIDTH * IronConst.TILE_WIDTH;
 		x += 10;
-		y = 105;
+		y = 130;
 		
 		w = Display.getDisplayMode().getWidth() - x - 8;
-		h = 250;
+		h = 230;
 		
 		drawGuiBox(x, y, w, h);
 		unit.renderStatsInGui(deltaTime, x, y, w, h);
@@ -535,7 +607,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	}
 	
 	protected void renderCountDown(float deltaTime) {
-		float x = 655;
+		float x = 662;
 		float y = 15;
 		
 		float width = 117;

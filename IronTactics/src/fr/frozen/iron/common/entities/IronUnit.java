@@ -52,6 +52,7 @@ public class IronUnit extends GameObject implements Mover {
 	
 	protected List<int []> movementCache;
 	protected int [] movementCachePos;
+	protected List<int []> actionCache;
 	
 	protected IronWorld world;
 	
@@ -95,6 +96,7 @@ public class IronUnit extends GameObject implements Mover {
 		movementCachePos = new int[2];
 		movementCachePos[0] = movementCachePos[1] = -1;
 		movementCache = new ArrayList<int[]>();
+		actionCache = new ArrayList<int[]>();
 		
 		if (world != null) findStatsFromXml();
 	}
@@ -623,7 +625,7 @@ public class IronUnit extends GameObject implements Mover {
 					(int)getY() * IronConst.TILE_HEIGHT,
 					IronConst.TILE_WIDTH,
 					IronConst.TILE_HEIGHT,
-					1f, 0.8f, 0f, 0.3f);
+					1f, 0.8f, 0f, 0.25f);
 			
 			if (isSelected()) {
 				IronGL.drawRect((int)_pos.x * IronConst.TILE_WIDTH,
@@ -635,7 +637,37 @@ public class IronUnit extends GameObject implements Mover {
 		}
 	}
 	
-
+	public void renderActionTiles() {
+		if (!hasPlayed() && isSelected()
+				&& world.getContext().getClientId() >= 0
+				&& world.getContext().getPlayerInfo(world.getContext().getClientId()).isTurnToPlay()) {
+		
+			actionCache.clear();
+			
+			for (IronUnit unit : world.getUnits()) {
+				if (unit.getId() == this.getId()) continue;
+				boolean canDo = false;
+				for (Skill skill : getSkills()) {
+					if (skill.getSkillType() == Skill.SHIELD_BLOCK) continue;
+					canDo |= skill.canDo(getWorld(), getId(), (int)unit.getX(), (int)unit.getY());
+				}
+				
+				if (canDo) {
+					int []pos = new int[] {(int)unit.getX(), (int)unit.getY()};
+					actionCache.add(pos);
+				}
+			}
+			
+			for (int [] p : actionCache) {
+				IronGL.drawRect(p[0] * IronConst.TILE_WIDTH,
+						p[1] * IronConst.TILE_HEIGHT,
+						IronConst.TILE_WIDTH,
+						IronConst.TILE_HEIGHT,
+						1f, 0.1f, 1f, 0.5f);
+			}
+		}
+	}
+	
 	public void renderMoveableTiles() {
 		if (!hasPlayed() && isSelected()
 				&& world.getContext().getClientId() >= 0
@@ -683,8 +715,8 @@ public class IronUnit extends GameObject implements Mover {
 
 		if (_sprite == null) return;
 		
-		float x = 707;
-		float y = 120;
+		float x = x1 + w / 2 - _sprite.getWidth() / 2;
+		float y = y1 + 15;
 		
 		_sprite.draw(x, y);
 
@@ -706,8 +738,8 @@ public class IronUnit extends GameObject implements Mover {
 		y += 32;
 		renderStatusBars(deltaTime, x, y);
 		
-		x = 655;
-		y = 170;
+		x = x1 + 5;
+		y += 18;
 		List<String> stats = new ArrayList<String>();
 		
 		Font font = FontManager.getFont("defaultFont");

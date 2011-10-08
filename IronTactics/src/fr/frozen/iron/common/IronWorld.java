@@ -168,6 +168,7 @@ public class IronWorld extends GameState {
 			if (selectedUnit != null) {
 				
 				selectedUnit.renderMoveableTiles();
+				selectedUnit.renderActionTiles();
 				
 				int x = Mouse.getX() / IronConst.TILE_WIDTH;
 				int y = (Display.getDisplayMode().getHeight() - Mouse.getY()) / IronConst.TILE_HEIGHT;
