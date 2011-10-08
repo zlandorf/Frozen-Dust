@@ -11,6 +11,7 @@ import org.apache.log4j.Logger;
 import org.lwjgl.opengl.Display;
 import org.newdawn.slick.Color;
 import org.newdawn.slick.Font;
+import org.newdawn.slick.font.effects.OutlineEffect;
 
 import fr.frozen.game.FontManager;
 import fr.frozen.game.GameObject;
@@ -122,8 +123,8 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		backTex2 = SpriteManager.getInstance().getSprite("popupTex");
 		
 		forestSound = SoundManager.getInstance().getSound("forest_ambiance");
-		endFont = FontManager.loadFont("default.ttf", 40);
-		turnFont = FontManager.getFont("DamageFont");
+		endFont = FontManager.loadFont("default.ttf", 40, new OutlineEffect(3, java.awt.Color.black));
+		turnFont = FontManager.loadFont("default.ttf", 30, new OutlineEffect(3, java.awt.Color.black));
 		timeLeftFont = FontManager.getFont("defaultFont");
 		
 		
