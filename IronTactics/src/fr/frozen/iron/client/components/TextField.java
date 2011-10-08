@@ -143,4 +143,8 @@ public class TextField extends Component implements KeyboardListener {
 	@Override
 	public void onRightClick(int x, int y) {
 	}
+	
+	@Override
+	public void onRelease() {
+	}
 }

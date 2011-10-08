@@ -178,4 +178,8 @@ public class PopupList extends Component {
 	@Override
 	public void onRightClick(int x, int y) {
 	}
+	
+	@Override
+	public void onRelease() {
+	}
 }

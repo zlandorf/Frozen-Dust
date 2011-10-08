@@ -768,7 +768,10 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 	public void onExit() {
 	}
 	
-	
+	@Override
+	public void onRelease() {
+	}
+
 	class TextFieldListener implements ActionListener {
 		@Override
 		public void actionPerformed(ActionEvent e) {

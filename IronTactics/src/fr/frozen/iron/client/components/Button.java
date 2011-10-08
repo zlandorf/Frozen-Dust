@@ -23,17 +23,20 @@ public class Button extends Component {
 	protected Color hoverColor = new Color(0x5e, 0x32, 0x03);
 	protected Color normalColor = new Color(0x29, 0x16,0x2);
 	
-	
 	public Button(String label, int x, int y, int w, int h) {
+		this(label,x,y,w,h,"buttonNormal", "buttonHover");
+	}
+	
+	public Button(String label, int x, int y, int w, int h, String spriteNormalName, String spriteHoverName) {
 		super (x,y, w, h);
 		this.label = label;
 		enabled = true;
 
-		if (SpriteManager.getInstance().isSpriteLoaded("buttonNormal")
-		    && SpriteManager.getInstance().isSpriteLoaded("buttonHover")) {
+		if (SpriteManager.getInstance().isSpriteLoaded(spriteNormalName)
+		    && SpriteManager.getInstance().isSpriteLoaded(spriteHoverName)) {
 			
-			ISprite spriteNormal = SpriteManager.getInstance().getSprite("buttonNormal");
-			ISprite spriteHover = SpriteManager.getInstance().getSprite("buttonHover");
+			ISprite spriteNormal = SpriteManager.getInstance().getSprite(spriteNormalName);
+			ISprite spriteHover = SpriteManager.getInstance().getSprite(spriteHoverName);
 
 			setDim((int)spriteNormal.getWidth(),(int)spriteNormal.getHeight());
 			
@@ -144,28 +147,7 @@ public class Button extends Component {
 		return false;
 	}
 	
-	
-	/*@Override
-	public boolean update(float deltaTime) {
-		int x = (int) (Mouse.getX() - pos.getX());
-		int y = (int) (Display.getDisplayMode().getHeight() - Mouse.getY() - pos.getY());
-		
-		if (x < 0 || x > size.getWidth() || y < 0 || y > size.getHeight()) { //outside
-			hover = false;
-			return false;
-		}
-		
-		if (Mouse.isButtonDown(0)) {
-			selected = true;
-			if (!clickedLastTick) {
-				notifyActionListeners();
-			} 
-			clickedLastTick = true;
-		} else {
-			hover = true;
-			clickedLastTick = false;
-		}
-		
-		return clickedLastTick;
-	}*/
+	@Override
+	public void onRelease() {
+	}
 }

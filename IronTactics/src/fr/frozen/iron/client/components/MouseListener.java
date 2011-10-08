@@ -6,4 +6,5 @@ public interface MouseListener {
 	
 	public void onHover(int x, int y); //hover
 	public void onExit();
+	public void onRelease();
 }
