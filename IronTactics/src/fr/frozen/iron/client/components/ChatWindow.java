@@ -81,6 +81,10 @@ public class ChatWindow extends Component {
 		scrollIndex = Math.max(scrollIndex - 1, 0);
 	}
 	
+	public void resetScrollIndex() {
+		scrollIndex = 0;
+	}
+	
 	public synchronized void clearMessages() {
 		messages.clear();
 		scrollIndex = 0;
@@ -177,6 +181,11 @@ public class ChatWindow extends Component {
 			messages.add(messages.size(), cwm);
 		}
 		
+		if (splitMessages.length > 0) {
+			if (scrollIndex != 0) {
+				scrollIndex += splitMessages.length;
+			}
+		}
 	}
 	
 	@Override

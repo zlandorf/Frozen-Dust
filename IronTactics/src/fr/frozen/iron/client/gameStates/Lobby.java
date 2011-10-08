@@ -211,6 +211,7 @@ public class Lobby extends GameState implements NetEventListener {
 			String text = textField.getText();
 			if (!text.isEmpty()) {
 				netClient.sendMessage(Protocol.SESSION_CHAT_MESSAGE, text);
+				chatWindow.resetScrollIndex();
 			}
 			textField.setText("");
 		}
