@@ -82,6 +82,7 @@ public abstract class Skill {
 			target = world.getUnitFromId(couple[0]);
 			if (target == null || target.isDead()) continue;
 			target.setHp(target.getHp() + couple[1]);
+			Logger.getLogger(getClass()).info(src+" uses "+getSkillName()+" on "+target+" for "+couple[1]+" damage");
 		}
 	}
 	

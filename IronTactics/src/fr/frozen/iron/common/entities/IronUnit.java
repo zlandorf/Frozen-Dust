@@ -803,12 +803,6 @@ public class IronUnit extends GameObject implements Mover {
 	
 	
 	public String toString() {
-		String str = super.toString();
-		str += " id = "+id+" name="+name+" type = "+type+" ownerId = "+ownerId+"\n";
-		str += "can perform skills : ";
-		for (Skill skill : skills) {
-			str += skill.getSkillName()+" ";
-		}
-		return str;
+		return "["+id+"]["+name+"][ownerId="+ownerId+"]";
 	}
 }

@@ -113,7 +113,7 @@ public class IronWorld extends GameState {
 		if (unitSrc == null) return false;
 		
 		for (IronUnit unit : getUnits()) {
-			if (unit.getOwnerId() != unitSrc.getOwnerId()) {
+			if (unit.getOwnerId() != unitSrc.getOwnerId() && !unit.isDead()) {
 				if (IronUtil.distance(unit.getX(), unit.getY(),
 									  unitSrc.getX(), unitSrc.getY()) <= 1) {
 					return true;

@@ -402,12 +402,12 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 				
 				values.add(new int[]{dstId, value});
 			}
-			
+			skill.executeClientSide(world, unitSrc.getId(), x, y, values);
+
 			if (unitSrc.hasPlayed()) {
 				unitSrc.setSelected(false);
 				selectedUnit = null;
 			}
-			skill.executeClientSide(world, unitSrc.getId(), x, y, values);
 			break;
 		default :
 			Logger.getLogger(getClass()).error("Action not recognised "+gae.getType());

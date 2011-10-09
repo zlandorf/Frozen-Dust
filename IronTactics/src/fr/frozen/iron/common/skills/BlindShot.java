@@ -86,10 +86,11 @@ public class BlindShot extends Skill {
 		if (dst != null && !dst.isDead()) {
 			float damage = IronUtil.getDamage(src, dst, false);
 			res.add(new int[]{dst.getId(), - (int)damage});
-		} else {
+		} else { // arrow missed
 			int pos = x * IronConst.MAP_HEIGHT;
 			pos += y;
 			res.add(new int[]{-2, pos});
+			Logger.getLogger(getClass()).info(src+" uses "+getSkillName()+" and misses");
 		}
 		executeCommon(world, srcId, x, y, res);
 		return res;

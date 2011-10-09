@@ -104,7 +104,7 @@ public class BaseGameController implements IGameController {
 	}
 	
 	@Override
-	public synchronized void removeClient(Client p, String reason) { //TODO add a reason to this method, to know why he disconnected
+	public synchronized void removeClient(Client p, String reason) {
 		logger.info("removing "+p+" from "+sessionType);
 		clients.remove(p);
 		List<SocketChannel> channels = getAllChannels();

@@ -3,6 +3,8 @@ package fr.frozen.iron.common.skills;
 import java.util.ArrayList;
 import java.util.List;
 
+import org.apache.log4j.Logger;
+
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.entities.particles.ShieldBlockAnimation;
@@ -57,6 +59,7 @@ public class ShieldBlock extends Skill {
 		}
 		
 		src.setUsedShieldBlock(true);
+		Logger.getLogger(getClass()).info(src+" uses "+getSkillName());
 	}
 	
 	@Override

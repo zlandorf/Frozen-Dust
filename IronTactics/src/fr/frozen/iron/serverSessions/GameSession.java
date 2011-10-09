@@ -70,21 +70,26 @@ public class GameSession extends BaseGameController implements GameContext {
 	
 	@Override
 	public synchronized void removeClient(Client c, String reason) {
-		super.removeClient(c, reason);
 		
-		if (!gameOver && clients.size() > 0) {
-			int winnerId= clients.get(0).getId();
-			gameOver = true;
-			notifyGameEnded(winnerId);
+		if (!gameOver) {
+			int winnerIndex = c.getId() == turnPlayerId ? 1 ^ turnIndex : turnIndex;
+			onGameOver(clients.get(winnerIndex), clients.get(1 ^ winnerIndex));
 		}
 		
+		super.removeClient(c, reason);
 		if (clients.size() == 0) {
 			server.removeGameSession(this);
 			logger.debug(this+" removed");
 		}
 	}
-	
-	
+
+	public synchronized void onGameOver(Client winner, Client loser) {
+		logger.info("[GameOver]"+winner+"("+playerInfo.get(winner).getRace()+
+				") wins against "+loser+"("+playerInfo.get(loser).getRace()+")");
+		gameOver = true;
+		notifyGameEnded(winner.getId());
+	}
+
 	public synchronized void setTurn(int playerId) {
 		if (turnPlayerId != -1) {
 			getPlayerInfo(turnPlayerId).setTurnToPlay(false);
@@ -141,9 +146,8 @@ public class GameSession extends BaseGameController implements GameContext {
 		}
 		
 		if (!gameOver) {
-			gameOver = world.areAllUnitsDead(clients.get(turnIndex ^ 1).getId());
-			if (gameOver) {
-				notifyGameEnded(turnPlayerId);
+			if (world.areAllUnitsDead(clients.get(turnIndex ^ 1).getId())) {
+				onGameOver(clients.get(turnIndex), clients.get(1 ^ turnIndex));
 			}
 		}
 		
