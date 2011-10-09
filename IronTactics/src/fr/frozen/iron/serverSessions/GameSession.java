@@ -84,8 +84,22 @@ public class GameSession extends BaseGameController implements GameContext {
 	}
 
 	public synchronized void onGameOver(Client winner, Client loser) {
+		int nbWinnerUnits = 0;
+		int nbLoserUnits = 0;
+		
+		for (IronUnit unit : world.getUnits()) {
+			if (!unit.isDead()) {
+				if (unit.getOwnerId() == winner.getId()) {
+					nbWinnerUnits++;
+				} else {
+					nbLoserUnits++;
+				}
+			}
+		}
+		
 		logger.info("[GameOver]"+winner+"("+playerInfo.get(winner).getRace()+
-				") wins against "+loser+"("+playerInfo.get(loser).getRace()+")");
+				") wins against "+loser+"("+playerInfo.get(loser).getRace()+
+				") -- Units left : ["+nbWinnerUnits+"]vs["+nbLoserUnits+"]");
 		gameOver = true;
 		notifyGameEnded(winner.getId());
 	}
