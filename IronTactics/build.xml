@@ -1,67 +1,84 @@
 <?xml version="1.0" encoding="UTF-8" standalone="no"?>
 <project default="Main" name="Create Runnable Jar for Project IronTactics with Jar-in-Jar Loader">
-	
+	<taskdef name="query" classname="com.jera.anttasks.Query"/>
+
 	<property name="dist.dir" location="dist"/>
 	<property name="bin.dir" location="bin"/>
 	<property name="jar.dir" location="jar"/>
 	<property name="engine-jar" location="engine.jar"/>
 	<property name="netengine-jar" location="netframework.jar"/>
 	
+	
 	<target name="clean">
 		<delete file="${dist.dir}/Server.jar"/>
 		<delete file="${dist.dir}/IronTactics.jar"/>
+		<delete file="${dist.dir}/IronTactics.zip"/>
+		<delete file="${dist.dir}/IronTacticsLight.zip"/>
+		<delete file="${dist.dir}/WebStart.zip"/>
 	</target>
     
 	<!--this file was created by Eclipse Runnable JAR Export Wizard-->
     <!--ANT 1.7 is required                                        -->
+	                <!--<attribute name="Rsrc-Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>-->
+            <!-- <zipfileset file="${engine-jar}"/>
+			<zipfileset file="${netengine-jar}"/>
+           <zipfileset dir="${jar.dir}" includes="**/*.jar"/> -->
     
+	
 	<target name="clientBuild">
         <jar destfile="${dist.dir}/IronTactics.jar">
             <manifest>
-                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-                <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.client.IronTactics"/>
-                <attribute name="Class-Path" value="."/>
-                <attribute name="Rsrc-Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+                <attribute name="Main-Class" value="fr.frozen.iron.client.IronTactics"/>
+                <attribute name="Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
             </manifest>
-	
-            <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
             <fileset dir="${bin.dir}"/>
-            <zipfileset file="${engine-jar}"/>
-			<zipfileset file="${netengine-jar}"/>
-            <zipfileset dir="${jar.dir}" includes="**/*.jar"/>
         </jar>
     </target>
+	
+	<!--<target name="clientDesktop">
+	        <jar destfile="${dist.dir}/IronTactics.jar">
+	            <manifest>
+	                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
+	                <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.client.IronTactics"/>
+	                <attribute name="Class-Path" value="."/>
+	<attribute name="Rsrc-Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+	            </manifest>
+		
+	            <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
+	            <fileset dir="${bin.dir}"/>
+	        	<zipfileset file="${engine-jar}"/>
+				<zipfileset file="${netengine-jar}"/>
+		        <zipfileset dir="${jar.dir}" includes="**/*.jar"/>
+	        </jar>
+	    </target> -->
 	
 	<target name="serverBuild">
 	        <jar destfile="${dist.dir}/Server.jar">
 	            <manifest>
-	                <attribute name="Main-Class" value="org.eclipse.jdt.internal.jarinjarloader.JarRsrcLoader"/>
-	                <attribute name="Rsrc-Main-Class" value="fr.frozen.iron.net.IronServer"/>
-	                <attribute name="Class-Path" value="."/>
-	                <attribute name="Rsrc-Class-Path" value="./ log4j-1.2.16.jar netframework.jar lwjgl_util.jar engine.jar"/>
+	                <attribute name="Main-Class" value="fr.frozen.iron.net.IronServer"/>
+	                <attribute name="Class-Path" value="./ log4j-1.2.16.jar netframework.jar lwjgl_util.jar engine.jar"/>
 	            </manifest>
-		
-	            <zipfileset src="${dist.dir}/jar-in-jar-loader.zip"/>
 	            <fileset dir="${bin.dir}">
-					<exclude name="**/images/*"/>
+					<exclude name="**/images/**"/>
+	            	<exclude name="**/sounds/**"/>
+	            	<exclude name="**/fonts/**"/>
 				</fileset>
-	
-	        	<zipfileset file="${engine-jar}"/>
-				<zipfileset file="${netengine-jar}"/>
-	            <zipfileset file="${jar.dir}/lwjgl_util.jar"/>
-				<zipfileset file="${jar.dir}/log4j-1.2.16.jar"/>
 	        </jar>
 	</target>
-	
-	<target name="Main" depends="clean, serverBuild, clientBuild, LightBuild">
+		
+	<target name="Main" depends="clean, serverBuild, clientBuild, LightBuild, WebStartBuild">
 		<description>Main target</description>
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<zip destfile="${dist.dir}/IronTactics.zip">
-			<zipfileset dir="${dist.dir}" includes="**/*.jar"/>
 			<zipfileset dir="${dist.dir}/native" prefix="native"/>
 			<zipfileset dir="${dist.dir}" includes="**/*.sh"/>
 			<zipfileset dir="${dist.dir}" includes="**/*.bat"/>
 			<zipfileset dir="${dist.dir}/jvm" prefix="jvm"/>
+	
+			<zipfileset file="${engine-jar}" prefix="bin"/>
+			<zipfileset file="${netengine-jar}" prefix="bin"/>
+			<zipfileset dir="${dist.dir}" includes="**/*.jar" prefix="bin"/>
+			<zipfileset dir="${jar.dir}" includes="**/*.jar" prefix="bin"/>
 		</zip>
 	</target>
 	
@@ -69,8 +86,27 @@
 			<description>Zips only the jars</description>
 			<delete file="${dist.dir}/IronTacticsLight.zip"/>
 			<zip destfile="${dist.dir}/IronTacticsLight.zip">
-				<zipfileset file="${dist.dir}/Server.jar"/>
-				<zipfileset file="${dist.dir}/IronTactics.jar"/>
+				<zipfileset file="${dist.dir}/Server.jar" prefix="bin"/>
+				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="bin"/>
+			</zip>
+	</target>
+
+	<target name="WebStartBuild" depends="clean, clientBuild">
+			<description>Zips only the jars</description>
+			<delete file="${dist.dir}/WebStart.zip"/>
+			
+			<query name="password" password="true"/>
+	
+			<signjar jar="${engine-jar}" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
+			<signjar jar="${netengine-jar}" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
+			<signjar jar="jar/log4j-1.2.16.jar" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
+			<signjar jar="${dist.dir}/IronTactics.jar" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
+		
+			<zip destfile="${dist.dir}/WebStart.zip">
+				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="jar"/>
+				<zipfileset file="${engine-jar}" prefix="jar"/>
+				<zipfileset file="${netengine-jar}" prefix="jar"/>
+				<zipfileset file="jar/log4j-1.2.16.jar" prefix="jar"/>
 			</zip>
 	</target>
 </project>

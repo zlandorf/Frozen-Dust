@@ -2,9 +2,9 @@
 
 if [ $# = 1 ]
 then
-    java -jar -Djava.library.path=native/linux IronTactics.jar $1
+    java -jar -Djava.library.path=native/linux bin/IronTactics.jar $1
 else
-    java -jar -Djava.library.path=native/linux IronTactics.jar    
+    java -jar -Djava.library.path=native/linux bin/IronTactics.jar    
 fi
 
 

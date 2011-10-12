@@ -1,0 +1,27 @@
+<?xml version="1.0" encoding="utf-8"?>
+<jnlp
+  spec="1.0+"
+  codebase="http://paul.milian.emi.u-bordeaux1.fr/IronTactics/"
+  href="iron.jnlp">
+  <information>
+    <title>LWJGL test</title>
+    <vendor>Zlandorf</vendor>
+    <homepage href="http://paul.milian.emi.u-bordeaux1.fr/IronTactics/"/>
+    <description>IronTactics top down TBS</description>
+    <description kind="short">IronTactics</description>
+  </information>
+<security>
+<all-permissions/>
+</security>
+  <resources>
+    <j2se version="1.4+"/>
+    <jar href="jar/IronTactics.jar"/>
+    <jar href="jar/engine.jar"/>
+    <jar href="jar/netframework.jar"/>
+    <jar href="jar/log4j-1.2.16.jar"/>
+    <extension href="http://slick.cokeandcode.com/demos/slick.jnlp"/>
+  </resources>
+  <application-desc main-class="fr.frozen.iron.client.IronTactics">
+    </application-desc>
+</jnlp>
+

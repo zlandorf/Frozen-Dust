@@ -1,1 +1,1 @@
-"jvm\java" -jar Server.jar
+"jvm\java" -jar bin/Server.jar
