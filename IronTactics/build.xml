@@ -2,6 +2,7 @@
 <project default="Main" name="Create Runnable Jar for Project IronTactics with Jar-in-Jar Loader">
 	<taskdef name="query" classname="com.jera.anttasks.Query"/>
 
+	<property name="build.rsc" location="dist/buildrsc"/>
 	<property name="dist.dir" location="dist"/>
 	<property name="bin.dir" location="bin"/>
 	<property name="jar.dir" location="jar"/>
@@ -70,10 +71,10 @@
 		<description>Main target</description>
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<zip destfile="${dist.dir}/IronTactics.zip">
-			<zipfileset dir="${dist.dir}/native" prefix="native"/>
-			<zipfileset dir="${dist.dir}" includes="**/*.sh"/>
-			<zipfileset dir="${dist.dir}" includes="**/*.bat"/>
-			<zipfileset dir="${dist.dir}/jvm" prefix="jvm"/>
+			<zipfileset dir="${build.rsc}/native" prefix="native"/>
+			<zipfileset dir="${build.rsc}" includes="**/*.sh"/>
+			<zipfileset dir="${build.rsc}" includes="**/*.bat"/>
+			<zipfileset dir="${build.rsc}/jvm" prefix="jvm"/>
 	
 			<zipfileset file="${engine-jar}" prefix="bin"/>
 			<zipfileset file="${netengine-jar}" prefix="bin"/>
@@ -88,6 +89,8 @@
 			<zip destfile="${dist.dir}/IronTacticsLight.zip">
 				<zipfileset file="${dist.dir}/Server.jar" prefix="bin"/>
 				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="bin"/>
+				<zipfileset file="${engine-jar}" prefix="bin"/>
+				<zipfileset file="${netengine-jar}" prefix="bin"/>
 			</zip>
 	</target>
 
@@ -97,10 +100,11 @@
 			
 			<query name="password" password="true"/>
 	
-			<signjar jar="${engine-jar}" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
-			<signjar jar="${netengine-jar}" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
-			<signjar jar="jar/log4j-1.2.16.jar" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
-			<signjar jar="${dist.dir}/IronTactics.jar" alias="zlandorf" keystore="dist/myKeystor" storepass="${password}"/>
+	
+			<signjar jar="${engine-jar}" alias="zlandorf" keystore="${build.rsc}/ironKeyStore" storepass="${password}"/>
+			<signjar jar="${netengine-jar}" alias="zlandorf" keystore="${build.rsc}/ironKeyStore" storepass="${password}"/>
+			<signjar jar="jar/log4j-1.2.16.jar" alias="zlandorf" keystore="${build.rsc}/ironKeyStore" storepass="${password}"/>
+			<signjar jar="${dist.dir}/IronTactics.jar" alias="zlandorf" keystore="${build.rsc}/ironKeyStore" storepass="${password}"/>
 		
 			<zip destfile="${dist.dir}/WebStart.zip">
 				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="jar"/>
