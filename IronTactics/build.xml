@@ -35,7 +35,6 @@
             <fileset dir="${bin.dir}"/>
         </jar>
     </target>
-	
 	<!--<target name="clientDesktop">
 	        <jar destfile="${dist.dir}/IronTactics.jar">
 	            <manifest>
@@ -74,7 +73,6 @@
 			<zipfileset dir="${build.rsc}/native" prefix="native"/>
 			<zipfileset dir="${build.rsc}" includes="**/*.sh"/>
 			<zipfileset dir="${build.rsc}" includes="**/*.bat"/>
-			<zipfileset dir="${build.rsc}/jvm" prefix="jvm"/>
 	
 			<zipfileset file="${engine-jar}" prefix="bin"/>
 			<zipfileset file="${netengine-jar}" prefix="bin"/>
