@@ -6,3 +6,5 @@ IronTactics/dist/IronTactics.zip
 IronTactics/dist/IronTacticsLight.zip
 IronTactics/dist/*.jar
 IronTactics/dist/WebStart.zip
+IronTactics/dist/buildrsc/engine.jar
+IronTactics/dist/buildrsc/netframework.jar

@@ -64,7 +64,7 @@ public abstract class Component implements MouseListener {
 	
 	
 	public boolean contains(int x, int y) {
-		return x >= pos.getX() && x <= pos.getX() + getWidth() && y >= pos.getY() && y <= pos.getY() + getHeight();
+		return x >= pos.getX() && x < pos.getX() + getWidth() && y >= pos.getY() && y < pos.getY() + getHeight();
 	}
 	
 	public void setVisible(boolean val) {

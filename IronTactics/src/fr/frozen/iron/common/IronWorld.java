@@ -37,8 +37,13 @@ public class IronWorld extends GameState {
 	
 	public synchronized void reInit() {
 		map = null;
-		units.clear();
+		if (getGameObjectCollection("corpse") != null) { 
+			getGameObjectCollection("corpse").clear();
+		}
+		if (getGameObjectCollection("gfx") != null)
+			getGameObjectCollection("gfx").clear();
 		gameObjects.clear();
+		units.clear();
 	}
 	
 	public void endTurn(int playerId) {

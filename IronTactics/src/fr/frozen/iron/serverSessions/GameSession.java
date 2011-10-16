@@ -56,7 +56,7 @@ public class GameSession extends BaseGameController implements GameContext {
 		playerInfo.put(host, new PlayerGameInfo(Protocol.get(hostRace), hostColor));
 		playerInfo.put(other, new PlayerGameInfo(Protocol.get(otherRace), otherColor));
 		
-		logger.info("New game : "+host+"("+Protocol.get(hostRace)+") vs "+
+		logger.info("[New game] "+host+"("+Protocol.get(hostRace)+") vs "+
 				other+"("+Protocol.get(otherRace)+")");
 		
 		
