@@ -170,14 +170,14 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	
 	public static void main(String []args) {
 		
-		//String host = "92.102.7.170";
+		String host = "92.102.7.170";
 		//String host = "192.168.1.104";
-		String host = new String();
+		/*String host = new String();
 		try {
 			host = InetAddress.getLocalHost().getHostAddress();
 		} catch (UnknownHostException e) {
 			e.printStackTrace();
-		}
+		}*/
 		if (args.length == 1) {
 			host = args[0];
 		} else {
