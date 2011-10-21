@@ -90,7 +90,7 @@
 				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="jar"/>
 				<zipfileset file="${engine-jar}" prefix="jar"/>
 				<zipfileset file="${netengine-jar}" prefix="jar"/>
-				<zipfileset file="jar/log4j-1.2.16.jar" prefix="jar"/>
+				<!--<zipfileset file="jar/log4j-1.2.16.jar" prefix="jar"/>-->
 			</zip>
 	</target>
 </project>
