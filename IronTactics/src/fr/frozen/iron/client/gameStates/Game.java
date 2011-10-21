@@ -619,7 +619,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		float x2 = x + width / 2 - timeLeftFont.getWidth("TimeLeft :") / 2;
 		float y2 = y;
 		
-		timeLeftFont.drawString(x2, y2, "TimeLeft :", Color.white);
+		timeLeftFont.drawString((int)x2, (int)y2, "TimeLeft :", Color.white);
 
 		String timeStr = "";
 		if (timeLeftForTurn < 10) {
@@ -634,7 +634,7 @@ public class Game extends GameState implements NetEventListener, MouseListener, 
 		x2 = x + width / 2 - timeLeftFont.getWidth(timeStr) / 2;
 		y2 += timeLeftFont.getHeight("TimeLeft");
 		
-		timeLeftFont.drawString(x2, y2, timeStr, Color.white);
+		timeLeftFont.drawString((int)x2, (int)y2, timeStr, Color.white);
 	}
 	
 	@Override
