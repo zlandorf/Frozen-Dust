@@ -23,9 +23,9 @@ public class MainMenu extends GameState {
 		super(ge, "mainMenu", false, false);
 		gui = new GUI();
 
-		Button multiplayer = new IronMenuButton("Multiplayer", 250);
-		Button quit = new IronMenuButton("Quit", 390);
-		Button option = new IronMenuButton("Options", 320);
+		Button multiplayer = new IronMenuButton("Multiplayer", 270);
+		Button quit = new IronMenuButton("Quit", 410);
+		Button option = new IronMenuButton("Options", 340);
 		
 		multiplayer.addActionListener(new ActionListener() {
 			@Override
@@ -76,7 +76,7 @@ public class MainMenu extends GameState {
 			@Override
 			public void update(float deltaTime) {
 				double x = gameEngine.getScreenSize().getWidth() / 2  - _sprite.getWidth() / 2;
-				double y = 100 - _sprite.getHeight() / 2;
+				double y = 120 - _sprite.getHeight() / 2;
 				_pos.set((float)x, (float)y);
 			}
 		};
