@@ -377,6 +377,7 @@ public class GameEngine implements IGameEngine {
 				_gameRunning = false;
 			}
 		}
+		cleanUp();
 	}
 	
 	protected boolean isCloseRequested() {

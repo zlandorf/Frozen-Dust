@@ -174,6 +174,20 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		setSize(800, 600);
 	}
 	
+	@Override
+	protected void cleanUp() {
+		super.cleanUp();
+		if (netClient.isConnected()) {
+			netClient.shutdown();
+		}
+		
+		try {
+			netClient.join();
+		} catch (InterruptedException e) {
+			e.printStackTrace();
+		}
+	}
+	
 	public static void main(String []args) {
 		
 		String host = IronConst.HOST;
