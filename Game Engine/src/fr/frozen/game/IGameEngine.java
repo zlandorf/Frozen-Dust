@@ -27,10 +27,11 @@ public interface IGameEngine {
 	public void setFullScreen(boolean fullscreen);
 	public void setVSync(boolean val);
 	
-	
+	public boolean isGameRunning();
 	public void start();
 	public void stopGame();
 	
 	public boolean isKeyPressed(int keyCode);
-	//public void stop();	
+	
+	public boolean isVsync();
 }

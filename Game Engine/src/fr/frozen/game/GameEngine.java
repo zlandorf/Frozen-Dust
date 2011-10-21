@@ -56,6 +56,10 @@ public class GameEngine implements IGameEngine {
 		Keyboard.enableRepeatEvents(true);
 	}
 	
+	@Override
+	public boolean isGameRunning() {
+		return _gameRunning;
+	}
 	
 	@Override
 	public void addGameState(GameState gs) {
@@ -99,7 +103,8 @@ public class GameEngine implements IGameEngine {
 
 	@Override
 	public void start() {
-		startRendering();
+		initDisplayMode();
+		initGL();
 		buildAssets();
 		buildInitialGameStates();
 		gameLoop();
@@ -264,12 +269,18 @@ public class GameEngine implements IGameEngine {
 	}
 	
 	
-	
-	private void startRendering() {
+	protected void initDisplayMode() {
 		try {
 			setDisplayMode();
 			Display.setTitle(_title);
 			Display.create();
+		} catch (LWJGLException e) {
+			e.printStackTrace();
+		}
+	}
+	
+	
+	protected void initGL() {
 
 			//Display.setVSyncEnabled(_vsync);
 			//Mouse.setGrabbed(true);
@@ -291,10 +302,6 @@ public class GameEngine implements IGameEngine {
 			GL11.glMatrixMode(GL11.GL_MODELVIEW);
 			GL11.glLoadIdentity();
 			GL11.glViewport(0, 0, (int)_screenSize.getWidth(), (int)_screenSize.getHeight());
-		} catch (LWJGLException le) {
-			le.printStackTrace();
-			System.exit(1);
-		}
 	}
 
 
@@ -354,7 +361,7 @@ public class GameEngine implements IGameEngine {
 	}
 	
 	
-	private void gameLoop() {
+	protected void gameLoop() {
 		while (_gameRunning) {
 			
 			heartBeat();
@@ -366,12 +373,24 @@ public class GameEngine implements IGameEngine {
 			
 			SoundStore.get().poll(0);
 			//if (!Display.isActive()) Thread.yield();
-			if(Display.isCloseRequested()) {
+			if(isCloseRequested()) {
 				_gameRunning = false;
 			}
 		}
+	}
+	
+	protected boolean isCloseRequested() {
+		return Display.isCloseRequested();
+	}
+	
+	protected void cleanUp() {
 		Display.destroy();
 		AL.destroy();
-		System.exit(0);
+		//System.exit(0);
+	}
+
+	@Override
+	public boolean isVsync() {
+		return _vsync;
 	}
 }

@@ -1,8 +1,6 @@
 package fr.frozen.iron.client;
 
 import java.awt.Font;
-import java.net.InetAddress;
-import java.net.UnknownHostException;
 
 import org.apache.log4j.Logger;
 
@@ -22,6 +20,7 @@ import fr.frozen.iron.client.messageEvents.NewSessionEvent;
 import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.protocol.Protocol;
 import fr.frozen.iron.util.IronConfig;
+import fr.frozen.iron.util.IronConst;
 import fr.frozen.network.client.ConnectEvent;
 import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
@@ -168,16 +167,16 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		setCurrentGameState(menu);
 	}
 	
+	public void initIronTactics() {
+		setTitle("Iron Tactics");
+		setVSync(true);
+		setFullScreen(false);
+		setSize(800, 600);
+	}
+	
 	public static void main(String []args) {
 		
-		String host = "92.102.7.170";
-		//String host = "192.168.1.104";
-		/*String host = new String();
-		try {
-			host = InetAddress.getLocalHost().getHostAddress();
-		} catch (UnknownHostException e) {
-			e.printStackTrace();
-		}*/
+		String host = IronConst.HOST;
 		if (args.length == 1) {
 			host = args[0];
 		} else {
@@ -186,10 +185,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		
 		IronConfig.configClientLogger();
 		IronTactics it = new IronTactics(host);
-		it.setTitle("Iron Tactics");
-		it.setVSync(true);
-		it.setFullScreen(false);
-		it.setSize(800, 600);
+		it.initIronTactics();
 		it.start();
 	}
 }

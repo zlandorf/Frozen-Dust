@@ -24,8 +24,8 @@ public class MainMenu extends GameState {
 		gui = new GUI();
 
 		Button multiplayer = new IronMenuButton("Multiplayer", 250);
-		Button quit = new IronMenuButton("Quit", 320);
-		Button option = new IronMenuButton("Options", 390);
+		Button quit = new IronMenuButton("Quit", 390);
+		Button option = new IronMenuButton("Options", 320);
 		
 		multiplayer.addActionListener(new ActionListener() {
 			@Override
@@ -50,7 +50,7 @@ public class MainMenu extends GameState {
 		});
 		
 		gui.addComponent(multiplayer);
-		gui.addComponent(quit);
+		//gui.addComponent(quit);
 		gui.addComponent(option);
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
