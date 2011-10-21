@@ -26,9 +26,9 @@ import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
 
 public class IronTactics extends GameEngine implements NetEventListener {
-	
+
 	protected IronClient netClient;
-	
+
 	public IronTactics(String host) {
 		super();
 		setVSync(true);
@@ -39,7 +39,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	protected void render() {
 		super.render();
 	}
-	
+
 	@Override
 	protected void update() {
 		super.update();
@@ -51,10 +51,10 @@ public class IronTactics extends GameEngine implements NetEventListener {
 			netClient.sendMessage(Protocol.SERVER_C_SEND_PLAYER_NAME, userName);
 		}
 	}
-	
+
 	@Override
 	public void onNetEvent(NetEvent ne) {
-		
+
 		if (ne instanceof ConnectEvent) {
 			ConnectEvent ce = (ConnectEvent) ne;
 			if (ce.getStatus()) {
@@ -65,8 +65,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				Logger.getLogger(getClass()).error("IronTactics failed to connect");
 			}
 		}
-		
-		
+
+
 		if (ne instanceof NewSessionEvent) {
 			NewSessionEvent nse = (NewSessionEvent) ne;
 			String newGameState = null;
@@ -75,17 +75,17 @@ public class IronTactics extends GameEngine implements NetEventListener {
 			case SESSION_LOBBY : 
 				newGameState = "lobby";
 				break;
-				
+
 			case SESSION_GAME_CREATION :
 				newGameState = "gameCreation";
 				getGameState("lobby").setActive(false);
 				break;
-				
+
 			case SESSION_GAME :
 				newGameState = "game";
 				getGameState("lobby").setActive(false);
 				break;
-				
+
 			default : 
 				Logger.getLogger(getClass()).error("game session not handled : "+nse.getType());
 				break;
@@ -96,10 +96,10 @@ public class IronTactics extends GameEngine implements NetEventListener {
 			}
 		}
 	}
-	
+
 	public void switchToState(GameState gameState) {
 		if (gameState == null) return;
-		
+
 		gameState.setActive(true);
 		gameState.setVisible(true);
 
@@ -107,7 +107,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		getCurrentGameState().setVisible(false);
 		setCurrentGameState(gameState);
 	}
-	
+
 	public void switchToState(String newGameState) {
 		switchToState(getGameState(newGameState));
 	}
@@ -115,17 +115,17 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	public IronClient getNetClient() {
 		return netClient;
 	}
-	
+
 	public void connect() {
 		//TODO: handle a possible restart of the network thread
 		if (!netClient.isConnected())
 			netClient.connect();
 	}
-	
+
 	protected void setPreloaderFont() {
 		preloaderFont = FontManager.loadAngelFont("componentFont.fnt", "componentFont.png");
 	}
-	
+
 	@Override
 	protected void buildAssets() {
 		super.buildAssets();
@@ -146,7 +146,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		FontManager.addFont(preloaderFont, "componentFont");
 		FontManager.addFont(FontManager.loadAngelFont("DamageFont.fnt", "DamageFont.png"), "DamageFont");
 	}
-	
+
 	protected void buildInitialGameStates() {
 		Intro intro = new Intro(this);
 		MainMenu menu = new MainMenu(this);
@@ -155,7 +155,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		GameCreation gameCreation = new GameCreation(this);
 		Game game = new Game(this);
 		OptionMenu optionMenu = new OptionMenu(this);
-		
+
 		addGameState(intro);
 		addGameState(menu);
 		addGameState(lobby);
@@ -163,45 +163,49 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		addGameState(gameCreation);
 		addGameState(game);
 		addGameState(optionMenu);
-		
+
 		netClient.addNetEventListener(gameCreation);
 		netClient.addNetEventListener(browser);
 		netClient.addNetEventListener(lobby);
 		netClient.addNetEventListener(this);
 		netClient.addNetEventListener(game);
-		
+
 		setCurrentGameState(menu);
 	}
-	
+
 	public void initIronTactics() {
 		setTitle("Iron Tactics");
 		setVSync(true);
 		setFullScreen(false);
 		setSize(800, 600);
 	}
-	
+
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
 		if (netClient.isConnected()) {
 			netClient.shutdown();
 		}
-		try {
-			netClient.join();
-		} catch (InterruptedException e) {
-			e.printStackTrace();
+
+		if (netClient.isAlive()) {
+			try {
+				netClient.join();
+			} catch (InterruptedException e) {
+				e.printStackTrace();
+			}
 		}
+		//System.exit(0);
 	}
-	
+
 	public static void main(String []args) {
-		
+
 		String host = IronConst.HOST;
 		if (args.length == 1) {
 			host = args[0];
 		} else {
 			System.out.println("you can add an argument to specify host address");
 		}
-		
+
 		IronConfig.configClientLogger();
 		IronTactics it = new IronTactics(host);
 		it.initIronTactics();

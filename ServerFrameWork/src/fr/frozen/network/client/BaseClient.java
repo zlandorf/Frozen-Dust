@@ -128,19 +128,21 @@ public class BaseClient extends Thread implements IMessageProcessor {
 		try {
 			numRead = channel.read(attachment.getBuff());
 		} catch (IOException e) {
-			shutdown();
+			if (running)shutdown();
 			return;
 		}
 
 		if (numRead == -1) {
-			shutdown();
+			if (running)shutdown();
 			return;
 		}
 		attachment.checkForMessages();
 	}
     
     
-    protected void shutdown() {
+    protected synchronized void shutdown() {
+    	if (!running) return;
+    	
     	Logger.getLogger(getClass()).info("shutdown");
     	running = false;
     	if (msgWriter != null) msgWriter.end();

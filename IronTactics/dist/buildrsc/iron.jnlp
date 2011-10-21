@@ -4,7 +4,7 @@
   codebase="http://paul.milian.emi.u-bordeaux1.fr/IronTactics/"
   href="iron.jnlp">
   <information>
-    <title>LWJGL test</title>
+    <title>Iron Tactics</title>
     <vendor>Zlandorf</vendor>
     <homepage href="http://paul.milian.emi.u-bordeaux1.fr/IronTactics/"/>
     <description>IronTactics top down TBS</description>
