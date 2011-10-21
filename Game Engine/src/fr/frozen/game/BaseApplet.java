@@ -3,10 +3,12 @@ package fr.frozen.game;
 import java.applet.Applet;
 import java.awt.BorderLayout;
 import java.awt.Canvas;
+import java.awt.Dimension;
 
 import org.apache.log4j.Logger;
 import org.lwjgl.LWJGLException;
 import org.lwjgl.opengl.Display;
+import org.lwjgl.opengl.DisplayMode;
 
 @SuppressWarnings("serial")
 public abstract class BaseApplet extends Applet {
@@ -25,6 +27,8 @@ public abstract class BaseApplet extends Applet {
 			public void run() {
 				try {
 					Display.setParent(display_parent);
+					Dimension screenSize = engine.getScreenSize();
+					Display.setDisplayMode(new DisplayMode((int)screenSize.getWidth(), (int)screenSize.getHeight()));
 					Display.create();
 					Display.setVSyncEnabled(engine.isVsync());
 				} catch (LWJGLException e) {

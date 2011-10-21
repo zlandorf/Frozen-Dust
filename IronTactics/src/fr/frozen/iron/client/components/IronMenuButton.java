@@ -8,7 +8,7 @@ public class IronMenuButton extends Button {
 	public IronMenuButton(String label, int y) {
 		super(label, 0, y, 0, 0);
 		//centered button
-		pos = new Vector2f((float) (Display.getDisplayMode().getWidth() / 2 - getWidth()/ 2), y); 
+		pos = new Vector2f((float) (Display.getWidth() / 2 - getWidth()/ 2), y); 
 	}
 
 }
