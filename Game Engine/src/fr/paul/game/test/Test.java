@@ -34,6 +34,7 @@ class Test extends GameEngine {
 	
 	@Override
 	protected void buildAssets() {
+		super.buildAssets();
 		/*ISpriteManager.getInstance().loadSprite("image.png");
 		ISpriteManager.getInstance().loadSprite("rebel.png");
 		ISpriteManager.getInstance().loadSprite("sheet.png");*/

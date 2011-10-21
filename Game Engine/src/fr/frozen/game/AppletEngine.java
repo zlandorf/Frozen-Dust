@@ -101,6 +101,7 @@ public class AppletEngine implements IGameEngine {
 	@Override
 	public void start() {
 		engine.initGL();
+		engine.setPreloaderFont();
 		engine.buildAssets();
 		engine.buildInitialGameStates();
 		engine.gameLoop();

@@ -15,13 +15,17 @@ import org.lwjgl.opengl.Display;
 import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.Timer;
+import org.newdawn.slick.Font;
 import org.newdawn.slick.openal.SoundStore;
 
 public class GameEngine implements IGameEngine {
   
+	public static String LOADING_TEXT = "Loading resources, please wait ...";
+	
 	public static float _tick;
 	protected float _lastTime;
 	public static Timer _timer = null;
+	
 	
 	protected boolean _gameRunning = true;
   
@@ -39,6 +43,8 @@ public class GameEngine implements IGameEngine {
 	
 	protected GameState currentGameState = null;
 	protected GameState previousGameState = null;
+	
+	protected Font preloaderFont;
 	
 	public GameEngine(boolean fullScreen) {
 		this();
@@ -105,6 +111,7 @@ public class GameEngine implements IGameEngine {
 	public void start() {
 		initDisplayMode();
 		initGL();
+		setPreloaderFont();
 		buildAssets();
 		buildInitialGameStates();
 		gameLoop();
@@ -257,10 +264,33 @@ public class GameEngine implements IGameEngine {
 	}
 	
 
+	protected void setPreloaderFont() {
+		preloaderFont = FontManager.loadFont(new java.awt.Font("Times new roman",java.awt.Font.PLAIN, 17));
+	}
 
 	protected void buildAssets() {
+		if (preloaderFont != null) {
+			drawLoadingText();
+		}
 		//function called to build game assets
 		//has to be overridden
+	}
+	
+	protected void drawLoadingText() {
+		drawLoadingText(LOADING_TEXT);
+	}
+	
+	protected void drawLoadingText(String text) {
+		onPreRender();
+
+		double x = getScreenSize().getWidth() / 2;
+		double y = getScreenSize().getHeight() / 2;
+
+		x -= preloaderFont.getWidth(text) / 2;
+		y -= preloaderFont.getHeight(text) / 2;
+		preloaderFont.drawString((int)x, (int)y, text);
+
+		onPostRender();
 	}
 	
 	protected void buildInitialGameStates() {
