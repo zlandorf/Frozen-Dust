@@ -2,7 +2,6 @@ package fr.frozen.iron.client.gameStates;
 
 import org.lwjgl.input.Keyboard;
 import org.lwjgl.opengl.Display;
-import org.lwjgl.opengl.DisplayMode;
 import org.lwjgl.opengl.GL11;
 import org.lwjgl.util.vector.Vector2f;
 import org.newdawn.slick.Color;
@@ -27,10 +26,9 @@ public class Intro extends GameState {
 	public Intro(GameEngine ge) {
 		super(ge, "intro", true, true);
 		font = FontManager.loadFont("default.ttf", 35, false, true);
-		DisplayMode dm = Display.getDisplayMode();
 		
-		float x = (dm.getWidth() / 2) - font.getWidth(text)  / 2;
-		float y = (dm.getHeight() / 2) - font.getLineHeight() / 2;
+		float x = (Display.getDisplayMode().getWidth() / 2) - font.getWidth(text)  / 2;
+		float y = (Display.getDisplayMode().getHeight() / 2) - font.getLineHeight() / 2;
 		textPos = new Vector2f(x, y);
 
 	}

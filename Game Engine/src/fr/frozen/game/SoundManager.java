@@ -29,6 +29,7 @@ public class SoundManager {
 	protected Hashtable<String, Sound> audioClips;
 	
 	protected SoundManager() {
+		SoundStore.get().init();
 		audioClips = new Hashtable<String, Sound>();
 	}
 	

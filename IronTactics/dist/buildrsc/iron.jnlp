@@ -19,7 +19,10 @@
     <jar href="jar/engine.jar"/>
     <jar href="jar/netframework.jar"/>
     <jar href="jar/log4j-1.2.16.jar"/>
-    <extension href="http://slick.cokeandcode.com/demos/slick.jnlp"/>
+    <jar href="jar/slick.jar"/>
+    <jar href="jar/jogg-0.0.7.jar"/>
+    <jar href="jar/jorbis-0.0.15.jar"/>
+    <extension href="http://lwjgl.org/webstart/2.7.1/extension.jnlp"/>
   </resources>
   <application-desc main-class="fr.frozen.iron.client.IronTactics">
     </application-desc>

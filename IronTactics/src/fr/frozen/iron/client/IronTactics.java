@@ -183,11 +183,14 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
+		
 		if (netClient.isConnected()) {
+			Logger.getLogger(getClass()).debug("shutting down netClient");
 			netClient.shutdown();
 		}
 
 		if (netClient.isAlive()) {
+			Logger.getLogger(getClass()).debug("joining netClient thread");
 			try {
 				netClient.join();
 			} catch (InterruptedException e) {

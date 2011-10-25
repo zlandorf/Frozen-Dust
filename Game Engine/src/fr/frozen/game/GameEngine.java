@@ -27,7 +27,7 @@ public class GameEngine implements IGameEngine {
 	public static Timer _timer = null;
 	
 	
-	protected boolean _gameRunning = true;
+	protected volatile boolean _gameRunning = true;
   
 	protected Dimension _screenSize;
 	protected Dimension _resolution;
@@ -401,7 +401,7 @@ public class GameEngine implements IGameEngine {
 			render();
 			onPostRender();
 			
-			SoundStore.get().poll(0);
+			SoundStore.get().poll((int)(_tick * 1000));
 			//if (!Display.isActive()) Thread.yield();
 			if(isCloseRequested()) {
 				_gameRunning = false;
@@ -415,8 +415,11 @@ public class GameEngine implements IGameEngine {
 	}
 	
 	protected void cleanUp() {
+		Logger.getLogger(getClass()).debug("destroying display");
 		Display.destroy();
+		Logger.getLogger(getClass()).debug("destroying audio");
 		AL.destroy();
+
 		//System.exit(0);
 	}
 

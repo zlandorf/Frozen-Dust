@@ -27,10 +27,11 @@ public abstract class BaseApplet extends Applet {
 			public void run() {
 				try {
 					Display.setParent(display_parent);
-					Dimension screenSize = engine.getScreenSize();
-					Display.setDisplayMode(new DisplayMode((int)screenSize.getWidth(), (int)screenSize.getHeight()));
-					Display.create();
+					Dimension dim = engine.getScreenSize();
+					DisplayMode dm = new DisplayMode((int)dim.getWidth(), (int)dim.getHeight());
+					Display.setDisplayMode(dm);
 					Display.setVSyncEnabled(engine.isVsync());
+					Display.create();
 				} catch (LWJGLException e) {
 					e.printStackTrace();
 				}
@@ -38,30 +39,38 @@ public abstract class BaseApplet extends Applet {
 			}
 		};
 		gameThread.start();
+		Logger.getLogger(getClass()).debug("applet engine started");
 	}
  
  
 	private void stopLWJGL() {
+		Logger.getLogger(getClass()).debug("applet stopped, so stopping game");
 		engine.stopGame();
 		try {
+			Logger.getLogger(getClass()).debug("Waiting for appletEngine to end (ie join)");
 			gameThread.join();
+			Logger.getLogger(getClass()).debug("appletEngine joined");
 		} catch (InterruptedException e) {
 			e.printStackTrace();
 		}
 	}
  
 	public void start() {
+		Logger.getLogger(getClass()).debug("applet start");
 	}
  
 	public void stop() {
+		Logger.getLogger(getClass()).debug("applet stop");
 	}
  
 	public void destroy() {
+		Logger.getLogger(getClass()).debug("destroying applet, ie removing display");
 		remove(display_parent);
 		super.destroy();
 	}
  
 	public void init() {
+		Logger.getLogger(getClass()).debug("applet init");
 		createEngine();
 		setLayout(new BorderLayout());
 		try {
