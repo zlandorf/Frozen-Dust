@@ -17,7 +17,6 @@ import fr.frozen.game.ISprite;
 import fr.frozen.game.Sound;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
-import fr.frozen.iron.client.IronPlayer;
 import fr.frozen.iron.client.components.ActionEvent;
 import fr.frozen.iron.client.components.ActionListener;
 import fr.frozen.iron.client.components.Button;
@@ -26,6 +25,7 @@ import fr.frozen.iron.client.components.IronMenuButton;
 import fr.frozen.iron.client.components.MouseListener;
 import fr.frozen.iron.client.components.PopupList;
 import fr.frozen.iron.common.GameContext;
+import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.PlayerGameInfo;
 import fr.frozen.iron.common.entities.IronUnit;
@@ -43,16 +43,19 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 	protected Button undoButton;
 
 	protected IronWorld world;
-	protected boolean worldReady = false;
-	protected boolean gameOver = false;
-	protected int winnerId = -1;
 
 	protected List<IronPlayer> players;
 	protected Hashtable<Integer, IronPlayer> playersById;
 	protected Hashtable<Integer, PlayerGameInfo> playerInfo;
 
+	
+	//TODO PUT THIS IN A GAMECONTROLLER OR SOMETHING !
 	protected int turnPlayerId = -1;
 	protected float timeLeftForTurn = 0;
+
+	protected boolean worldReady;
+	protected boolean gameOver;
+	protected int winnerId;
 
 	protected IronUnit selectedUnit = null;
 	protected IronUnit hoveredUnit = null;
@@ -79,7 +82,8 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 		players = new ArrayList<IronPlayer>();
 		// playerInfo = new Hashtable<Integer, PlayerGameInfo>();
 
-		world = new IronWorld(this);
+		world = new IronWorld();
+		world.setContext(this);
 		createGui();
 
 		backTex = SpriteManager.getInstance().getSprite("backTex");
@@ -96,24 +100,19 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 
 	abstract protected void requestEndTurn();
 
-	abstract protected String getWinnerText(int id);
+	abstract protected String getWinnerText(int winnerId);
 
-	abstract protected String getNextTurnNotificationText(int id);
+	abstract protected String getNextTurnNotificationText(int nextTurnPlayerId);
 
-	abstract protected String getNextTurnText(int id);
+	abstract protected String getNextTurnText(int nextTurnPlayerId);
 
 	abstract protected void requestMove(int x, int y);
-	
+
 	abstract protected void requestSkill(SkillInfo skillInfo);
 
 	abstract protected void requestUndo();
-	
-	@Override
-	abstract public int getClientId();
-	
+
 	abstract protected boolean canSelectUnit(IronUnit unit);
-	
-	
 
 	protected void createGui() {
 		gui = new GUI(this);
@@ -207,6 +206,11 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 		forestSound.stop();
 	}
 
+	@Override
+	public int getTurnPlayerId() {
+		return turnPlayerId;
+	}
+	
 	private void openOptions() {
 		setVisible(false);
 		gameEngine.getGameState("optionMenu").setActive(true);
@@ -250,6 +254,7 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 
 		if (!worldReady)
 			return;
+
 		world.update(deltaTime);
 		world.getMap().update(deltaTime);
 
@@ -470,7 +475,6 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 		return null;
 	}
 
-	
 	@Override
 	public void actionPerformed(ActionEvent e) {
 		if (e.getSource() instanceof PopupList) {
@@ -478,7 +482,7 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 			requestSkill(info);
 		}
 	}
-	
+
 	@Override
 	public void onHover(int x, int y) {
 		if (!worldReady || showIngameMenu)

@@ -247,12 +247,12 @@ public class IronMap implements TileBasedMap {
 		}
 	}
 	
-	public void renderUnitsTileGfx(float deltaTime) {
+	public void renderUnitsTileGfx(float deltaTime, int turnPlayerId) {
 		for (int i = 0; i < tiles.length; i++) {
 			for (int j = 0; j < tiles[i].length; j++) {
 				IronUnit unit = tiles[i][j].getUnitOnTile();
 				if (unit != null) {
-					unit.renderTileGfx(deltaTime);
+					unit.renderTileGfx(deltaTime, turnPlayerId);
 				}
 			}
 		}

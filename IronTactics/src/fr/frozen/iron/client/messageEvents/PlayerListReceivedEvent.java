@@ -2,7 +2,7 @@ package fr.frozen.iron.client.messageEvents;
 
 import java.util.List;
 
-import fr.frozen.iron.client.IronPlayer;
+import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.network.client.NetEvent;
 
 public class PlayerListReceivedEvent implements NetEvent {

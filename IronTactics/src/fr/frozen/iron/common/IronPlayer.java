@@ -1,4 +1,4 @@
-package fr.frozen.iron.client;
+package fr.frozen.iron.common;
 
 public class IronPlayer {
 	private int Id;

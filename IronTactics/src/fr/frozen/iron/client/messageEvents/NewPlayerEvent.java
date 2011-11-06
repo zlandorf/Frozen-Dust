@@ -1,6 +1,6 @@
 package fr.frozen.iron.client.messageEvents;
 
-import fr.frozen.iron.client.IronPlayer;
+import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.network.client.NetEvent;
 
 public class NewPlayerEvent implements NetEvent {

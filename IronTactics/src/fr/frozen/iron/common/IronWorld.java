@@ -28,9 +28,8 @@ public class IronWorld extends GameState {
 	protected PathFinder pathFinder;
 	//hashmap ?
 
-	public IronWorld(GameContext context) {
+	public IronWorld() {
 		super(null, "world");
-		this.context = context;
 		units = new Hashtable<Integer, IronUnit>();
 		gameObjects = new ArrayList<GameObject>();
 	}
@@ -169,11 +168,10 @@ public class IronWorld extends GameState {
 				}
 			}
 			
-			
 			if (selectedUnit != null) {
 				
-				selectedUnit.renderMoveableTiles();
-				selectedUnit.renderActionTiles();
+				selectedUnit.renderMoveableTiles(context.getTurnPlayerId());
+				selectedUnit.renderActionTiles(context.getTurnPlayerId());
 				
 				int x = Mouse.getX() / IronConst.TILE_WIDTH;
 				int y = (Display.getDisplayMode().getHeight() - Mouse.getY()) / IronConst.TILE_HEIGHT;
@@ -189,7 +187,7 @@ public class IronWorld extends GameState {
 				}
 			}
 			
-			map.renderUnitsTileGfx(deltaTime);
+			map.renderUnitsTileGfx(deltaTime, context.getTurnPlayerId());
 			getMap().renderGrid();
 			map.renderUnitsAndObjects(deltaTime);
 			//map.renderUnits(deltaTime);

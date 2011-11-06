@@ -151,6 +151,10 @@ public class IronUtil {
 		Logger.getLogger(IronUtil.class).info("saved "+option+value+" in file "+filePath);
 	}
 	
+	public static String getRaceStr(int race) {
+		return getRaceStr(Protocol.get(race));
+	}
+	
 	public static String getRaceStr(Protocol race) {
 		switch(race) {
 		case ORC_RACE :

@@ -26,6 +26,7 @@ import fr.frozen.iron.client.messageEvents.RaceChoiceEvent;
 import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
 import fr.frozen.iron.common.IronMap;
+import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.PlayerGameInfo;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.equipment.EquipmentManager;

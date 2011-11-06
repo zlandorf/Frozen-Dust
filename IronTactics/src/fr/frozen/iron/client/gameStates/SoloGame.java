@@ -17,23 +17,22 @@ public class SoloGame extends AbstractGame {
 		&& unit.getOwnerId() == getClientId();
 	}
 
-	@Override
 	public int getClientId() {
 		return turnPlayerId;
 	}
 
 	@Override
-	protected String getNextTurnNotificationText(int id) {
+	protected String getNextTurnNotificationText(int nextTurnPlayerId) {
 		return "It's "+ playersById.get(turnPlayerId).getName()+"'s turn";
 	}
 	
 	@Override
-	protected String getNextTurnText(int id) {
+	protected String getNextTurnText(int nextTurnPlayerId) {
 		return playersById.get(turnPlayerId).getName()+"'s";
 	}
 
 	@Override
-	protected String getWinnerText(int id) {
+	protected String getWinnerText(int winnerId) {
 		if (winnerId < 0) {
 			return null;
 		}

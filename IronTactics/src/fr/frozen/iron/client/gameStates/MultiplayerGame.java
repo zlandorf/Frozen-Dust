@@ -10,7 +10,6 @@ import org.apache.log4j.Logger;
 
 import fr.frozen.game.IGameEngine;
 import fr.frozen.iron.client.IronClient;
-import fr.frozen.iron.client.IronPlayer;
 import fr.frozen.iron.client.IronTactics;
 import fr.frozen.iron.client.components.ActionEvent;
 import fr.frozen.iron.client.components.ActionListener;
@@ -28,6 +27,7 @@ import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
 import fr.frozen.iron.client.messageEvents.PlayerLogoutEvent;
 import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
+import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.common.skills.SkillInfo;
@@ -83,7 +83,6 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 		netClient.sendEmptyMessage(Protocol.GAME_END_TURN_REQUEST);
 	}
 
-	@Override
 	public int getClientId() {
 		return netClient.getClientId();
 	}
@@ -334,7 +333,7 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 
 	@Override
 	protected String getNextTurnNotificationText(int id) {
-		if (turnPlayerId == netClient.getClientId()) {
+		if (id == netClient.getClientId()) {
 			return "It's your turn";
 		}
 		return "It's your opponent's turn";
@@ -342,7 +341,7 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 
 	@Override
 	protected String getNextTurnText(int id) {
-		if (turnPlayerId == netClient.getClientId()) {
+		if (id == netClient.getClientId()) {
 			return "Your's";
 		}
 		return "Opponent's";
@@ -350,7 +349,7 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 
 	@Override
 	protected String getWinnerText(int id) {
-		if (winnerId == netClient.getClientId()) {
+		if (id == netClient.getClientId()) {
 			return "Victory !";
 		}
 		return "You Lose !";
