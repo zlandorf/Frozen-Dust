@@ -34,9 +34,9 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	protected IDGiver IdGiver; 
 	protected MessageWriter msgWriter;
 	
-	protected List<IGameController> gameSessions;
-	protected List<IGameController> gameSessionsToAdd;
-	protected List<IGameController> gameSessionsToRemove;
+	protected List<IServerSession> gameSessions;
+	protected List<IServerSession> gameSessionsToAdd;
+	protected List<IServerSession> gameSessionsToRemove;
 	
 	protected Logger logger = Logger.getLogger(getClass());
 	
@@ -50,9 +50,9 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		clientsById = new HashMap<Integer, Client>();
 		IdGiver = new IDGiver();
 		
-		gameSessions = new ArrayList<IGameController>();
-		gameSessionsToAdd = new ArrayList<IGameController>();
-		gameSessionsToRemove = new ArrayList<IGameController>();
+		gameSessions = new ArrayList<IServerSession>();
+		gameSessionsToAdd = new ArrayList<IServerSession>();
+		gameSessionsToRemove = new ArrayList<IServerSession>();
 	}
 	
 	public void init() {
@@ -68,22 +68,22 @@ public class BaseServer extends Thread implements IMessageProcessor {
 		//TODO make method abstract
 	}
 	
-	public synchronized void addGameSession(IGameController session) {
+	public synchronized void addGameSession(IServerSession session) {
 		gameSessionsToAdd.add(session);
 	}
 	
-	public synchronized void removeGameSession(IGameController session) {
+	public synchronized void removeGameSession(IServerSession session) {
 		gameSessionsToRemove.add(session);
 	}
 	
 	protected synchronized void updateGameSessionsList() {
-		for (IGameController session : gameSessionsToAdd) {
+		for (IServerSession session : gameSessionsToAdd) {
 			gameSessions.add(session);
 		}
 		gameSessionsToAdd.clear();
 		
 		
-		for (IGameController session : gameSessionsToRemove) {
+		for (IServerSession session : gameSessionsToRemove) {
 			gameSessions.remove(session);
 		}
 		gameSessionsToAdd.clear();
@@ -131,7 +131,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 				selector.select(MAX_WAIT_TIME);
 				heartBeat();
 				updateGameSessionsList();
-				for (IGameController session : gameSessions) {
+				for (IServerSession session : gameSessions) {
 					session.update((float)deltaTime);
 				}
 				
@@ -201,7 +201,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	
 	public void drop(SelectionKey key) {
 		Client player = clientsByChannel.get((SocketChannel)key.channel());
-		IGameController currentGameSession = player.getCurrentGameSession();
+		IServerSession currentGameSession = player.getCurrentGameSession();
 		if (currentGameSession != null) {
 			currentGameSession.removeClient(player, "logged out");
 		}
@@ -218,7 +218,7 @@ public class BaseServer extends Thread implements IMessageProcessor {
 	}
 	
 	public void processMessage(Message msg) {
-		IGameController currentGameSession = clientsById.get(msg.getClientId()).getCurrentGameSession();
+		IServerSession currentGameSession = clientsById.get(msg.getClientId()).getCurrentGameSession();
 		if (currentGameSession == null) {
 			logger.error("player does not have any game session");
 			return;

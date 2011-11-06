@@ -4,7 +4,7 @@ import java.util.List;
 
 import fr.frozen.network.common.*;
 
-public interface IGameController {
+public interface IServerSession {
 
 	public void enQueueMessage(Message msg);
 	public List<MessageToSend> getOutgoingMessages();

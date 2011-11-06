@@ -20,7 +20,7 @@ public class IronConfig {
 	protected static String CLIENT_LOG_FILE = "client.log";
 	protected static String SERVER_LOG_FILE = "server.log";
 	
-	protected static Level CLIENT_LOG_LEVEL = Level.ALL;//Level.INFO;
+	protected static Level CLIENT_LOG_LEVEL = Level.INFO;//Level.INFO;
 	protected static Level SERVER_LOG_LEVEL = Level.ALL;
 	
 	protected static String CONSOLE_LAYOUT = "[%5p] - %m%n";

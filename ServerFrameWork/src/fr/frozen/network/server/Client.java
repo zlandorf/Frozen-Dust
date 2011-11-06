@@ -6,7 +6,7 @@ public class Client {
 	private int id;
 	private SocketChannel channel;
 	private String name;
-	private IGameController currentGameSession;
+	private IServerSession currentGameSession;
 	//score ?
 	
 	public Client(int id, SocketChannel channel, String name) {
@@ -35,11 +35,11 @@ public class Client {
 		return channel;
 	}
 	
-	public void setCurrentGameSession(IGameController session) {
+	public void setCurrentGameSession(IServerSession session) {
 		currentGameSession = session;
 	}
 	
-	public IGameController getCurrentGameSession() {
+	public IServerSession getCurrentGameSession() {
 		return currentGameSession;
 	}
 	

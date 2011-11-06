@@ -10,7 +10,7 @@ import fr.frozen.game.GameState;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.gameStates.Browser;
-import fr.frozen.iron.client.gameStates.Game;
+import fr.frozen.iron.client.gameStates.MultiplayerGame;
 import fr.frozen.iron.client.gameStates.GameCreation;
 import fr.frozen.iron.client.gameStates.Intro;
 import fr.frozen.iron.client.gameStates.Lobby;
@@ -82,7 +82,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				break;
 
 			case SESSION_GAME :
-				newGameState = "game";
+				newGameState = "multi game";
 				getGameState("lobby").setActive(false);
 				break;
 
@@ -153,7 +153,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		Lobby lobby = new Lobby(this);
 		Browser browser = new Browser(this);
 		GameCreation gameCreation = new GameCreation(this);
-		Game game = new Game(this);
+		MultiplayerGame multiGame = new MultiplayerGame(this);
 		OptionMenu optionMenu = new OptionMenu(this);
 
 		addGameState(intro);
@@ -161,14 +161,14 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		addGameState(lobby);
 		addGameState(browser);
 		addGameState(gameCreation);
-		addGameState(game);
+		addGameState(multiGame);
 		addGameState(optionMenu);
 
 		netClient.addNetEventListener(gameCreation);
 		netClient.addNetEventListener(browser);
 		netClient.addNetEventListener(lobby);
 		netClient.addNetEventListener(this);
-		netClient.addNetEventListener(game);
+		netClient.addNetEventListener(multiGame);
 
 		setCurrentGameState(menu);
 	}

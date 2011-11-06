@@ -16,7 +16,7 @@ import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.BaseServer;
 import fr.frozen.network.server.Client;
-import fr.frozen.network.server.IGameController;
+import fr.frozen.network.server.IServerSession;
 
 public class IronServer extends BaseServer {
 
@@ -31,13 +31,13 @@ public class IronServer extends BaseServer {
 		super(1234);
 	}
 	
-	public synchronized List<IGameController> getGameSessions() {
+	public synchronized List<IServerSession> getGameSessions() {
 		return gameSessions;
 	}
 	
 	public synchronized int getNbGames() {
 		int res = 0;
-		for (IGameController session : getGameSessions()) {
+		for (IServerSession session : getGameSessions()) {
 			if (session.getSessionType() == Protocol.SESSION_GAME.ordinal()) {
 				res++;
 			}
@@ -102,7 +102,7 @@ public class IronServer extends BaseServer {
 		notifySessionChange(other, newGame.getSessionType());
 	}
 	
-	public IGameController getLobbySession() {
+	public IServerSession getLobbySession() {
 		return lobby;
 	}
 	
@@ -135,7 +135,7 @@ public class IronServer extends BaseServer {
 	@Override
 	public void processMessage(Message msg) {
 		Client sender = clientsById.get(msg.getClientId());
-		IGameController currentGameSession = sender.getCurrentGameSession();
+		IServerSession currentGameSession = sender.getCurrentGameSession();
 
 		if (msg.getType() == Protocol.SERVER_C_SEND_PLAYER_NAME.getValue()) {
 			String name = new String(msg.getData());

@@ -14,9 +14,9 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
-import fr.frozen.network.server.IGameController;
+import fr.frozen.network.server.IServerSession;
 
-public class BaseGameController implements IGameController {
+public class BaseGameController implements IServerSession {
 
 	protected String sessionName;
 	protected Protocol sessionType;
@@ -52,7 +52,7 @@ public class BaseGameController implements IGameController {
 			break;
 		case SERVER_C_REQUEST_SESSION : 
 			if (Protocol.get(IronUtil.byteArrayToInt(msg.getData())) == Protocol.SESSION_LOBBY) {
-				IGameController lobby = server.getLobbySession();
+				IServerSession lobby = server.getLobbySession();
 				Client client = server.getClient(msg.getClientId());
 				
 				if (!lobby.equals(client.getCurrentGameSession())) {
