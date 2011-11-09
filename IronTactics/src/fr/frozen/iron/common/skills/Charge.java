@@ -81,7 +81,7 @@ public class Charge extends Skill {
 	}
 	
 	@Override
-	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
+	public List<int[]> computeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		List <int[]> res = new ArrayList<int[]>();
 		IronUnit dst = world.getUnitAtXY(x, y);
@@ -98,8 +98,6 @@ public class Charge extends Skill {
 		}
 		damage += damage * bonusFactor;
 		res.add(new int[]{dst.getId(), - (int)damage});
-		
-		executeCommon(world, srcId, x, y, res);
 		
 		return res;
 	}

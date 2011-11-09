@@ -103,11 +103,7 @@ public class IronClient extends BaseClient {
 		case GAME_MAP_SEND :
 			IronMap map = new IronMap();
 			map.unserialize(msg.getData());
-			for (int i = 0; i < map.getTiles().length; i++) {
-				for (int j = 0; j < map.getTiles()[i].length; j++) {
-					map.getTiles()[i][j].findSprites();
-				}
-			}
+			map.initSprites();
 			dispatchEvent(new MapRecievedEvent(map));
 			break;
 			

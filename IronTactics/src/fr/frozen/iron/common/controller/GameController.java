@@ -1,4 +1,4 @@
-package fr.frozen.iron.common;
+package fr.frozen.iron.common.controller;
 
 import java.util.ArrayList;
 import java.util.Hashtable;
@@ -7,10 +7,19 @@ import java.util.Vector;
 
 import org.apache.log4j.Logger;
 
+import fr.frozen.iron.common.GameContext;
+import fr.frozen.iron.common.GameObserver;
+import fr.frozen.iron.common.IronMap;
+import fr.frozen.iron.common.IronPlayer;
+import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.PlayerGameInfo;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.protocol.Protocol;
+import fr.frozen.iron.util.IronConfig;
 import fr.frozen.iron.util.IronConst;
+import fr.frozen.iron.util.IronUtil;
+import fr.frozen.util.XMLParser;
 import fr.frozen.util.pathfinding.Path;
 
 public class GameController implements GameContext {
@@ -36,7 +45,7 @@ public class GameController implements GameContext {
 	protected List<GameObserver> observers;
 	protected Logger logger;
 
-	// TODO TAKE CARE OF CASE WHEN SOMEONE ABANDONS !!
+	protected int nextEntityId = 0;
 
 	public GameController(IronWorld world, IronPlayer player1, int race1,
 			IronPlayer player2, int race2) {
@@ -62,12 +71,20 @@ public class GameController implements GameContext {
 				otherColor));
 	}
 
+	public IronWorld getWorld() {
+		return world;
+	}
+
 	public boolean isGameStarted() {
 		return gameStarted;
 	}
 
 	public boolean isGameOver() {
 		return gameOver;
+	}
+
+	public int getWinnerId() {
+		return winnerId;
 	}
 
 	@Override
@@ -112,7 +129,7 @@ public class GameController implements GameContext {
 
 	public void onGameOver(IronPlayer winner, IronPlayer loser) {
 		winnerId = winner.getId();
-		
+
 		int nbWinnerUnits = 0;
 		int nbLoserUnits = 0;
 
@@ -161,8 +178,8 @@ public class GameController implements GameContext {
 		if (!isGameOver()) {
 			int winnerIndex = playerId == turnPlayerId ? 1 ^ turnIndex
 					: turnIndex;
-			
-			logger.info(playersById.get(playerId)+" abandonned the game");
+
+			logger.info(playersById.get(playerId) + " abandonned the game");
 			onGameOver(players.get(winnerIndex), players.get(1 ^ winnerIndex));
 		}
 	}
@@ -170,16 +187,16 @@ public class GameController implements GameContext {
 	public void startGame() {
 		turnIndex = (int) (System.currentTimeMillis() % 2);
 		IronPlayer player = players.get(turnIndex);
-
 		setTurn(player.getId());
-		gameStarted = true;
 
+		gameStarted = true;
 		notifyStartGame(player.getId());
+
 	}
 
 	public void handleMove(int unitSrcId, int x, int y) {
 		IronUnit unit = world.getUnitFromId(unitSrcId);
-		if (unit == null || unit.isDead())
+		if (unit == null || unit.hasPlayed() || unit.isDead())
 			return;
 		Path path = world.getPath(unitSrcId, x, y);
 		if (path != null) {
@@ -190,7 +207,9 @@ public class GameController implements GameContext {
 
 	public void handleSkill(int unitSrcId, Skill skill, int x, int y) {
 		IronUnit unitSrc = world.getUnitFromId(unitSrcId);
-		if (skill != null && unitSrc.getSkills().contains(skill)) {
+		if (unitSrc != null && !unitSrc.hasPlayed() && skill != null
+				&& unitSrc.getSkills().contains(skill)) {
+			
 			List<int[]> res = skill.executeSkill(world, unitSrcId, x, y);
 
 			if (res != null) {
@@ -236,16 +255,81 @@ public class GameController implements GameContext {
 		}
 	}
 
-	private void notifySkill(IronUnit unit, Skill skill, int x, int y,
+	protected void notifySkill(IronUnit unit, Skill skill, int x, int y,
 			List<int[]> res) {
 		for (GameObserver observer : observers) {
 			observer.onSkill(unit, skill, x, y, res);
 		}
 	}
 
-	private void notifyMove(IronUnit unit, int x, int y, Path path) {
+	protected void notifyMove(IronUnit unit, int x, int y, Path path) {
 		for (GameObserver observer : observers) {
 			observer.onMove(unit, x, y, path);
 		}
+	}
+
+	protected List<IronUnit> createGameUnitsList() {
+		List<IronUnit> list = new ArrayList<IronUnit>();
+		IronUnit unit = null;
+		XMLParser parser = IronConfig.getIronXMLParser();
+		int nblines = 2;
+
+		String[] line = new String[nblines];
+
+		int nb = 0;// 0 is when its top player, and 1 bottom player
+		int[] x = new int[nblines];
+		int[] y = new int[nblines];
+
+		main: for (IronPlayer player : players) {
+
+			String race = null;
+			if (playerInfo.get(player) == null) {
+				logger.error("player info not found");
+				continue; // TODO error to handle here
+			}
+			race = IronUtil.getRaceStr(playerInfo.get(player).getRace());
+
+			if (race == null) {
+				logger.error("race not found");
+				continue; // TODO error to handle here
+			}
+
+			for (int i = 0; i < nblines; i++) {
+				line[i] = parser.getAttributeValue("deployement/" + race,
+						"line" + (i + 1));
+				if (line[i] == null) {
+					logger
+							.error("probs at parsing deployement line "
+									+ (i + 1));
+					continue main;
+				}
+			}
+
+			for (int i = 0; i < nblines; i++) {
+				x[i] = IronConst.MAP_WIDTH / 2 - line[i].length() / 2;
+				y[i] = nb == 0 ? i : IronConst.MAP_HEIGHT - (1 + i);
+			}
+
+			for (int i = 0; i < nblines; i++) {
+				for (int j = 0; j < line[i].length(); j++) {
+					unit = IronUnit.getUnit(line[i].charAt(j), world,
+							nextEntityId, player.getId(), x[i], y[i]);
+					x[i]++;
+					if (unit != null) {
+						list.add(unit);
+						nextEntityId++;
+						unit = null;
+					}
+				}
+			}
+			nb++;
+		}
+		return list;
+	}
+
+	public void init() {
+		world.setMap(new IronMap());
+		world.getMap().generateMap();
+		world.setUnits(createGameUnitsList());
 	}
 }

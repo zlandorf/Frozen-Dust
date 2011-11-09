@@ -1,9 +1,10 @@
-package fr.frozen.iron.client.gameStates;
+package fr.frozen.iron.client.gameStates.game;
 
 import java.io.ByteArrayInputStream;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.util.ArrayList;
+import java.util.Hashtable;
 import java.util.List;
 
 import org.apache.log4j.Logger;
@@ -27,7 +28,9 @@ import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
 import fr.frozen.iron.client.messageEvents.PlayerLogoutEvent;
 import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
+import fr.frozen.iron.common.GameContext;
 import fr.frozen.iron.common.IronPlayer;
+import fr.frozen.iron.common.PlayerGameInfo;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.common.skills.SkillInfo;
@@ -37,8 +40,9 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
 
-public class MultiplayerGame extends AbstractGame implements NetEventListener {
-
+public class MultiplayerGame extends AbstractGame implements GameContext, NetEventListener {
+	
+	protected Hashtable<Integer, PlayerGameInfo> playerInfo = null;
 	protected IronClient netClient;
 	protected TextField textField;
 	protected ChatWindow chatWindow;
@@ -54,8 +58,9 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 	}
 
 	public MultiplayerGame(IGameEngine ge) {
-		super(ge, "multi game");
+		super(ge, "multiGame");
 		netClient = ((IronTactics) gameEngine).getNetClient();
+		world.setContext(this);
 	}
 
 	@Override
@@ -71,9 +76,12 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 	}
 
 	@Override
-	protected void reInit() {
-		super.reInit();
-
+	protected void cleanUp() {
+		super.cleanUp();
+		if (playerInfo != null) {
+			playerInfo.clear();
+		}
+		
 		chatWindow.clearMessages();
 		forestSound.stop();
 	}
@@ -191,7 +199,7 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 			gameOver = true;
 		}
 	}
-
+	
 	public void setTurn(int playerId) {
 		popup.setVisible(false);
 		if (turnPlayerId != -1) {
@@ -274,10 +282,10 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 	}
 
 	@Override
-	protected void requestMove(int x, int y) {
+	protected void requestMove(IronUnit unit, int x, int y) {
 		byte[] data = new byte[16];
 
-		System.arraycopy(IronUtil.intToByteArray(selectedUnit.getId()), 0,
+		System.arraycopy(IronUtil.intToByteArray(unit.getId()), 0,
 				data, 0, 4);
 		System.arraycopy(IronUtil.intToByteArray(IronUnit.ACTION_MOVE), 0,
 				data, 4, 4);
@@ -353,5 +361,16 @@ public class MultiplayerGame extends AbstractGame implements NetEventListener {
 			return "Victory !";
 		}
 		return "You Lose !";
+	}
+	
+
+	@Override
+	public PlayerGameInfo getPlayerInfo(int clientId) {
+		return playerInfo.get(clientId);
+	}
+
+	@Override
+	public int getTurnPlayerId() {
+		return turnPlayerId;
 	}
 }

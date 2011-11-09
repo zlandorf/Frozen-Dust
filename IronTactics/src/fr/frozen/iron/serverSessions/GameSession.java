@@ -5,36 +5,26 @@ import java.io.DataInput;
 import java.io.DataInputStream;
 import java.io.IOException;
 import java.nio.channels.SocketChannel;
-import java.util.ArrayList;
-import java.util.Hashtable;
 import java.util.List;
 
-import fr.frozen.iron.common.GameController;
 import fr.frozen.iron.common.GameObserver;
-import fr.frozen.iron.common.IronMap;
 import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.controller.GameController;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.net.IronServer;
 import fr.frozen.iron.protocol.Protocol;
-import fr.frozen.iron.util.IronConfig;
-import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
-import fr.frozen.util.XMLParser;
 import fr.frozen.util.pathfinding.Path;
 
 public class GameSession extends BaseGameController implements GameObserver {
 
-	protected Hashtable<Client, Integer> playerRaces;
-
 	protected IronWorld world;
 	protected GameController controller;
-
-	protected int nextEntityId = 0;
 
 	protected int lastReadyId = -1;
 	protected int nbReady = 0;
@@ -48,19 +38,12 @@ public class GameSession extends BaseGameController implements GameObserver {
 		logger.info("[New game] " + host + "(" + Protocol.get(hostRace)
 				+ ") vs " + other + "(" + Protocol.get(otherRace) + ")");
 
-		playerRaces = new Hashtable<Client, Integer>();
-		playerRaces.put(host, hostRace);
-		playerRaces.put(other, otherRace);
-
 		world = new IronWorld();
 		controller = new GameController(world, new IronPlayer(host.getId(),
 				host.getName()), hostRace, new IronPlayer(other.getId(), other
 				.getName()), otherRace);
 
-		world.setMap(new IronMap());
-		world.getMap().generateMap();
-		world.setUnits(createGameUnitsList());
-
+		controller.init();
 		controller.addGameObserver(this);
 	}
 
@@ -72,6 +55,7 @@ public class GameSession extends BaseGameController implements GameObserver {
 		if (clients.size() == 0) {
 			server.removeGameSession(this);
 			//avoid having leaks ?
+			controller.removeGameObserver(this);
 			controller = null;
 			world.setContext(null);
 			world = null;
@@ -99,63 +83,6 @@ public class GameSession extends BaseGameController implements GameObserver {
 		if (controller != null) {
 			controller.update(deltaTime);
 		}
-	}
-
-	protected List<IronUnit> createGameUnitsList() {
-		List<IronUnit> list = new ArrayList<IronUnit>();
-		IronUnit unit = null;
-		XMLParser parser = IronConfig.getIronXMLParser();
-		int nblines = 2;
-
-		String[] line = new String[nblines];
-
-		int nb = 0;// 0 is when its top player, and 1 bottom player
-		int[] x = new int[nblines];
-		int[] y = new int[nblines];
-
-		main: for (Client client : clients) {
-
-			String race = null;
-			if (playerRaces.get(client) == null)
-				continue; // TODO error to handle here
-			race = IronUtil.getRaceStr(playerRaces.get(client));
-
-			if (race == null) {
-				logger.error("race not found");
-				continue; // TODO error to handle here
-			}
-
-			for (int i = 0; i < nblines; i++) {
-				line[i] = parser.getAttributeValue("deployement/" + race,
-						"line" + (i + 1));
-				if (line[i] == null) {
-					logger
-							.error("probs at parsing deployement line "
-									+ (i + 1));
-					continue main;
-				}
-			}
-
-			for (int i = 0; i < nblines; i++) {
-				x[i] = IronConst.MAP_WIDTH / 2 - line[i].length() / 2;
-				y[i] = nb == 0 ? i : IronConst.MAP_HEIGHT - (1 + i);
-			}
-
-			for (int i = 0; i < nblines; i++) {
-				for (int j = 0; j < line[i].length(); j++) {
-					unit = IronUnit.getUnit(line[i].charAt(j), world,
-							nextEntityId, client.getId(), x[i], y[i]);
-					x[i]++;
-					if (unit != null) {
-						list.add(unit);
-						nextEntityId++;
-						unit = null;
-					}
-				}
-			}
-			nb++;
-		}
-		return list;
 	}
 
 	@Override

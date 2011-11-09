@@ -53,7 +53,7 @@ public class MeleeAttack extends Skill {
 	}
 	
 	@Override
-	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
+	public List<int[]> computeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		List <int[]> res = new ArrayList<int[]>();
 		IronUnit dst = world.getUnitAtXY(x, y);
@@ -63,8 +63,6 @@ public class MeleeAttack extends Skill {
 		
 		int damage = IronUtil.getDamage(src, dst, true);
 		res.add(new int[]{dst.getId(), - damage});
-		
-		executeCommon(world, srcId, x, y, res);
 		
 		return res;
 	}

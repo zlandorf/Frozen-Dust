@@ -24,13 +24,21 @@ public class MainMenu extends GameState {
 		gui = new GUI();
 
 		Button multiplayer = new IronMenuButton("Multiplayer", 270);
-		Button quit = new IronMenuButton("Quit", 410);
+		Button quit = new IronMenuButton("Quit", 480);
 		Button option = new IronMenuButton("Options", 340);
+		Button solo = new IronMenuButton("Solo", 410);
 		
 		multiplayer.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
 				((IronTactics)ge).connect();
+			}
+		});
+
+		solo.addActionListener(new ActionListener() {
+			@Override
+			public void actionPerformed(ActionEvent e) {
+				((IronTactics)ge).switchToState("soloGame");
 			}
 		});
 		
@@ -52,6 +60,7 @@ public class MainMenu extends GameState {
 		gui.addComponent(multiplayer);
 		//gui.addComponent(quit);
 		gui.addComponent(option);
+		gui.addComponent(solo);
 		
 		backTex = SpriteManager.getInstance().getSprite("backTex");
 	}

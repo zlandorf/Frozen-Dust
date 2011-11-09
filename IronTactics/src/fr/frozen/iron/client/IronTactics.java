@@ -10,12 +10,13 @@ import fr.frozen.game.GameState;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.gameStates.Browser;
-import fr.frozen.iron.client.gameStates.MultiplayerGame;
 import fr.frozen.iron.client.gameStates.GameCreation;
 import fr.frozen.iron.client.gameStates.Intro;
 import fr.frozen.iron.client.gameStates.Lobby;
 import fr.frozen.iron.client.gameStates.MainMenu;
 import fr.frozen.iron.client.gameStates.OptionMenu;
+import fr.frozen.iron.client.gameStates.game.MultiplayerGame;
+import fr.frozen.iron.client.gameStates.game.SoloGame;
 import fr.frozen.iron.client.messageEvents.NewSessionEvent;
 import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.protocol.Protocol;
@@ -82,7 +83,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				break;
 
 			case SESSION_GAME :
-				newGameState = "multi game";
+				newGameState = "multiGame";
 				getGameState("lobby").setActive(false);
 				break;
 
@@ -98,7 +99,10 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	}
 
 	public void switchToState(GameState gameState) {
-		if (gameState == null) return;
+		if (gameState == null) {
+			Logger.getLogger(getClass().getName()).error("Game state not found");
+			return;
+		}
 
 		gameState.setActive(true);
 		gameState.setVisible(true);
@@ -149,12 +153,17 @@ public class IronTactics extends GameEngine implements NetEventListener {
 
 	protected void buildInitialGameStates() {
 		Intro intro = new Intro(this);
+		
 		MainMenu menu = new MainMenu(this);
+		OptionMenu optionMenu = new OptionMenu(this);
+
 		Lobby lobby = new Lobby(this);
 		Browser browser = new Browser(this);
+		
 		GameCreation gameCreation = new GameCreation(this);
+
+		SoloGame soloGame = new SoloGame(this); 
 		MultiplayerGame multiGame = new MultiplayerGame(this);
-		OptionMenu optionMenu = new OptionMenu(this);
 
 		addGameState(intro);
 		addGameState(menu);
@@ -162,6 +171,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		addGameState(browser);
 		addGameState(gameCreation);
 		addGameState(multiGame);
+		addGameState(soloGame);
 		addGameState(optionMenu);
 
 		netClient.addNetEventListener(gameCreation);

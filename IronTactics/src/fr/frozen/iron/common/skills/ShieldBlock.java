@@ -34,9 +34,8 @@ public class ShieldBlock extends Skill {
 	}
 
 	@Override
-	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
+	public List<int[]> computeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
-		executeCommon(world, srcId, x, y, null);
 		List<int[]> res = new ArrayList<int[]>();
 		res.add(new int[]{-2,0});
 		return res;

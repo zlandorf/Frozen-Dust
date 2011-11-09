@@ -24,7 +24,6 @@ public class PopupList extends Component {
 	protected ISprite top;
 	protected ISprite left;
 	
-	protected IronWorld world;
 	protected int unitId = -1;
 
 	protected int itemHovered = -1;
@@ -38,9 +37,8 @@ public class PopupList extends Component {
 	
 	List<SkillInfo> skills;
 	
-	public PopupList(IronWorld world, int x, int y) {
+	public PopupList(int x, int y) {
 		super(x, y, 0, 0);
-		this.world = world;
 		visible = false;
 		tex = SpriteManager.getInstance().getSprite("popupTex");
 		corner = SpriteManager.getInstance().getSprite("popup_corner");
@@ -54,13 +52,18 @@ public class PopupList extends Component {
 		return skills.get(itemSelected);
 	}
 	
+	public void setWorld() {
+		
+	}
+	
 	@Override
 	public boolean contains(int x, int y) {
 		if (!visible) return false;
 		else return super.contains(x, y);
 	}
 	
-	public void setUnit(IronUnit unit, int x, int y) {
+	public void setUnit(IronWorld world, IronUnit unit, int x, int y) {
+		System.out.println("set unit "+unit);
 		skills.clear();
 		int skillx = x / IronConst.TILE_WIDTH;
 		int skilly = y / IronConst.TILE_HEIGHT;

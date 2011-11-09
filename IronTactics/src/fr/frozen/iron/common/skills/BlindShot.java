@@ -64,7 +64,7 @@ public class BlindShot extends Skill {
 	}
 
 	@Override
-	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
+	public List<int[]> computeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		IronUnit src = world.getUnitFromId(srcId);
 		if (src == null || src.getRangedWeapon() == null) return null;
@@ -92,7 +92,6 @@ public class BlindShot extends Skill {
 			res.add(new int[]{-2, pos});
 			Logger.getLogger(getClass()).info(src+" uses "+getSkillName()+" and misses");
 		}
-		executeCommon(world, srcId, x, y, res);
 		return res;
 	}
 

@@ -368,4 +368,12 @@ public class IronMap implements TileBasedMap {
 	public boolean isBlocked(int x, int y) {
 		return getTile(x, y).isOccupied();
 	}
+
+	public void initSprites() {
+		for (int i = 0; i < getTiles().length; i++) {
+			for (int j = 0; j < getTiles()[i].length; j++) {
+				getTiles()[i][j].findSprites();
+			}
+		}
+	}
 }

@@ -80,7 +80,7 @@ public class RangedAttack extends Skill {
 	
 
 	@Override
-	public List<int[]> executeSkill(IronWorld world, int srcId, int x, int y) {
+	public List<int[]> computeSkill(IronWorld world, int srcId, int x, int y) {
 		if (!canDo(world, srcId, x, y)) return null;
 		IronUnit dst = world.getUnitAtXY(x, y);
 		IronUnit src = world.getUnitFromId(srcId);
@@ -93,7 +93,6 @@ public class RangedAttack extends Skill {
 		if (!dst.isDead())
 			res.add(new int[]{dst.getId(), - (int)damage});
 		
-		executeCommon(world, srcId, x, y, res);
 		return res;
 	}
 
