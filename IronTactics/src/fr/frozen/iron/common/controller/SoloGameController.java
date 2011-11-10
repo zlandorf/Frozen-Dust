@@ -7,7 +7,7 @@ import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 
-public class SoloGameController extends GameController {
+public class SoloGameController extends AbstractGameController {
 
 	public SoloGameController(IronWorld world, IronPlayer player1, int race1,
 			IronPlayer player2, int race2) {
@@ -27,5 +27,10 @@ public class SoloGameController extends GameController {
 				notifySkill(unitSrc, skill, x, y, res);
 			}
 		}
+	}
+
+	@Override
+	protected boolean isAddParticles() {
+		return true;
 	}
 }

@@ -63,7 +63,6 @@ public class PopupList extends Component {
 	}
 	
 	public void setUnit(IronWorld world, IronUnit unit, int x, int y) {
-		System.out.println("set unit "+unit);
 		skills.clear();
 		int skillx = x / IronConst.TILE_WIDTH;
 		int skilly = y / IronConst.TILE_HEIGHT;

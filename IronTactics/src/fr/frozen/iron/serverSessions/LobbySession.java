@@ -9,7 +9,7 @@ import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
 
-public class LobbySession extends BaseGameController {
+public class LobbySession extends BaseServerSession {
 
 	public LobbySession(IronServer server) {
 		super("Lobby", server, Protocol.SESSION_LOBBY);

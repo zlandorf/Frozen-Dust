@@ -1,8 +1,5 @@
 package fr.frozen.iron.client.gameStates.game;
 
-import java.io.ByteArrayInputStream;
-import java.io.DataInputStream;
-import java.io.IOException;
 import java.util.ArrayList;
 import java.util.Hashtable;
 import java.util.List;
@@ -18,38 +15,35 @@ import fr.frozen.iron.client.components.ChatWindow;
 import fr.frozen.iron.client.components.ChatWindowMessage;
 import fr.frozen.iron.client.components.TextField;
 import fr.frozen.iron.client.messageEvents.ChatMessageEvent;
-import fr.frozen.iron.client.messageEvents.GameActionEvent;
 import fr.frozen.iron.client.messageEvents.GameInfoReceivedEvent;
-import fr.frozen.iron.client.messageEvents.GameOverEvent;
-import fr.frozen.iron.client.messageEvents.GameTurnEvent;
 import fr.frozen.iron.client.messageEvents.MapRecievedEvent;
 import fr.frozen.iron.client.messageEvents.NameChangeEvent;
 import fr.frozen.iron.client.messageEvents.PlayerListReceivedEvent;
 import fr.frozen.iron.client.messageEvents.PlayerLogoutEvent;
-import fr.frozen.iron.client.messageEvents.UndoMoveEvent;
 import fr.frozen.iron.client.messageEvents.UnitsListReceivedEvent;
-import fr.frozen.iron.common.GameContext;
 import fr.frozen.iron.common.IronPlayer;
-import fr.frozen.iron.common.PlayerGameInfo;
+import fr.frozen.iron.common.IronWorld;
+import fr.frozen.iron.common.controller.ClientGameController;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
-import fr.frozen.iron.common.skills.SkillInfo;
 import fr.frozen.iron.protocol.Protocol;
-import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
 
-public class MultiplayerGame extends AbstractGame implements GameContext, NetEventListener {
+public class MultiplayerGame extends AbstractGame implements NetEventListener {
 	
-	protected Hashtable<Integer, PlayerGameInfo> playerInfo = null;
 	protected IronClient netClient;
 	protected TextField textField;
 	protected ChatWindow chatWindow;
 
+	protected Hashtable<Integer, IronPlayer> playersById;
+	protected List<IronPlayer> players;
+	
 	@Override
 	protected void createGui() {
 		super.createGui();
+		
 		textField = new TextField(5, 575, 500, 20);
 		chatWindow = new ChatWindow(5, 500, 500, 70);
 		textField.addActionListener(new TextFieldListener());
@@ -60,7 +54,8 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 	public MultiplayerGame(IGameEngine ge) {
 		super(ge, "multiGame");
 		netClient = ((IronTactics) gameEngine).getNetClient();
-		world.setContext(this);
+		playersById = new Hashtable<Integer, IronPlayer>();
+		players = new ArrayList<IronPlayer>();
 	}
 
 	@Override
@@ -77,13 +72,12 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 
 	@Override
 	protected void cleanUp() {
+		netClient.removeNetEventListener((ClientGameController)controller);
+		controller.removeGameObserver(this);
 		super.cleanUp();
-		if (playerInfo != null) {
-			playerInfo.clear();
-		}
-		
+		players.clear();
+		playersById.clear();
 		chatWindow.clearMessages();
-		forestSound.stop();
 	}
 
 	@Override
@@ -95,6 +89,18 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 		return netClient.getClientId();
 	}
 
+	@Override
+	protected void initGame() {
+		world = new IronWorld();
+		controller = new ClientGameController(world, netClient);
+		controller.addGameObserver(this);
+	}
+	
+	@Override
+	public void onSkill(IronUnit unit, Skill skill, int x, int y,
+			List<int[]> res) {
+	}
+	
 	@Override
 	public synchronized void onNetEvent(NetEvent ne) {
 		// order : playerList -> playerList Info -> game map -> game units list
@@ -120,12 +126,16 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 				players.add(player);
 				playersById.put(player.getId(), player);
 			}
+			
+			controller.setPlayersList(players);
+			controller.setPlayersMap(playersById);
+			
 			netClient.sendEmptyMessage(Protocol.GAME_PLAYER_INFO_REQUEST);
 		}
 
 		if (ne instanceof GameInfoReceivedEvent) {
 			GameInfoReceivedEvent gire = (GameInfoReceivedEvent) ne;
-			playerInfo = gire.getInfo();
+			controller.setInfoMap(gire.getInfo());
 			netClient.sendEmptyMessage(Protocol.GAME_MAP_REQUEST);
 		}
 
@@ -144,33 +154,7 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 			netClient.sendEmptyMessage(Protocol.GAME_READY);
 		}
 
-		if (ne instanceof GameTurnEvent) {
-			GameTurnEvent gte = (GameTurnEvent) ne;
-
-			setTurn(gte.getPlayerId());
-
-			if (!worldReady) {
-				worldReady = true;
-				forestSound.playAsMusic(true);
-			}
-		}
-		/* in game actions */
-
-		if (ne instanceof GameActionEvent) {
-			try {
-				handleGameAction((GameActionEvent) ne);
-			} catch (IOException e) {
-				e.printStackTrace();
-			}
-		}
-
-		if (ne instanceof UndoMoveEvent) {
-			IronUnit unit = world.getUnitFromId(((UndoMoveEvent) ne)
-					.getUnitId());
-			if (unit != null) {
-				unit.undoMove();
-			}
-		}
+		
 
 		if (ne instanceof PlayerLogoutEvent) {
 			PlayerLogoutEvent ploe = (PlayerLogoutEvent) ne;
@@ -192,83 +176,6 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 							+ " changed name to " + nce.getName()));
 			player.setName(nce.getName());
 		}
-
-		if (ne instanceof GameOverEvent) {
-			GameOverEvent goe = (GameOverEvent) ne;
-			winnerId = goe.getWinnerId();
-			gameOver = true;
-		}
-	}
-	
-	public void setTurn(int playerId) {
-		popup.setVisible(false);
-		if (turnPlayerId != -1) {
-			playerInfo.get(turnPlayerId).setTurnToPlay(false);
-			world.endTurn(turnPlayerId);
-		}
-
-		playerInfo.get(playerId).setTurnToPlay(true);
-		world.initTurn(playerId, true);
-
-		turnPlayerId = playerId;
-
-		timeLeftForTurn = IronConst.TURN_DURATION;
-
-		if (selectedUnit != null) {
-			selectedUnit.setSelected(false);
-		}
-		selectedUnit = null;
-		lastUnitMoved = null;
-
-		notifyNewTurnTimeLeft = notifyNewTurnDuration;
-	}
-
-	protected void handleGameAction(GameActionEvent gae) throws IOException {
-		IronUnit unitSrc = world.getUnitFromId(gae.getUnitId());
-		DataInputStream is = new DataInputStream(new ByteArrayInputStream(gae
-				.getData()));
-
-		int x, y;
-
-		switch (gae.getType()) {
-		case IronUnit.ACTION_MOVE:
-			x = is.readInt();
-			y = is.readInt();
-			int moveCost = is.readInt();
-			unitSrc.move(x, y, moveCost);
-			if (unitSrc.hasPlayed()) {
-				unitSrc.setSelected(false);
-				selectedUnit = null;
-			}
-			if (unitSrc.getOwnerId() == netClient.getClientId()) {
-				lastUnitMoved = unitSrc;
-			}
-			break;
-		case IronUnit.ACTION_SKILL:
-			Skill skill = Skill.getSkill(is.readInt());
-			x = is.readInt();
-			y = is.readInt();
-
-			List<int[]> values = new ArrayList<int[]>();
-			while (true) {
-				int dstId = is.readInt();
-				if (dstId == -1)
-					break;
-				int value = is.readInt();
-
-				values.add(new int[] { dstId, value });
-			}
-			skill.executeClientSide(world, unitSrc.getId(), x, y, values);
-
-			if (unitSrc.hasPlayed()) {
-				unitSrc.setSelected(false);
-				selectedUnit = null;
-			}
-			break;
-		default:
-			Logger.getLogger(getClass()).error(
-					"Action not recognised " + gae.getType());
-		}
 	}
 
 	@Override
@@ -279,52 +186,6 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 			// launching a new game, we need to start over again
 			netClient.sendEmptyMessage(Protocol.SESSION_PLAYER_LIST_REQUEST);
 		}
-	}
-
-	@Override
-	protected void requestMove(IronUnit unit, int x, int y) {
-		byte[] data = new byte[16];
-
-		System.arraycopy(IronUtil.intToByteArray(unit.getId()), 0,
-				data, 0, 4);
-		System.arraycopy(IronUtil.intToByteArray(IronUnit.ACTION_MOVE), 0,
-				data, 4, 4);
-		System.arraycopy(IronUtil.intToByteArray(x), 0, data, 8, 4);
-		System.arraycopy(IronUtil.intToByteArray(y), 0, data, 12, 4);
-
-		netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
-	}
-
-	@Override
-	protected void requestUndo() {
-		if (lastUnitMoved == null) {
-			return;
-		}
-
-		byte[] data = new byte[4];
-		System.arraycopy(IronUtil.intToByteArray(lastUnitMoved.getId()), 0,
-				data, 0, 4);
-
-		netClient.sendMessage(Protocol.GAME_UNDO_REQUEST, data);
-	}
-
-	@Override
-	protected void requestSkill(SkillInfo info) {
-		int unitId = info.getUnitId();
-		int x = info.getX();
-		int y = info.getY();
-		int skillType = info.getSkill().getSkillType();
-
-		byte[] data = new byte[20];
-
-		System.arraycopy(IronUtil.intToByteArray(unitId), 0, data, 0, 4);
-		System.arraycopy(IronUtil.intToByteArray(IronUnit.ACTION_SKILL), 0,
-				data, 4, 4);
-		System.arraycopy(IronUtil.intToByteArray(skillType), 0, data, 8, 4);
-		System.arraycopy(IronUtil.intToByteArray(x), 0, data, 12, 4);
-		System.arraycopy(IronUtil.intToByteArray(y), 0, data, 16, 4);
-
-		netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
 	}
 
 	class TextFieldListener implements ActionListener {
@@ -361,16 +222,5 @@ public class MultiplayerGame extends AbstractGame implements GameContext, NetEve
 			return "Victory !";
 		}
 		return "You Lose !";
-	}
-	
-
-	@Override
-	public PlayerGameInfo getPlayerInfo(int clientId) {
-		return playerInfo.get(clientId);
-	}
-
-	@Override
-	public int getTurnPlayerId() {
-		return turnPlayerId;
 	}
 }

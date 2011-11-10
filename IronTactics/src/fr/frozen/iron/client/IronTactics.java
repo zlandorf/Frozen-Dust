@@ -140,7 +140,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
 		//this is because there is a bug where music plays even when music is off
 		//so i do this to fix that
-		IronConfig.setVolume(IronConfig.getVolume());
+		//IronConfig.setVolume(IronConfig.getVolume());
 		@SuppressWarnings("unused")
 		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
 		drawLoadingText("Loading fonts ...");

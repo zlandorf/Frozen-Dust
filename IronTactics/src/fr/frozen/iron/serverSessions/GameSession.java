@@ -10,7 +10,8 @@ import java.util.List;
 import fr.frozen.iron.common.GameObserver;
 import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.IronWorld;
-import fr.frozen.iron.common.controller.GameController;
+import fr.frozen.iron.common.controller.AbstractGameController;
+import fr.frozen.iron.common.controller.ServerGameController;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.skills.Skill;
 import fr.frozen.iron.net.IronServer;
@@ -21,10 +22,10 @@ import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
 import fr.frozen.util.pathfinding.Path;
 
-public class GameSession extends BaseGameController implements GameObserver {
+public class GameSession extends BaseServerSession implements GameObserver {
 
 	protected IronWorld world;
-	protected GameController controller;
+	protected AbstractGameController controller;
 
 	protected int lastReadyId = -1;
 	protected int nbReady = 0;
@@ -39,7 +40,7 @@ public class GameSession extends BaseGameController implements GameObserver {
 				+ ") vs " + other + "(" + Protocol.get(otherRace) + ")");
 
 		world = new IronWorld();
-		controller = new GameController(world, new IronPlayer(host.getId(),
+		controller = new ServerGameController(world, new IronPlayer(host.getId(),
 				host.getName()), hostRace, new IronPlayer(other.getId(), other
 				.getName()), otherRace);
 
@@ -111,10 +112,10 @@ public class GameSession extends BaseGameController implements GameObserver {
 			break;
 
 		case GAME_UNDO_REQUEST:
-			IronUnit unit = world.getUnitFromId(IronUtil.byteArrayToInt(msg
-					.getData()));
+			/*IronUnit unit = world.getUnitFromId(IronUtil.byteArrayToInt(msg
+					.getData()));*/
 			if (msg.getClientId() == controller.getTurnPlayerId()) {
-				controller.undoMove(unit);
+				controller.undoMove();
 			}
 			break;
 

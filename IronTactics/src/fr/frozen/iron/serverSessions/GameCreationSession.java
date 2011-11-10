@@ -12,7 +12,7 @@ import fr.frozen.network.common.Message;
 import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
 
-public class GameCreationSession extends BaseGameController {
+public class GameCreationSession extends BaseServerSession {
 
 	protected int id;
 	

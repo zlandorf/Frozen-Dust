@@ -22,33 +22,44 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.util.XMLParser;
 import fr.frozen.util.pathfinding.Path;
 
-public class GameController implements GameContext {
+public abstract class AbstractGameController implements GameContext,
+		IGameController {
 
-	protected int hostColor = 0xff0000;
-	protected int otherColor = 0x0070b7;// 0xff3333;
+	// protected int hostColor = 0xff0000;
+	// protected int otherColor = 0x0070b7;// 0xff3333;
 
-	protected IronWorld world;
+	protected int[] colors = { 0xff0000, 0x0070b7 };
 
-	protected List<IronPlayer> players;
-	protected Hashtable<Integer, IronPlayer> playersById;
-	protected Hashtable<IronPlayer, PlayerGameInfo> playerInfo;
+	protected volatile IronWorld world;
 
-	protected boolean gameStarted = false;
-	protected boolean gameOver = false;
-	protected int winnerId = -1;
+	protected volatile List<IronPlayer> players;
+	protected volatile Hashtable<Integer, IronPlayer> playersById;
+	protected volatile Hashtable<Integer, PlayerGameInfo> playerInfo;
 
-	protected float timeLeftForTurn = 0;
-	protected int turnPlayerId = -1;
-	protected int turnIndex = 0; // switches from 0 to 1 to make it easier to
+	protected volatile boolean gameStarted = false;
+	protected volatile boolean gameOver = false;
+	protected volatile int winnerId = -1;
+
+	protected volatile float timeLeftForTurn = 0;
+	protected volatile int turnPlayerId = -1;
+	protected volatile int turnIndex = 0; // switches from 0 to 1 to make it easier to
 	// switch turns
 
-	protected List<GameObserver> observers;
+	protected volatile IronUnit lastUnitMoved = null;
+
+	protected volatile List<GameObserver> observers;
 	protected Logger logger;
 
 	protected int nextEntityId = 0;
 
-	public GameController(IronWorld world, IronPlayer player1, int race1,
-			IronPlayer player2, int race2) {
+	public AbstractGameController(IronWorld world, IronPlayer player1,
+			int race1, IronPlayer player2, int race2) {
+		this(world);
+		addPlayer(player1, race1);
+		addPlayer(player2, race2);
+	}
+
+	public AbstractGameController(IronWorld world) {
 		logger = Logger.getLogger(getClass());
 
 		this.world = world;
@@ -57,19 +68,33 @@ public class GameController implements GameContext {
 		observers = new Vector<GameObserver>();
 
 		players = new ArrayList<IronPlayer>();
-		players.add(player1);
-		players.add(player2);
-
 		playersById = new Hashtable<Integer, IronPlayer>();
-		playersById.put(player1.getId(), player1);
-		playersById.put(player2.getId(), player2);
-
-		playerInfo = new Hashtable<IronPlayer, PlayerGameInfo>();
-		playerInfo.put(player1, new PlayerGameInfo(Protocol.get(race1),
-				hostColor));
-		playerInfo.put(player2, new PlayerGameInfo(Protocol.get(race2),
-				otherColor));
+		playerInfo = new Hashtable<Integer, PlayerGameInfo>();
 	}
+
+	public void addPlayer(IronPlayer player, int race) {
+		if (players.size() >= 2)
+			return;
+
+		players.add(player);
+		playersById.put(player.getId(), player);
+		playerInfo.put(player.getId(), new PlayerGameInfo(Protocol.get(race),
+				colors[players.size() - 1]));
+	}
+
+	public void setPlayersList(List<IronPlayer> list) {
+		players = list;
+	}
+
+	public void setPlayersMap(Hashtable<Integer, IronPlayer> map) {
+		playersById = map;
+	}
+
+	public void setInfoMap(Hashtable<Integer, PlayerGameInfo> map) {
+		playerInfo = map;
+	}
+
+	protected abstract boolean isAddParticles();
 
 	public IronWorld getWorld() {
 		return world;
@@ -85,6 +110,10 @@ public class GameController implements GameContext {
 
 	public int getWinnerId() {
 		return winnerId;
+	}
+
+	public float getTimeLeftForTurn() {
+		return timeLeftForTurn;
 	}
 
 	@Override
@@ -118,17 +147,29 @@ public class GameController implements GameContext {
 		}
 	}
 
-	public void undoMove(IronUnit unit) {
-		if (unit != null && !unit.isDead()
-				&& unit.getOwnerId() == getTurnPlayerId() && unit.canUndo()
-				&& !gameOver) {
-			unit.undoMove();
-			notifyUndoMove(unit);
+	public boolean canUndo() {
+		return lastUnitMoved != null && !lastUnitMoved.isDead()
+				&& lastUnitMoved.getOwnerId() == getTurnPlayerId()
+				&& lastUnitMoved.canUndo() && !gameOver;
+	}
+
+	public void undoMove() {
+		if (canUndo()) {
+			lastUnitMoved.undoMove();
+			notifyUndoMove(lastUnitMoved);
+			lastUnitMoved = null;
 		}
+	}
+
+	public void onGameOver(int winnerId) {
+		IronPlayer winner = playersById.get(winnerId);
+		IronPlayer loser = players.get(players.get(0).equals(winner) ? 1 : 0);
+		onGameOver(winner, loser);
 	}
 
 	public void onGameOver(IronPlayer winner, IronPlayer loser) {
 		winnerId = winner.getId();
+		setLastUnitMoved(null);
 
 		int nbWinnerUnits = 0;
 		int nbLoserUnits = 0;
@@ -144,8 +185,8 @@ public class GameController implements GameContext {
 		}
 
 		logger.info("[GameOver]" + winner + "("
-				+ playerInfo.get(winner).getRace() + ") wins against " + loser
-				+ "(" + playerInfo.get(loser).getRace() + ") -- Units left : ["
+				+ playerInfo.get(winner.getId()).getRace() + ") wins against " + loser
+				+ "(" + playerInfo.get(loser.getId()).getRace() + ") -- Units left : ["
 				+ nbWinnerUnits + "]vs[" + nbLoserUnits + "]");
 		gameOver = true;
 		notifyGameOver(winnerId);
@@ -167,11 +208,19 @@ public class GameController implements GameContext {
 		}
 		getPlayerInfo(playerId).setTurnToPlay(true);
 		turnPlayerId = playerId;
-		world.initTurn(playerId, false);
-
+		world.initTurn(playerId, isAddParticles());
+		setLastUnitMoved(null);
+		
 		timeLeftForTurn = IronConst.TURN_DURATION;
 
 		notifyTurnChange(turnPlayerId);
+	}
+
+	protected void setLastUnitMoved(IronUnit unit) {
+		if (lastUnitMoved != null) {
+			lastUnitMoved.setCanUndo(false);
+		}
+		lastUnitMoved = unit;
 	}
 
 	public void abandon(int playerId) {
@@ -184,14 +233,23 @@ public class GameController implements GameContext {
 		}
 	}
 
-	public void startGame() {
-		turnIndex = (int) (System.currentTimeMillis() % 2);
+	public void startGame(int playerStartId) {
+		if (players.size() != 2) {
+			logger.error("cannot start game, not enough players");
+			return;
+		}
+
+		turnIndex = playerStartId;
 		IronPlayer player = players.get(turnIndex);
 		setTurn(player.getId());
 
 		gameStarted = true;
 		notifyStartGame(player.getId());
 
+	}
+
+	public void startGame() {
+		startGame((int) (System.currentTimeMillis() % 2));
 	}
 
 	public void handleMove(int unitSrcId, int x, int y) {
@@ -201,6 +259,7 @@ public class GameController implements GameContext {
 		Path path = world.getPath(unitSrcId, x, y);
 		if (path != null) {
 			unit.move(x, y, path.getTotalMoveCost());
+			setLastUnitMoved(unit);
 			notifyMove(unit, x, y, path);
 		}
 	}
@@ -209,9 +268,10 @@ public class GameController implements GameContext {
 		IronUnit unitSrc = world.getUnitFromId(unitSrcId);
 		if (unitSrc != null && !unitSrc.hasPlayed() && skill != null
 				&& unitSrc.getSkills().contains(skill)) {
-			
+
 			List<int[]> res = skill.executeSkill(world, unitSrcId, x, y);
 
+			setLastUnitMoved(null);
 			if (res != null) {
 				notifySkill(unitSrc, skill, x, y, res);
 			}
@@ -220,7 +280,7 @@ public class GameController implements GameContext {
 
 	@Override
 	public PlayerGameInfo getPlayerInfo(int playerId) {
-		return playerInfo.get(playersById.get(playerId));
+		return playerInfo.get(playerId);
 	}
 
 	public void addGameObserver(GameObserver observer) {
@@ -283,11 +343,11 @@ public class GameController implements GameContext {
 		main: for (IronPlayer player : players) {
 
 			String race = null;
-			if (playerInfo.get(player) == null) {
+			if (playerInfo.get(player.getId()) == null) {
 				logger.error("player info not found");
 				continue; // TODO error to handle here
 			}
-			race = IronUtil.getRaceStr(playerInfo.get(player).getRace());
+			race = IronUtil.getRaceStr(playerInfo.get(player.getId()).getRace());
 
 			if (race == null) {
 				logger.error("race not found");
@@ -331,5 +391,13 @@ public class GameController implements GameContext {
 		world.setMap(new IronMap());
 		world.getMap().generateMap();
 		world.setUnits(createGameUnitsList());
+	}
+
+	public IronPlayer getTurnPlayer() {
+		return playersById.get(turnPlayerId);
+	}
+
+	public IronPlayer getWinner() {
+		return playersById.get(winnerId);
 	}
 }

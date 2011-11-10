@@ -836,4 +836,8 @@ public class IronUnit extends GameObject implements Mover {
 	public String toString() {
 		return "[" + id + "][" + name + "][ownerId=" + ownerId + "]";
 	}
+
+	public void setCanUndo(boolean b) {
+		canUndo = b;
+	}
 }

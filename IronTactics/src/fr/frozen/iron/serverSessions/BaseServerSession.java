@@ -16,7 +16,7 @@ import fr.frozen.network.common.MessageToSend;
 import fr.frozen.network.server.Client;
 import fr.frozen.network.server.IServerSession;
 
-public class BaseGameController implements IServerSession {
+public class BaseServerSession implements IServerSession {
 
 	protected String sessionName;
 	protected Protocol sessionType;
@@ -30,7 +30,7 @@ public class BaseGameController implements IServerSession {
 	protected IronServer server;
 	protected Logger logger = Logger.getLogger(getClass());
 	
-	public BaseGameController(String name, IronServer server, Protocol sessionType) {
+	public BaseServerSession(String name, IronServer server, Protocol sessionType) {
 		this.sessionName = name;
 		this.server = server;
 		this.sessionType = sessionType;
