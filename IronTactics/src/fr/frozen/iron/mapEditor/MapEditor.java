@@ -85,7 +85,7 @@ public class MapEditor {
 		fileChooser.setFileFilter(new FileFilter() {
 			@Override
 			public String getDescription() {
-				return "custom filter to chose iron tactic maps";
+				return "Iron tactic map files(.map)";
 			}
 
 			@Override
