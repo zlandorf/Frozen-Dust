@@ -6,10 +6,10 @@ import java.util.ArrayList;
 import java.util.List;
 
 import fr.frozen.game.ISprite;
+import fr.frozen.iron.net.serverSessions.GameCreationSession;
+import fr.frozen.iron.net.serverSessions.GameSession;
+import fr.frozen.iron.net.serverSessions.LobbySession;
 import fr.frozen.iron.protocol.Protocol;
-import fr.frozen.iron.serverSessions.GameCreationSession;
-import fr.frozen.iron.serverSessions.GameSession;
-import fr.frozen.iron.serverSessions.LobbySession;
 import fr.frozen.iron.util.IronConfig;
 import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.common.Message;

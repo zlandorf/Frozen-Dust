@@ -112,11 +112,11 @@ public class IronConfig {
 	}
 	
 	private static void setVolumeAux(float val) {
-		SoundManager.getInstance().setMusicVolume(val);
-		SoundManager.getInstance().setSoundVolume(val);
-		
 		SoundManager.getInstance().setMusicOn(val > 0);
 		SoundManager.getInstance().setSoundsOn(val > 0);
+		
+		SoundManager.getInstance().setMusicVolume(val);
+		SoundManager.getInstance().setSoundVolume(val);
 	}
 	
 	public static void setVolume(float val) {

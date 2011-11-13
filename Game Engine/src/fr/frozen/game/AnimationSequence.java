@@ -11,7 +11,7 @@ public class AnimationSequence {
 	private int _currentFrame;
 	private boolean _loop;
 	private boolean _animating;
-	private long _lastTime;
+	private long _timePassed;
 	private boolean _animationEnded;
 	
 	public AnimationSequence(AnimationSequence sequence) {
@@ -23,7 +23,7 @@ public class AnimationSequence {
 		this._currentFrame = sequence._currentFrame;
 		this._loop = sequence._loop;
 		this._animating = sequence._animating;
-		this._lastTime = sequence._lastTime;
+		this._timePassed = sequence._timePassed;
 		this._animationEnded = sequence._animationEnded;
 	}
 	
@@ -31,6 +31,7 @@ public class AnimationSequence {
 		_name = name;
 		_frames = new ArrayList<AnimationFrame>();
 		_currentFrame = 0;
+		_timePassed = 0;
 		_loop = loop;
 		_animating = false;
 		_animationEnded = false;
@@ -69,7 +70,7 @@ public class AnimationSequence {
 	}
 	
 	public void start() {
-		_lastTime = System.currentTimeMillis();
+		_timePassed = 0;
 		_currentFrame = 0;
 		_animating = true;
 		_animationEnded = false;
@@ -91,12 +92,9 @@ public class AnimationSequence {
 	public void update(float deltaTime) {
 		if (!_animating) return;
 		
-		long time = System.currentTimeMillis();
-		long timePassed = time - _lastTime;
-		_lastTime = time;
-		
-		while (timePassed > _frames.get(_currentFrame).getDuration()) {
-			timePassed -= _frames.get(_currentFrame).getDuration();
+		_timePassed += (long)(deltaTime * 1000);
+		while (_timePassed > _frames.get(_currentFrame).getDuration()) {
+			_timePassed -= _frames.get(_currentFrame).getDuration();
 			if (_currentFrame == _frames.size() - 1 && !_loop) {
 				//notify that animation sequence is ended
 				stop();
@@ -105,8 +103,6 @@ public class AnimationSequence {
 			_currentFrame++;
 			_currentFrame %= _frames.size();
 		}
-		_lastTime -= timePassed;//extra time must be counted for next turn
-		
 	}
 	
 	public ISprite getCurrentSprite() {

@@ -30,21 +30,6 @@ public class SoloGame extends AbstractGame {
 	}
 	
 	@Override
-	public synchronized void update(float deltaTime) {
-		super.update(deltaTime);
-		if (controller != null) 
-			controller.update(deltaTime);
-	}
-
-	@Override
-	public synchronized void setActive(boolean val) {
-		super.setActive(val);
-		if (val) {
-			initGame();
-		}
-	}
-
-	@Override
 	protected boolean canSelectUnit(IronUnit unit) {
 		return unit != null && !unit.hasPlayed()
 				&& unit.getOwnerId() == controller.getTurnPlayerId();

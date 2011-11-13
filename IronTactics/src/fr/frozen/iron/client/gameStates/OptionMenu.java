@@ -86,7 +86,7 @@ public class OptionMenu extends GameState {
 	}
 	
 	protected void toggleVolume() {
-		IronConfig.setVolume(1 - IronConfig.getVolume());
+		IronConfig.setVolume(IronConfig.getVolume() == 0.0 ? 0.2f : 0);
 		volumeLabel.setLabel(IronConfig.getVolume() == 0.0 ? "off" : "on");
 	}
 	

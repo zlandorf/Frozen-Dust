@@ -24,6 +24,7 @@ public class SoloGameController extends AbstractGameController {
 			List<int[]> res = skill.computeSkill(world, unitSrcId, x, y);
 
 			if (res != null) {
+				setLastUnitMoved(null);
 				notifySkill(unitSrc, skill, x, y, res);
 			}
 		}

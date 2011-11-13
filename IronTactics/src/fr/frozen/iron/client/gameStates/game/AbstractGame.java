@@ -507,6 +507,7 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 
 	@Override
 	public void onGameOver(int winnerId) {
+		selectUnit(null);
 	}
 
 	@Override
@@ -526,16 +527,15 @@ public abstract class AbstractGame extends GameState implements MouseListener,
 	public void onSkill(IronUnit unit, Skill skill, int x, int y,
 			List<int[]> res) {
 		skill.executeClientSide(world, unit.getId(), x, y, res);
+		if (unit.hasPlayed() &&  selectedUnit != null && selectedUnit.getId() == unit.getId()) {
+			selectUnit(null);
+		}
 	}
 
 	@Override
 	public void onTurnChange(int newTurnPlayerId) {
 		popup.setVisible(false);
-
-		if (selectedUnit != null) {
-			selectedUnit.setSelected(false);
-		}
-		selectedUnit = null;
+		selectUnit(null);
 		notifyNewTurnTimeLeft = notifyNewTurnDuration;
 	}
 

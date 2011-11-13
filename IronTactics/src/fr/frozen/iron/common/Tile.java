@@ -95,7 +95,7 @@ public class Tile {
 		return terrainOverlap;
 	}
 
-	public void setTerrainOverlap(int type) {
+	public void setTerrainOverlay(int type) {
 		this.terrainOverlap = type;
 	}
 
@@ -294,7 +294,6 @@ public class Tile {
 						continue;
 				}
 				
-				
 				String type = tile_names[type(i)];
 				
 				if (getType() == TYPE_WATER) {
@@ -377,11 +376,36 @@ public class Tile {
 		tile.setObjectOverlap(3);
 		tile.setObjectSubType(4);
 		tile.setOccupied(true);
-		tile.setTerrainOverlap(10);
+		tile.setTerrainOverlay(10);
 		
 		System.out.println("before : "+tile);
 		Tile tile2 = new Tile(new Point2D.Float(0,0), null);
 		tile2.unserialize(tile.serialize());
 		System.out.println("after : "+tile2);
+	}
+
+	
+	//used by the map editor
+	public void resetSprites() {
+		if (wind_animation != null) {
+			wind_animation.stop();
+			wind_animation = null;
+		}
+		if (idle_animation != null) {
+			idle_animation.stop();
+			idle_animation = null;
+		}
+		sprite = null;
+		overlapSprite = null;
+	}
+
+	public void resetTerrainOverlay() {
+		setTerrainOverlay(0);
+		if (overlaySprites != null) {
+			for (int i = 0; i < NB_DISPLAY_LEVELS; i++) {
+				if (overlaySprites[i] != null)
+					overlaySprites[i].clear();
+			}
+		}
 	}
 }

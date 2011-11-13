@@ -1,7 +1,6 @@
 package fr.frozen.iron.common;
 
 import java.util.ArrayList;
-import java.util.Collection;
 import java.util.Hashtable;
 import java.util.List;
 
@@ -11,6 +10,7 @@ import org.lwjgl.opengl.Display;
 import fr.frozen.game.GameObject;
 import fr.frozen.game.GameState;
 import fr.frozen.iron.common.entities.IronUnit;
+import fr.frozen.iron.util.IronConfig;
 import fr.frozen.iron.util.IronConst;
 import fr.frozen.iron.util.IronGL;
 import fr.frozen.iron.util.IronUtil;
@@ -90,11 +90,11 @@ public class IronWorld extends GameState {
 		pathFinder = new AStar(map, false);
 	}
 	
-	public synchronized Collection<IronUnit> getUnits() {
-		return units.values();
+	public synchronized List<IronUnit> getUnits() {
+		return new ArrayList<IronUnit>(units.values());
 	}
 	
-	public synchronized Collection<IronUnit> getPlayerUnits(int playerId) {
+	public synchronized List<IronUnit> getPlayerUnits(int playerId) {
 		List<IronUnit> list = new ArrayList<IronUnit>();
 		
 		for (IronUnit unit : getUnits()) {
@@ -188,7 +188,9 @@ public class IronWorld extends GameState {
 			}
 			
 			map.renderUnitsTileGfx(deltaTime, context.getTurnPlayerId());
-			getMap().renderGrid();
+			if (IronConfig.isShowGrid()) {
+				getMap().renderGrid();
+			}
 			map.renderUnitsAndObjects(deltaTime);
 			//map.renderUnits(deltaTime);
 			

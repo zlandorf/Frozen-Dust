@@ -80,8 +80,8 @@ class Test extends GameEngine {
 	}
 	
 	@Override
-	protected void update() {
-		super.update();
+	protected void update(float deltaTime) {
+		super.update(deltaTime);
 		
 		if (Keyboard.isKeyDown(Keyboard.KEY_LEFT)) {
 			viewX += 1;

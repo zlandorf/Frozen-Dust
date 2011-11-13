@@ -23,10 +23,10 @@ public class MainMenu extends GameState {
 		super(ge, "mainMenu", false, false);
 		gui = new GUI();
 
-		Button multiplayer = new IronMenuButton("Multiplayer", 270);
+		Button multiplayer = new IronMenuButton("Multiplayer", 340);
 		Button quit = new IronMenuButton("Quit", 480);
-		Button option = new IronMenuButton("Options", 340);
-		Button solo = new IronMenuButton("Solo", 410);
+		Button option = new IronMenuButton("Options", 410);
+		Button solo = new IronMenuButton("Solo", 270);
 		
 		multiplayer.addActionListener(new ActionListener() {
 			@Override

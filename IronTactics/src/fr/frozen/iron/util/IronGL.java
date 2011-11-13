@@ -59,6 +59,17 @@ public class IronGL {
 		GL11.glEnable(GL11.GL_TEXTURE_2D);
 	}
 	
+	public static void drawGrid(float x, float y, float w, float h, float xstep,
+			float ystep) {
+	
+		for (float i = x; i <= w; i+=xstep) {
+			for (float j = y; j <= h; j+= ystep) {
+				drawLine(x, j, x + w , j);
+			}
+			drawLine(i, y, i, y + h);
+		}
+	}
+	
 	public static void drawHollowRect(float x, float y, float w, float h, int icolor) {
 		float []rgb = getRgb(icolor);
 		drawHollowRect(x, y, w, h, rgb[0], rgb[1],  rgb[2], 1);

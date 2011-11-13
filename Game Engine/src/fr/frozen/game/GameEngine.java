@@ -363,11 +363,11 @@ public class GameEngine implements IGameEngine {
 		_lastTime = _timer.getTime();
 	}
 	
-	protected void update() {
+	protected void update(float deltaTime) {
 		updateGameStates();
 		for (GameState gs : _gameStates) {
 			if (gs.isActive())
-				gs.update(_tick);
+				gs.update(deltaTime);
 		}
 	}
 	
@@ -395,7 +395,7 @@ public class GameEngine implements IGameEngine {
 		while (_gameRunning) {
 			
 			heartBeat();
-			update();
+			update(_tick);
 			//check collisions
 			onPreRender();
 			render();

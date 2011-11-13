@@ -1,4 +1,4 @@
-package fr.frozen.iron.serverSessions;
+package fr.frozen.iron.net.serverSessions;
 
 import java.io.ByteArrayOutputStream;
 import java.io.IOException;
