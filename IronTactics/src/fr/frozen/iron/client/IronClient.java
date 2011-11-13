@@ -102,7 +102,12 @@ public class IronClient extends BaseClient {
 			break;
 		case GAME_MAP_SEND :
 			IronMap map = new IronMap();
-			map.unserialize(msg.getData());
+			try {
+				map.unserialize(msg.getData());
+			} catch (Exception e6) {
+				Logger.getLogger(getClass()).error("error when unserializing map");
+				e6.printStackTrace();
+			}
 			map.initSprites();
 			dispatchEvent(new MapRecievedEvent(map));
 			break;

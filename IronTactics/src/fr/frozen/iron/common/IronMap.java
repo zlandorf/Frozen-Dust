@@ -326,7 +326,7 @@ public class IronMap implements TileBasedMap {
 		return byteArray.toByteArray();
 	}
 
-	public void unserialize(byte[] data) {
+	public void unserialize(byte[] data) throws Exception {
 		for (int i = 0; i < data.length / 3; i++) {
 			int x = i / IronConst.MAP_HEIGHT;
 			int y = i % IronConst.MAP_HEIGHT;
