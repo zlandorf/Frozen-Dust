@@ -12,6 +12,7 @@
 	
 	<target name="clean">
 		<delete file="${dist.dir}/Server.jar"/>
+		<delete file="${dist.dir}/MapEditor.jar"/>
 		<delete file="${dist.dir}/IronTactics.jar"/>
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<delete file="${dist.dir}/IronTacticsLight.zip"/>
@@ -23,6 +24,16 @@
             <manifest>
                 <attribute name="Main-Class" value="fr.frozen.iron.client.IronTactics"/>
                 <attribute name="Class-Path" value="./ slick.jar jogg-0.0.7.jar jorbis-0.0.15.jar log4j-1.2.16.jar netframework.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
+            </manifest>
+            <fileset dir="${bin.dir}"/>
+        </jar>
+    </target>
+	
+	<target name="mapEditorBuild">
+        <jar destfile="${dist.dir}/MapEditor.jar">
+            <manifest>
+                <attribute name="Main-Class" value="fr.frozen.iron.mapEditor.MapEditor"/>
+                <attribute name="Class-Path" value="./ slick.jar log4j-1.2.16.jar lwjgl.jar jinput.jar lwjgl_util.jar engine.jar"/>
             </manifest>
             <fileset dir="${bin.dir}"/>
         </jar>
@@ -55,7 +66,7 @@
 	</target>
 	
 	
-	<target name="Main" depends="clean, signJars, serverBuild, clientBuild, LightBuild, WebStartBuild">
+	<target name="Main" depends="clean, signJars, serverBuild, clientBuild, mapEditorBuild, LightBuild, WebStartBuild">
 		<description>Main target</description>
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<zip destfile="${dist.dir}/IronTactics.zip">
@@ -67,6 +78,7 @@
 			<zipfileset file="${netengine-jar}" prefix="bin"/>
 			<zipfileset file="${dist.dir}/IronTactics.jar" prefix="bin"/>
 			<zipfileset file="${dist.dir}/Server.jar" prefix="bin"/>
+			<zipfileset file="${dist.dir}/MapEditor.jar" prefix="bin"/>
 			<zipfileset dir="${jar.dir}" includes="**/*.jar" prefix="bin"/>
 		</zip>
 	</target>
@@ -77,6 +89,7 @@
 			<zip destfile="${dist.dir}/IronTacticsLight.zip">
 				<zipfileset file="${dist.dir}/Server.jar" prefix="bin"/>
 				<zipfileset file="${dist.dir}/IronTactics.jar" prefix="bin"/>
+				<zipfileset file="${dist.dir}/MapEditor.jar" prefix="bin"/>
 				<zipfileset file="${engine-jar}" prefix="bin"/>
 				<zipfileset file="${netengine-jar}" prefix="bin"/>
 			</zip>

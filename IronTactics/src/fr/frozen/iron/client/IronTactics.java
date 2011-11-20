@@ -15,7 +15,6 @@ import fr.frozen.iron.client.gameStates.Intro;
 import fr.frozen.iron.client.gameStates.Lobby;
 import fr.frozen.iron.client.gameStates.MainMenu;
 import fr.frozen.iron.client.gameStates.OptionMenu;
-import fr.frozen.iron.client.gameStates.game.AIGame;
 import fr.frozen.iron.client.gameStates.game.MultiplayerGame;
 import fr.frozen.iron.client.gameStates.game.SoloGame;
 import fr.frozen.iron.client.messageEvents.NewSessionEvent;
@@ -163,8 +162,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		
 		GameCreation gameCreation = new GameCreation(this);
 
-		//SoloGame soloGame = new SoloGame(this); 
-		SoloGame soloGame = new AIGame(this);
+		SoloGame soloGame = new SoloGame(this); 
+		//SoloGame soloGame = new AIGame(this);
 		MultiplayerGame multiGame = new MultiplayerGame(this);
 
 		addGameState(intro);

@@ -11,6 +11,8 @@ import java.io.FileOutputStream;
 import java.io.FileReader;
 import java.io.FileWriter;
 import java.io.IOException;
+import java.net.URISyntaxException;
+import java.net.URL;
 import java.util.ArrayList;
 import java.util.List;
 
@@ -22,6 +24,7 @@ import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.entities.IronUnit;
 import fr.frozen.iron.common.equipment.Weapon;
 import fr.frozen.iron.protocol.Protocol;
+import fr.frozen.util.XMLParser;
 
 public class IronUtil {
 
@@ -31,15 +34,15 @@ public class IronUtil {
 	public static final String DWARF = "dwarf";
 	public static final String UNDEAD = "undead";
 
+	public static String separator = System.getProperty("file.separator");
+
 	public static String getIronDirPath() {
-		return System.getProperty("user.home")
-				+ System.getProperty("file.separator") + IronConst.ironDir;
+		return System.getProperty("user.home") + separator + IronConst.ironDir;
 	}
 
 	public static String getSaveFilePath() {
-		return System.getProperty("user.home")
-				+ System.getProperty("file.separator") + IronConst.ironDir
-				+ System.getProperty("file.separator") + IronConst.saveFile;
+		return System.getProperty("user.home") + separator + IronConst.ironDir
+				+ separator + IronConst.saveFile;
 	}
 
 	public static String findName() {
@@ -55,6 +58,22 @@ public class IronUtil {
 		outputFile.write(map.serialize());
 		outputFile.flush();
 		outputFile.close();
+	}
+
+	public static IronMap loadMap(String filename) throws IOException {
+		String filePath = "data" + separator + "maps" + separator + filename;
+		URL url = XMLParser.class.getClassLoader().getResource(filePath);
+
+		if (url == null) {
+			throw new IOException("Cannot find: " + filePath);
+		}
+		File file = null;
+		try {
+			file = new File(url.toURI());
+		} catch (URISyntaxException e) {
+			e.printStackTrace();
+		}
+		return loadMap(file);
 	}
 
 	public static IronMap loadMap(File file) throws IOException {
@@ -390,7 +409,7 @@ public class IronUtil {
 	}
 
 	public static double getAngle(Vector2f vec) { // returns angle between vec
-													// and (0,-1)
+		// and (0,-1)
 		double angle = Math.atan2(vec.getY(), vec.getX()) * 57.2957795f;
 		angle += 90;
 		return angle;
@@ -507,10 +526,5 @@ public class IronUtil {
 		} else {
 			System.out.println("error" + byteArrayToInt(barray));
 		}
-
-		/*
-		 * saveName("pauljohnson"); System.out.println(findName());
-		 */
-
 	}
 }

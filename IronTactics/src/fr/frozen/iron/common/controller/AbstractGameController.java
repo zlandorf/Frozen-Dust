@@ -328,7 +328,7 @@ public abstract class AbstractGameController implements GameContext,
 		}
 	}
 
-	protected List<IronUnit> createGameUnitsList() {
+	public List<IronUnit> createGameUnitsList() {
 		List<IronUnit> list = new ArrayList<IronUnit>();
 		IronUnit unit = null;
 		XMLParser parser = IronConfig.getIronXMLParser();

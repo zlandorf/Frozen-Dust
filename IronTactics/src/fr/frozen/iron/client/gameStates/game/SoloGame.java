@@ -24,6 +24,7 @@ public class SoloGame extends AbstractGame {
 				.getValue(), player2, Protocol.ORC_RACE.getValue());
 
 		controller.init();
+		
 		controller.getWorld().getMap().initSprites();
 		controller.addGameObserver(this);
 		controller.startGame();
