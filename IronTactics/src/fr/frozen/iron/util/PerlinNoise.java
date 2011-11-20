@@ -131,8 +131,8 @@ public class PerlinNoise {
 		double max = Double.MIN_VALUE;
 		double min = Double.MAX_VALUE;
 		
-		double sum = 0;
-		double nb = 0;
+		/*double sum = 0;
+		double nb = 0;*/
 		
 		for (int i = 0; i < map.length; i++) {
 			for (int j = 0; j < map[i].length; j ++) {
@@ -141,8 +141,8 @@ public class PerlinNoise {
 				if (map[i][j] > max) max = map[i][j];
 				if (map[i][j] < min) min = map[i][j];
 		
-				sum += map[i][j];
-				nb ++;
+				/*sum += map[i][j];
+				nb ++;*/
 				
 			//	System.out.print("["+map[i][j]+"]");
 			}

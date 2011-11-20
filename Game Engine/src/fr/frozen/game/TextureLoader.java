@@ -197,7 +197,7 @@ public class TextureLoader {
      * @param texture The texture to store the data into
      * @return A buffer containing the data
      */
-    @SuppressWarnings("unchecked")
+    @SuppressWarnings("rawtypes")
 	private ByteBuffer convertImageData(BufferedImage bufferedImage,Texture texture) { 
         ByteBuffer imageBuffer = null; 
         WritableRaster raster;

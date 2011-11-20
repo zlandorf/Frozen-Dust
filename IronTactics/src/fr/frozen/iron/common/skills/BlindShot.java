@@ -104,7 +104,6 @@ public class BlindShot extends Skill {
 		IronUnit src = world.getUnitFromId(srcId);
 		if (src == null || dst == null && values.get(0)[0] != -2) return;
 
-		if (src == null) return;
 		int manaBefore = src.getStats().getMana();
 		executeCommon(world, srcId, x, y, values);
 		

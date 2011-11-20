@@ -154,7 +154,6 @@ public class ChatWindow extends Component {
 		if (message.getPrefix() != null) {
 			prefixLeft = message.getPrefix().length();
 		}
-		int prefixDone = 0;
 		ChatWindowMessage cwm;
 		for (int i = 0; i < splitMessages.length; i++) {
 			String msg = splitMessages[i];
@@ -168,7 +167,6 @@ public class ChatWindow extends Component {
 					strmsg = msg.substring(nbPrefix , Math.min(charPerLine[i], msg.length()));
 				cwm = new ChatWindowMessage(message.type, prefix, strmsg);
 				
-				prefixDone += nbPrefix;
 				prefixLeft -= nbPrefix;
 			} else {
 				cwm = new ChatWindowMessage(message.getType(), msg);
