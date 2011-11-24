@@ -38,7 +38,7 @@ public class MainMenu extends GameState {
 		solo.addActionListener(new ActionListener() {
 			@Override
 			public void actionPerformed(ActionEvent e) {
-				((IronTactics)ge).switchToState("soloGame");
+				((IronTactics)ge).switchToState("soloGameCreation"/*"soloGame"*/);
 			}
 		});
 		

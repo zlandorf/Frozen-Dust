@@ -119,7 +119,7 @@ public class BlindShot extends Skill {
 			}
 			if (target.isDead()) {
 				target.setCorpseSprite();
-				Sound deathSound = soundManager.getSound(target.getRaceStr()+"_death");
+				Sound deathSound = SoundManager.getInstance().getSound(target.getRaceStr()+"_death");
 				if (deathSound != null) {
 					impactSounds.add(deathSound);
 				}

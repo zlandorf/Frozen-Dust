@@ -51,7 +51,7 @@ public class IronConfig {
 			}
 		}
 		
-		float volume = 1.f;
+		float volume = IronConst.defaultVolume;
 		String volumeOption = IronUtil.findOptionValue("volume");
 		if (volumeOption != null) {
 			volume = Float.parseFloat(volumeOption);

@@ -85,7 +85,7 @@ public class MapEditor {
 		fileChooser.setFileFilter(new FileFilter() {
 			@Override
 			public String getDescription() {
-				return "Iron tactic map files(.map)";
+				return "Iron tactics map files(.map)";
 			}
 
 			@Override
@@ -170,12 +170,12 @@ public class MapEditor {
 		frame.setJMenuBar(jMenuBar);
 	}
 
-	protected synchronized void resetMap() {
+	protected void resetMap() {
 		map = new IronMap();
 		map.initSprites();
 	}
 
-	protected synchronized void saveMap() {
+	protected void saveMap() {
 		File file = chooseFile();
 		if (file != null && !file.isDirectory()) {
 			if (map != null) {
@@ -191,7 +191,7 @@ public class MapEditor {
 		}
 	}
 
-	protected synchronized void openNewMap() {
+	protected void openNewMap() {
 		File file = chooseFile();
 		if (file != null && !file.isDirectory()) {
 			try {
@@ -205,7 +205,7 @@ public class MapEditor {
 	}
 
 	private File chooseFile() {
-		int returnVal = fileChooser.showOpenDialog(frame);
+		int returnVal = fileChooser.showOpenDialog(null);
 
 		if (returnVal == JFileChooser.APPROVE_OPTION) {
 			return fileChooser.getSelectedFile();
@@ -471,7 +471,7 @@ public class MapEditor {
 				&& y < IronConst.TILE_HEIGHT;
 	}
 
-	protected synchronized void render(float deltaTime) {
+	protected void render(float deltaTime) {
 
 		GL11.glClear(GL11.GL_COLOR_BUFFER_BIT | GL11.GL_DEPTH_BUFFER_BIT);
 		GL11.glColor4f(1, 1, 1, 1f);

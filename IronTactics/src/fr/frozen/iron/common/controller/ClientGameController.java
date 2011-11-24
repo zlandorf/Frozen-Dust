@@ -21,10 +21,11 @@ import fr.frozen.iron.util.IronUtil;
 import fr.frozen.network.client.NetEvent;
 import fr.frozen.network.client.NetEventListener;
 
-public class ClientGameController extends AbstractGameController implements NetEventListener {
+public class ClientGameController extends AbstractGameController implements
+		NetEventListener {
 
 	protected volatile IronClient netClient;
-	
+
 	public ClientGameController(IronWorld world, IronClient netClient) {
 		super(world);
 		this.netClient = netClient;
@@ -46,7 +47,7 @@ public class ClientGameController extends AbstractGameController implements NetE
 			netClient.sendMessage(Protocol.GAME_UNDO_REQUEST, data);
 		}
 	}
-	
+
 	@Override
 	public void handleSkill(int unitSrcId, Skill skill, int x, int y) {
 		byte[] data = new byte[20];
@@ -54,19 +55,19 @@ public class ClientGameController extends AbstractGameController implements NetE
 		System.arraycopy(IronUtil.intToByteArray(unitSrcId), 0, data, 0, 4);
 		System.arraycopy(IronUtil.intToByteArray(IronUnit.ACTION_SKILL), 0,
 				data, 4, 4);
-		System.arraycopy(IronUtil.intToByteArray(skill.getSkillType()), 0, data, 8, 4);
+		System.arraycopy(IronUtil.intToByteArray(skill.getSkillType()), 0,
+				data, 8, 4);
 		System.arraycopy(IronUtil.intToByteArray(x), 0, data, 12, 4);
 		System.arraycopy(IronUtil.intToByteArray(y), 0, data, 16, 4);
 
 		netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
 	}
-	
+
 	@Override
 	public void handleMove(int unitSrcId, int x, int y) {
 		byte[] data = new byte[16];
 
-		System.arraycopy(IronUtil.intToByteArray(unitSrcId), 0,
-				data, 0, 4);
+		System.arraycopy(IronUtil.intToByteArray(unitSrcId), 0, data, 0, 4);
 		System.arraycopy(IronUtil.intToByteArray(IronUnit.ACTION_MOVE), 0,
 				data, 4, 4);
 		System.arraycopy(IronUtil.intToByteArray(x), 0, data, 8, 4);
@@ -74,18 +75,19 @@ public class ClientGameController extends AbstractGameController implements NetE
 
 		netClient.sendMessage(Protocol.GAME_ACTION_REQUEST, data);
 	}
-	
+
 	public void update(float deltaTime) {
 		if (!gameStarted)
 			return;
 
 		timeLeftForTurn -= deltaTime;
-		if (timeLeftForTurn < 0) timeLeftForTurn = 0;
+		if (timeLeftForTurn < 0)
+			timeLeftForTurn = 0;
 	}
-	
+
 	@Override
 	public void onNetEvent(NetEvent ne) {
-		
+
 		if (ne instanceof GameTurnEvent) {
 			GameTurnEvent gte = (GameTurnEvent) ne;
 
@@ -115,17 +117,17 @@ public class ClientGameController extends AbstractGameController implements NetE
 				notifyUndoMove(unit);
 			}
 		}
-		
+
 		if (ne instanceof GameOverEvent) {
 			GameOverEvent goe = (GameOverEvent) ne;
 			onGameOver(goe.getWinnerId());
 		}
 	}
-	
+
 	protected void handleGameAction(GameActionEvent gae) throws IOException {
 		IronUnit unitSrc = world.getUnitFromId(gae.getUnitId());
-		DataInputStream is = new DataInputStream(new ByteArrayInputStream(gae
-				.getData()));
+		DataInputStream is = new DataInputStream(new ByteArrayInputStream(
+				gae.getData()));
 
 		int x, y;
 

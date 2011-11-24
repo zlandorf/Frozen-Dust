@@ -13,6 +13,7 @@ import fr.frozen.iron.client.components.IronMenuButton;
 import fr.frozen.iron.client.components.Label;
 import fr.frozen.iron.client.components.TextField;
 import fr.frozen.iron.util.IronConfig;
+import fr.frozen.iron.util.IronConst;
 
 public class OptionMenu extends GameState {
 	protected GUI gui;
@@ -86,7 +87,7 @@ public class OptionMenu extends GameState {
 	}
 	
 	protected void toggleVolume() {
-		IronConfig.setVolume(IronConfig.getVolume() == 0.0 ? 0.2f : 0);
+		IronConfig.setVolume(IronConfig.getVolume() == 0.0 ? IronConst.defaultVolume : 0);
 		volumeLabel.setLabel(IronConfig.getVolume() == 0.0 ? "off" : "on");
 	}
 	

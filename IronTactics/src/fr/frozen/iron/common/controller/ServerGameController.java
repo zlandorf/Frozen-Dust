@@ -13,7 +13,6 @@ public class ServerGameController extends AbstractGameController {
 
 	@Override
 	protected boolean isAddParticles() {
-		// TODO Auto-generated method stub
 		return false;
 	}
 

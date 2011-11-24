@@ -22,8 +22,6 @@ public abstract class Skill {
 	public static final int SHIELD_BLOCK = 4;
 	public static final int CHARGE = 5;
 
-	protected SoundManager soundManager;
-
 	public static Skill getSkill(int type) {
 		switch (type) {
 		case MELEE_ATTACK:
@@ -51,7 +49,6 @@ public abstract class Skill {
 	protected Skill(String name, int type) {
 		this.name = name;
 		this.type = type;
-		soundManager = SoundManager.getInstance();
 	}
 
 	public abstract boolean canDo(IronWorld world, int srcId, int x, int y);
@@ -124,7 +121,7 @@ public abstract class Skill {
 			}
 			if (target.isDead()) {
 				target.setCorpseSprite();
-				Sound deathSound = soundManager.getSound(target.getRaceStr()
+				Sound deathSound = SoundManager.getInstance().getSound(target.getRaceStr()
 						+ "_death");
 				if (deathSound != null) {
 					deathSound.playAsSoundEffect(false);

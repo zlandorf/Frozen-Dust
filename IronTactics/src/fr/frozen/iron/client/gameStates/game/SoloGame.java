@@ -6,7 +6,6 @@ import fr.frozen.iron.common.IronPlayer;
 import fr.frozen.iron.common.IronWorld;
 import fr.frozen.iron.common.controller.SoloGameController;
 import fr.frozen.iron.common.entities.IronUnit;
-import fr.frozen.iron.protocol.Protocol;
 
 public class SoloGame extends AbstractGame {
 
@@ -16,20 +15,23 @@ public class SoloGame extends AbstractGame {
 
 	protected void initGame() {
 		world = new IronWorld();
+	}
 
+	public void initGame(int race1, int race2) {
 		IronPlayer player1 = new IronPlayer(0, "Player 1");
 		IronPlayer player2 = new IronPlayer(1, "Player 2");
 
-		controller = new SoloGameController(world, player1, Protocol.HUMAN_RACE
-				.getValue(), player2, Protocol.ORC_RACE.getValue());
+		controller = new SoloGameController(world, player1, race1, player2,
+				race2);
 
 		controller.init();
-		
+
 		controller.getWorld().getMap().initSprites();
 		controller.addGameObserver(this);
 		controller.startGame();
+
 	}
-	
+
 	@Override
 	protected boolean canSelectUnit(IronUnit unit) {
 		return unit != null && !unit.hasPlayed()

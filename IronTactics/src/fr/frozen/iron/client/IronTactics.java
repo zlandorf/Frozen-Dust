@@ -10,13 +10,14 @@ import fr.frozen.game.GameState;
 import fr.frozen.game.SoundManager;
 import fr.frozen.game.SpriteManager;
 import fr.frozen.iron.client.gameStates.Browser;
-import fr.frozen.iron.client.gameStates.GameCreation;
 import fr.frozen.iron.client.gameStates.Intro;
 import fr.frozen.iron.client.gameStates.Lobby;
 import fr.frozen.iron.client.gameStates.MainMenu;
 import fr.frozen.iron.client.gameStates.OptionMenu;
 import fr.frozen.iron.client.gameStates.game.MultiplayerGame;
 import fr.frozen.iron.client.gameStates.game.SoloGame;
+import fr.frozen.iron.client.gameStates.gameCreation.MultiGameCreation;
+import fr.frozen.iron.client.gameStates.gameCreation.SoloGameCreation;
 import fr.frozen.iron.client.messageEvents.NewSessionEvent;
 import fr.frozen.iron.common.equipment.EquipmentManager;
 import fr.frozen.iron.protocol.Protocol;
@@ -47,7 +48,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	}
 
 	public void changeUserName(String userName) {
-		if (userName == null || userName.equals("")) return;
+		if (userName == null || userName.equals(""))
+			return;
 		if (netClient.isConnected()) {
 			netClient.sendMessage(Protocol.SERVER_C_SEND_PLAYER_NAME, userName);
 		}
@@ -60,38 +62,40 @@ public class IronTactics extends GameEngine implements NetEventListener {
 			ConnectEvent ce = (ConnectEvent) ne;
 			if (ce.getStatus()) {
 				Logger.getLogger(getClass()).info("IronTactics connected successfully");
-				netClient.sendMessage(Protocol.SERVER_C_SEND_PLAYER_NAME, IronConfig.getUserName());
+				netClient.sendMessage(Protocol.SERVER_C_SEND_PLAYER_NAME,
+						IronConfig.getUserName());
 				netClient.start();
 			} else {
-				Logger.getLogger(getClass()).error("IronTactics failed to connect");
+				Logger.getLogger(getClass()).error(
+						"IronTactics failed to connect");
 			}
 		}
-
 
 		if (ne instanceof NewSessionEvent) {
 			NewSessionEvent nse = (NewSessionEvent) ne;
 			String newGameState = null;
 
 			switch (nse.getType()) {
-			case SESSION_LOBBY : 
+			case SESSION_LOBBY:
 				newGameState = "lobby";
 				break;
 
-			case SESSION_GAME_CREATION :
-				newGameState = "gameCreation";
+			case SESSION_GAME_CREATION:
+				newGameState = "multiGameCreation";
 				getGameState("lobby").setActive(false);
 				break;
 
-			case SESSION_GAME :
+			case SESSION_GAME:
 				newGameState = "multiGame";
 				getGameState("lobby").setActive(false);
 				break;
 
-			default : 
-				Logger.getLogger(getClass()).error("game session not handled : "+nse.getType());
+			default:
+				Logger.getLogger(getClass()).error(
+						"game session not handled : " + nse.getType());
 				break;
 			}
-			Logger.getLogger(getClass()).info("switching to "+newGameState);
+			Logger.getLogger(getClass()).info("switching to " + newGameState);
 			if (newGameState != null && !newGameState.equals(getCurrentGameState().getName())) {
 				switchToState(newGameState);
 			}
@@ -100,7 +104,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 
 	public void switchToState(GameState gameState) {
 		if (gameState == null) {
-			Logger.getLogger(getClass().getName()).error("Game state not found");
+			Logger.getLogger(getClass().getName())
+					.error("Game state not found");
 			return;
 		}
 
@@ -121,7 +126,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	}
 
 	public void connect() {
-		//TODO: handle a possible restart of the network thread
+		// TODO: handle a possible restart of the network thread
 		if (!netClient.isConnected())
 			netClient.connect();
 	}
@@ -138,11 +143,13 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		SpriteManager.getInstance().loadImagesFromXml(IronConfig.getIronXMLParser());
 		drawLoadingText("Loading sounds ...");
 		SoundManager.getInstance().loadSoundsFromXml(IronConfig.getIronXMLParser());
-		//this is because there is a bug where music plays even when music is off
-		//so i do this to fix that
-		//IronConfig.setVolume(IronConfig.getVolume());
+		// this is because there is a bug where music plays even when music is
+		// off
+		// so i do this to fix that
+		// IronConfig.setVolume(IronConfig.getVolume());
 		@SuppressWarnings("unused")
-		EquipmentManager em = EquipmentManager.getInstance();//just to preload it
+		EquipmentManager em = EquipmentManager.getInstance();// just to preload
+																// it
 		drawLoadingText("Loading fonts ...");
 		FontManager.addFont(FontManager.loadFont("visitor.ttf", 14), "statsFont");
 		FontManager.addFont(FontManager.loadFont(new Font("Arial", Font.PLAIN, 15)), "chatFont");
@@ -153,18 +160,20 @@ public class IronTactics extends GameEngine implements NetEventListener {
 
 	protected void buildInitialGameStates() {
 		Intro intro = new Intro(this);
-		
+
 		MainMenu menu = new MainMenu(this);
 		OptionMenu optionMenu = new OptionMenu(this);
 
 		Lobby lobby = new Lobby(this);
 		Browser browser = new Browser(this);
-		
-		GameCreation gameCreation = new GameCreation(this);
 
-		SoloGame soloGame = new SoloGame(this); 
-		//SoloGame soloGame = new AIGame(this);
+		MultiGameCreation gameCreation = new MultiGameCreation(this);
+
+		SoloGame soloGame = new SoloGame(this);
+		// // SoloGame soloGame = new AIGame(this);
 		MultiplayerGame multiGame = new MultiplayerGame(this);
+
+		SoloGameCreation sgc = new SoloGameCreation(this);
 
 		addGameState(intro);
 		addGameState(menu);
@@ -174,6 +183,8 @@ public class IronTactics extends GameEngine implements NetEventListener {
 		addGameState(multiGame);
 		addGameState(soloGame);
 		addGameState(optionMenu);
+
+		addGameState(sgc);
 
 		netClient.addNetEventListener(gameCreation);
 		netClient.addNetEventListener(browser);
@@ -194,7 +205,7 @@ public class IronTactics extends GameEngine implements NetEventListener {
 	@Override
 	protected void cleanUp() {
 		super.cleanUp();
-		
+
 		if (netClient.isConnected()) {
 			Logger.getLogger(getClass()).debug("shutting down netClient");
 			netClient.shutdown();
@@ -208,21 +219,28 @@ public class IronTactics extends GameEngine implements NetEventListener {
 				e.printStackTrace();
 			}
 		}
-		//System.exit(0);
+		// System.exit(0);
 	}
 
-	public static void main(String []args) {
+	public static void main(String[] args) {
 
 		String host = IronConst.HOST;
 		if (args.length == 1) {
 			host = args[0];
 		} else {
-			System.out.println("you can add an argument to specify host address");
+			System.out
+					.println("you can add an argument to specify host address");
 		}
 
 		IronConfig.configClientLogger();
 		IronTactics it = new IronTactics(host);
 		it.initIronTactics();
 		it.start();
+	}
+
+	public void startNewSoloGame(int hostRace, int otherRace) {
+		SoloGame soloGame = (SoloGame) getGameState("soloGame");
+		switchToState(soloGame);
+		soloGame.initGame(hostRace, otherRace);
 	}
 }

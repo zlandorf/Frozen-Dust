@@ -42,7 +42,8 @@ public abstract class AbstractGameController implements GameContext,
 
 	protected volatile float timeLeftForTurn = 0;
 	protected volatile int turnPlayerId = -1;
-	protected volatile int turnIndex = 0; // switches from 0 to 1 to make it easier to
+	protected volatile int turnIndex = 0; // switches from 0 to 1 to make it
+											// easier to
 	// switch turns
 
 	protected volatile IronUnit lastUnitMoved = null;
@@ -185,9 +186,10 @@ public abstract class AbstractGameController implements GameContext,
 		}
 
 		logger.info("[GameOver]" + winner + "("
-				+ playerInfo.get(winner.getId()).getRace() + ") wins against " + loser
-				+ "(" + playerInfo.get(loser.getId()).getRace() + ") -- Units left : ["
-				+ nbWinnerUnits + "]vs[" + nbLoserUnits + "]");
+				+ playerInfo.get(winner.getId()).getRace() + ") wins against "
+				+ loser + "(" + playerInfo.get(loser.getId()).getRace()
+				+ ") -- Units left : [" + nbWinnerUnits + "]vs[" + nbLoserUnits
+				+ "]");
 		gameOver = true;
 		notifyGameOver(winnerId);
 	}
@@ -210,7 +212,7 @@ public abstract class AbstractGameController implements GameContext,
 		turnPlayerId = playerId;
 		world.initTurn(playerId, isAddParticles());
 		setLastUnitMoved(null);
-		
+
 		timeLeftForTurn = IronConst.TURN_DURATION;
 
 		notifyTurnChange(turnPlayerId);
@@ -238,14 +240,14 @@ public abstract class AbstractGameController implements GameContext,
 			logger.error("cannot start game, not enough players");
 			return;
 		}
-
-		turnIndex = playerStartId;
+		System.out.println("player start id = " + playerStartId);
+		turnIndex = players.get(0).getId() == playerStartId ? 0 : 1;
 		IronPlayer player = players.get(turnIndex);
-		setTurn(player.getId());
 
 		gameStarted = true;
 		notifyStartGame(player.getId());
 
+		setTurn(player.getId());
 	}
 
 	public void startGame() {
@@ -347,7 +349,8 @@ public abstract class AbstractGameController implements GameContext,
 				logger.error("player info not found");
 				continue; // TODO error to handle here
 			}
-			race = IronUtil.getRaceStr(playerInfo.get(player.getId()).getRace());
+			race = IronUtil
+					.getRaceStr(playerInfo.get(player.getId()).getRace());
 
 			if (race == null) {
 				logger.error("race not found");
@@ -358,9 +361,7 @@ public abstract class AbstractGameController implements GameContext,
 				line[i] = parser.getAttributeValue("deployement/" + race,
 						"line" + (i + 1));
 				if (line[i] == null) {
-					logger
-							.error("probs at parsing deployement line "
-									+ (i + 1));
+					logger.error("probs at parsing deployement line " + (i + 1));
 					continue main;
 				}
 			}

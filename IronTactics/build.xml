@@ -17,6 +17,8 @@
 		<delete file="${dist.dir}/IronTactics.zip"/>
 		<delete file="${dist.dir}/IronTacticsLight.zip"/>
 		<delete file="${dist.dir}/WebStart.zip"/>
+		<delete file="${engine-jar}"/>
+		<delete file="${netengine-jar}"/>
 	</target>
     
 	<target name="clientBuild">

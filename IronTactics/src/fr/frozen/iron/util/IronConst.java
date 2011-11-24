@@ -5,7 +5,8 @@ public class IronConst {
 	public static final String HOST = "92.102.7.170";
 	
 	public static final String defaultName = "guest";
-	public static final boolean showGridDefault = true;
+	public static final boolean showGridDefault = false;
+	public static final float defaultVolume = 0.35f;
 	public static final String saveFile = "options.txt";
 	public static final String ironDir = ".ironTactics";
 	
@@ -31,4 +32,5 @@ public class IronConst {
 	
 	public static final float INTELLIGENCE_REGEN_FACTOR = 6.5f;
 	public static final float INTELLIGENCE_IDLE_REGEN_FACTOR = 4.5f;
+
 }
