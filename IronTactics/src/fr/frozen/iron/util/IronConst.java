@@ -2,7 +2,8 @@ package fr.frozen.iron.util;
 
 public class IronConst {
 
-	public static final String HOST = "92.102.7.170";
+	public static final String HOST = "localhost";
+//	public static final String HOST = "92.102.7.170";
 	
 	public static final String defaultName = "guest";
 	public static final boolean showGridDefault = false;

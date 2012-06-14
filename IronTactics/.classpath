@@ -6,7 +6,7 @@
 	<classpathentry kind="lib" path="netframework.jar" sourcepath="/ServerFrameWork"/>
 	<classpathentry kind="lib" path="jar/lwjgl.jar">
 		<attributes>
-			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="IronTactics/native/linux"/>
+			<attribute name="org.eclipse.jdt.launching.CLASSPATH_ATTR_LIBRARY_PATH_ENTRY" value="IronTactics/dist/buildrsc/native/linux"/>
 		</attributes>
 	</classpathentry>
 	<classpathentry kind="lib" path="jar/jinput.jar"/>
