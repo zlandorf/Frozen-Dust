@@ -6,12 +6,11 @@ contact : paul [.] milian (at) hotmail [.] fr
 
 Install process :
 
-Just git clone repo and try running.
-If client can't connect to server try changing the value of HOST constant in IronConst
-If client wont launch with lwjgl error, try changing native value for lwjgl.jar and setting to proper OS
-If Ant file won't build you must go to 
-Eclipse => window => preference => Ant => runtime => ant home entries => add jar and add JeraAntTasks.jar
-(the jar should be in IronTactics/jar folder)
+- Just git clone the repo and try running it through eclipse.
+- If the client can't connect to the server try changing the value of HOST constant in IronConst (or check the program's arguments)
+- If the client wont launch with a lwjgl error, try changing the native value for lwjgl.jar and setting to it to the proper OS
+- If the Ant file won't build you must go to Eclipse => window => preference => Ant => runtime => ant home entries => add jar and add JeraAntTasks.jar
+(the jar should be in the IronTactics/jar folder)
 
-todo: fog of war, campaign
+todo: fog of war, campaign, ai
 
