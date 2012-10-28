@@ -84,6 +84,7 @@ public class IronUtil {
 		long length = file.length();
 
 		if (length > Integer.MAX_VALUE) {
+			inputStream.close();
 			throw new IOException("file too large");
 		}
 
@@ -99,6 +100,7 @@ public class IronUtil {
 
 		// Ensure all the bytes have been read in
 		if (offset < mapData.length) {
+			inputStream.close();
 			throw new IOException("Could not completely read file "
 					+ file.getName());
 		}
@@ -209,6 +211,7 @@ public class IronUtil {
 			while ((line = br.readLine()) != null) {
 				text += line + "\r\n";
 			}
+			br.close();
 			if (text.contains(option)) {
 				text = text.replaceAll(option + ".*", option + value);
 			} else {
@@ -245,8 +248,10 @@ public class IronUtil {
 			return DWARF;
 		case UNDEAD_RACE:
 			return UNDEAD;
+		default:
+			Logger.getLogger(IronUtil.class).error("No String found for race " + race);
+			return null;
 		}
-		return null;
 	}
 
 	public static List<Vector2f> getHorizontalIntersections(IronWorld world,
