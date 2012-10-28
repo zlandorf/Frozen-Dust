@@ -34,4 +34,7 @@ public class IronConst {
 	public static final float INTELLIGENCE_REGEN_FACTOR = 6.5f;
 	public static final float INTELLIGENCE_IDLE_REGEN_FACTOR = 4.5f;
 
+	
+	public static final double EPSILON = 0.001;
+	
 }

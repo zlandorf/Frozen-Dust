@@ -281,12 +281,12 @@ public class IronUtil {
 
 			Vector2f P = IronUtil.getIntersectionPoint(new Vector2f(x1, y1),
 					new Vector2f(x2, y2), ref1, ref2);
-			// P.setY(Py);//theres a bug where i get 255.99998 and it screws up
-			// the checkGrid part
+			
 			Py += IronConst.TILE_HEIGHT * side;
 
 			if (P == null)
 				break;
+			
 			points.add(P);
 		}
 
@@ -336,9 +336,6 @@ public class IronUtil {
 							* IronConst.TILE_HEIGHT - 1);
 					P = IronUtil.getIntersectionPoint(A, B, ref1, ref2);
 
-					// if (P != null)
-					// P.setX(Px);//theres a bug where i get 255.99998 and it
-					// screws up the checkGrid part
 					Px += IronConst.TILE_WIDTH * side;
 				}
 
@@ -473,8 +470,19 @@ public class IronUtil {
 			return null;// not intersection on segment portion
 		}
 
-		Vector2f P = new Vector2f((float) (A.getX() + k * I[0]), (float) (A
-				.getY() + k * I[1]));
+		double resX = A.getX() + k * I[0];
+		double resY = A.getY() + k * I[1];
+		
+		double diffX = Math.abs(Math.round(resX) - resX);
+		double diffY = Math.abs(Math.round(resY) - resY);
+		
+		if (diffX > 0 && diffX <= IronConst.EPSILON)
+			resX = (Math.round(resX));
+		
+		if (diffY > 0 && diffY <= IronConst.EPSILON)
+			resY = (Math.round(resY));
+		
+		Vector2f P = new Vector2f((float) (resX), (float) (resY));
 		return P;
 	}
 
